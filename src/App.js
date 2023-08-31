@@ -1,11 +1,18 @@
-import logo from './logo.svg';
+import React from "react";
+import {HashRouter, Route, Routes} from "react-router-dom";
 import './App.css';
+import {Welcome} from "./containers/Welcome";
+import {Layout} from "./containers/Layout/Layout";
 
 function App() {
   return (
-    <div className="App">
-      <h1>Tu sobie będę pracować</h1>
-    </div>
+      <HashRouter>
+          <Layout>
+              <Routes>
+                  <Route path={""} element={<Welcome/>}/>
+              </Routes>
+          </Layout>
+      </HashRouter>
   );
 }
 
