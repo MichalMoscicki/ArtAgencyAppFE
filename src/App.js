@@ -1,19 +1,25 @@
 import React from "react";
-import {HashRouter, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 import './App.css';
-import {Welcome} from "./containers/Welcome";
 import {Layout} from "./containers/Layout/Layout";
+import Main from "./containers/Main/Main";
+import Contacts from "./containers/Contacts/Contacts";
+import Tasks from "./containers/Tasks/Tasks";
 
 function App() {
-  return (
-      <HashRouter>
-          <Layout>
-              <Routes>
-                  <Route path={""} element={<Welcome/>}/>
-              </Routes>
-          </Layout>
-      </HashRouter>
-  );
+    return (
+        <BrowserRouter>
+                <div className="container">
+                    <Routes>
+                        <Route path="/" element={<Layout/>}>
+                            <Route path="/" element={<Main/>}/>
+                            <Route path="/contacts" element={<Contacts/>}/>
+                            <Route path="/tasks" element={<Tasks/>}/>
+                        </Route>
+                    </Routes>
+                </div>
+        </BrowserRouter>
+    );
 }
 
 export default App;

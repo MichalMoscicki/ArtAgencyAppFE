@@ -1,12 +1,17 @@
-import React from "react";
-import Navbar from "react-bootstrap/Navbar"
+import React from 'react';
+import "./layout.css"
 
-export const NavBar = () => {
+const Navbar = () => {
     return (
-        <>
-            <Navbar style={{backgroundColor:"aliceblue", height: 50}}
-            >
-                <h1>ArtAgencyApp</h1>
-            </Navbar>
-        </>
-    )}
+        <nav className={"nav"}>
+            <a href={"/"} className={"site-title"}>ArtAgencyApp</a>
+            <ul>
+                <li><a href={"/contacts"}>Kontakty</a> </li>
+                <li><a href={"/tasks"}>Zadania</a> </li>
+                <li><a href={"/logout"}>Wyloguj</a> </li>
+            </ul>
+        </nav>
+    )};
+
+
+export default Navbar;
