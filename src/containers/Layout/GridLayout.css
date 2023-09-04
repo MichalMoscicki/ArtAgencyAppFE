@@ -15,6 +15,7 @@
 
 .navbar {
     grid-area: content1;
+    padding: 0px;
 }
 
 .sidebar {

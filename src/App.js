@@ -5,6 +5,7 @@ import {Layout} from "./containers/Layout/Layout";
 import Main from "./containers/Main/Main";
 import Contacts from "./containers/Contacts/Contacts";
 import Tasks from "./containers/Tasks/Tasks";
+import API from "./containers/Contacts/API";
 
 function App() {
     return (
@@ -13,6 +14,7 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Layout/>}>
                             <Route path="/" element={<Main/>}/>
+                            <Route path="/api" element={<API/>}/>
                             <Route path="/contacts" element={<Contacts/>}/>
                             <Route path="/tasks" element={<Tasks/>}/>
                         </Route>
