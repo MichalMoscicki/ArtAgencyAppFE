@@ -16,7 +16,7 @@ export const Layout = () => {
                     <div className="sidebar centered">
                         <h1>Sidebar</h1>
                     </div>
-                    <div className="outlet centered">
+                    <div className="outlet">
                         <Outlet/>
                     </div>
                 </div>
