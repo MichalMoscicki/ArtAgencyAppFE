@@ -88,6 +88,7 @@ export const updateContactById = async (id , contact) => {
         if (data.error) {
             throw new Error("Błąd!");
         }
+        return data;
 
     } catch (err) {
         console.log(err);
