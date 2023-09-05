@@ -9,7 +9,7 @@ import {confirmAlert} from "react-confirm-alert";
 const ContactDetails = () => {
     const contactId = useParams().contactId;
     const navigate = useNavigate();
-    const [contact, setContact] = useState({title: "", alreadyCooperated: false});
+    const [contact, setContact] = useState({title: "", alreadyCooperated: false, institutions:[]});
     const [formHidden, setFormHidden] = useState(true);
     const [title, setTitle] = useState(contact.title)
     const [alreadyCooperated, setAlreadyCooperated] = useState(contact.alreadyCooperated)
@@ -23,7 +23,6 @@ const ContactDetails = () => {
     useEffect(() => {
         fetchData()
     }, []);
-
     const toggleForm = () => {
         setFormHidden(!formHidden)
     }
@@ -60,7 +59,16 @@ const ContactDetails = () => {
             ]
         });
     }
+    const onAddInstitution = (institution) => {
 
+        const updatedContact = {...contact, institutions:[...contact.institutions, institution]};
+        setContact(updatedContact)
+    }
+    const onDeleteInstitution = (id) => {
+        const filteredInstitution = contact.institutions.filter( institution => institution.id !== id);
+        const updatedContact = {...contact, institutions:filteredInstitution};
+        setContact(updatedContact)
+    }
 
     return (
         <div>
@@ -83,7 +91,9 @@ const ContactDetails = () => {
                 <button onClick={handleDelete}>Usuń</button>
             </div>
             <h6>----------------</h6>
-            <Institutions/>
+            <Institutions institutions={contact.institutions}
+                          onAddInstitution={onAddInstitution}
+                          contactId={contactId} onDeleteInstitution={onDeleteInstitution}/>
             <h6>----------------</h6>
             <ContactPeople/>
             <h6>----------------</h6>
