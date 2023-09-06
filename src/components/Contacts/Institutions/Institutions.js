@@ -2,8 +2,6 @@ import React, {useEffect, useState} from "react"
 import {addInstitution} from "../../../api/institutions";
 import SingleInstitution from "./SingleInstitution";
 
-//todo blokowanie dodawania, jak nie wszystko jest wypełnione funkcja - checkButtonEnabled
-
 
 const Institutions = (props) => {
     const [formHidden, setFormHidden] = useState(true);
