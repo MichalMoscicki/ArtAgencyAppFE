@@ -1,6 +1,9 @@
-import React, {useState} from "react"
+import React, {useEffect, useState} from "react"
 import {addInstitution} from "../../../api/institutions";
 import SingleInstitution from "./SingleInstitution";
+
+//todo blokowanie dodawania, jak nie wszystko jest wypełnione funkcja - checkButtonEnabled
+
 
 const Institutions = (props) => {
     const [formHidden, setFormHidden] = useState(true);
@@ -8,8 +11,15 @@ const Institutions = (props) => {
     const [city, setCity] = useState("");
     const [category, setCategory] = useState("");
     const [notes, setNotes] = useState("");
+    const [buttonDisabled, setButtonDisabled] = useState(true)
 
-
+    const checkButton = () => {
+        if( name === "" || city === "" || category === ""){
+            setButtonDisabled(true)
+        } else {
+            setButtonDisabled(false)
+        }
+    }
     const toggleForm = () => {
         setFormHidden(!formHidden);
     }
@@ -32,6 +42,9 @@ const Institutions = (props) => {
         setNotes(e.target.value)
     }
 
+    useEffect( ()=> {
+        checkButton()
+    }, [name, city, category])
 
 
 
@@ -57,17 +70,10 @@ const Institutions = (props) => {
                     <li><input type={"text"} placeholder={"Kategoria"} value={category} onChange={onCategoryChange}/></li>
                     <li><input type={"textarea"} placeholder={"Notatki"} value={notes} onChange={onNotesChange}/></li>
                 </ul>
-                <button type={"submit"}>Dodaj</button>
+                <button type={"submit"} disabled={buttonDisabled}>Dodaj</button>
             </form>
         </div>
     )
 }
 
 export default Institutions
-
-// blokowanie dodawania, jak nie wszystko jest wypełnione
-
-//dodawanie do contactu w parent component
-//usuwanie
-//edycja
-//edycja w parent component

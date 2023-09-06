@@ -20,7 +20,27 @@ export const addInstitution = async (institution, contactId) => {
     }
 };
 
+export const updateInstitutionById = async (contactId , institution) => {
+    try {
+        const response = await fetch(`${API_URL}/contacts/${contactId}/institutions/${institution.id}`, {
+            method: "PUT",
+            body: JSON.stringify(institution),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
 
+        const data = await response.json();
+
+        if (data.error) {
+            throw new Error("Błąd!");
+        }
+        return data;
+
+    } catch (err) {
+        console.log(err);
+    }
+};
 
 
 export const deleteInstitutionById = async (contactId, institutionId) => {
