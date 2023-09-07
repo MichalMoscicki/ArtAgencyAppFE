@@ -1,5 +1,31 @@
-.container {
- width:70%;
-    height: 70vh;
+.contacts-container {
+    padding-top: 10%;
+    padding-left: 20%;
+    padding-right: 10%;
 }
 
+.contacts-list {
+    width: 100%;
+    position: relative;
+    box-sizing: border-box;
+    list-style: none;
+}
+
+.add-contact {
+    background: blanchedalmond;
+    padding-left: 6%;
+    padding-bottom: 3px;
+    border: 1px solid #a98888;
+}
+
+.add-contact:hover{
+    background: antiquewhite;
+}
+
+.contacts-form-list {
+    list-style: none;
+}
+
+.submit-contact-btn {
+    padding-left: 6%;
+}

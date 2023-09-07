@@ -2,6 +2,7 @@ import React from "react";
 import {useState, useEffect} from "react";
 import {addContact, getContacts} from "../../api/contacts";
 import SingleContact from "./SingleContact";
+import "./Contacts.css"
 
 const Contacts = () => {
     const [contacts, setContacts] = useState([]);
@@ -38,21 +39,23 @@ const Contacts = () => {
     }
 
     return (
-        <div className="container">
+        <div className="contacts-container">
             <h1>Kontakty</h1>
-            <ul className="contactList">
+            <ul className={"contacts-list"}>
                 {contacts.map((el, index) => {
                     return (<SingleContact contact={el} onDelete={removeLocalStateContact} key={index}/>)
                 })}
             </ul>
-            <h6 onClick={toggleForm}>Dodaj kontakt</h6>
+            <h3 onClick={toggleForm} className={"add-contact"}>Dodaj kontakt</h3>
             <form onSubmit={onSubmit} hidden={formHidden}>
-                <ul>
+                <ul className={"contacts-form-list"}>
                     <li><input onChange={onChange} placeholder={"Nazwa kontaktu"} value={contactName}/></li>
                     <li>Czy już współpracowaliśmy<input type="checkbox" onChange={onCheck}/></li>
                 </ul>
-                <button type={"submit"} disabled={!contactName}>Dodaj</button>
-            </form>
+                <div className={"submit-contact-btn"}>
+                    <button type={"submit"} disabled={!contactName}>Dodaj</button>
+                </div>
+                </form>
 
         </div>
     )

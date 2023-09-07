@@ -3,7 +3,7 @@ import {deleteContactById} from "../../api/contacts";
 import {confirmAlert} from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import {NavLink} from "react-router-dom";
-
+import "./SingleContact.css"
 
 const SingleContact = ({contact, onDelete}) => {
 
@@ -28,13 +28,17 @@ const SingleContact = ({contact, onDelete}) => {
         });
     };
 
-    return <li>
-        Nazwa: {contact.title}
-        <button><NavLink to={"http://localhost:3000/contacts/" + contact.id}>
-            Szczegóły
-        </NavLink>
-        </button>
-        <button onClick={handleOnClick}>Usuń</button>
+    return <li className={"single-contact"}>
+        <span className={"contact-title"}>{contact.title}</span>
+
+        <span className={"contact-btns"}>
+             <button>
+                 <NavLink to={"http://localhost:3000/contacts/" + contact.id}>
+                    Szczegóły
+                </NavLink>
+             </button>
+             <button onClick={handleOnClick} >Usuń</button>
+        </span>
     </li>
 }
 
