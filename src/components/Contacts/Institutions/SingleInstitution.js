@@ -83,7 +83,7 @@ const SingleInstitution = ({institution, onDeleteInstitution, contactId}) => {
         if (categoryFormVisible && categoryInputRef.current) {
             categoryInputRef.current.focus();
         }
-    }, [nameFormVisible, cityFormVisible]);
+    }, [nameFormVisible, cityFormVisible, categoryFormVisible]);
 
 
     return (

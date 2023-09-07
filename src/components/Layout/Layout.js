@@ -1,8 +1,7 @@
 import React from "react";
 import Navbar from "./Navbar";
 import {Outlet} from "react-router-dom";
-import {Sidebar} from "./SideBar";
-import "./GridLayout.css"
+import "./Layout.css"
 
 
 export const Layout = () => {

@@ -2,9 +2,10 @@ import React, {useEffect, useState} from "react";
 import {useParams, useNavigate} from "react-router-dom";
 import {deleteContactById, getContactById, updateContactById} from "../../api/contacts";
 import Institutions from "./Institutions/Institutions";
-import Events from "./Events/Events";
 import ContactPeople from "./ContactPeople/ContactPeople";
 import {confirmAlert} from "react-confirm-alert";
+import Events from "../../containers/Events";
+
 
 const ContactDetails = () => {
     const contactId = useParams().contactId;

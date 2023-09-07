@@ -1,6 +1,6 @@
 import React from "react"
 
-const Events = () => {
+const Events = (state) => {
     return (
         <div>
             <h3>Eventy:</h3>

@@ -1,7 +1,7 @@
 import {ADD_SINGLE_CONTACT, ADD_CONTACTS, UPDATE_CONTACT, REMOVE_CONTACT} from "../actions/contacts";
 
 
-export const contacts = (state = [], action) => {
+export const contacts = (state = [1, 2, 3], action) => {
     switch (action.type){
         case ADD_SINGLE_CONTACT:
             return [...state, action.payload]
