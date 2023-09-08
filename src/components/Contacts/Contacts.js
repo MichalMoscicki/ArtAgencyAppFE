@@ -1,27 +1,30 @@
 import React from "react";
 import {useState, useEffect} from "react";
-import {addContact, getContacts} from "../../api/contacts";
-import SingleContact from "./SingleContact";
+import {addContact, getContacts,} from "../../api/contacts";
+import SingleContact from "../../containers/Contacts/SingleContac";
 import "./Contacts.css"
 
-const Contacts = () => {
-    const [contacts, setContacts] = useState([]);
+const Contacts = ({contacts, addContactsToState, addContactToState}) => {
     const [contactName, setContactName] = useState("");
     const [alreadyCooperated, setAlreadyCooperated] = useState(false);
     const [formHidden, setFormHidden] = useState(true);
 
+
     useEffect(() => {
+        const fetchData = async () => {
+            let response = await getContacts();
+            await addContactsToState(response);
+        }
         fetchData()
+
     }, []);
-    const fetchData = async () => {
-        let response = await getContacts();
-        await setContacts(response)
-    }
+
+
     const onSubmit = async (e) => {
         e.preventDefault();
-        const contact = {title : contactName, alreadyCooperated:alreadyCooperated}
+        const contact = {title: contactName, alreadyCooperated: alreadyCooperated}
         let response = await addContact(contact);
-        setContacts( prevState => [...prevState, response]);
+        await addContactToState(response)
         setContactName("");
         setFormHidden(!formHidden);
     }
@@ -30,9 +33,6 @@ const Contacts = () => {
     }
     const onCheck = () => {
         setAlreadyCooperated(!alreadyCooperated)
-    }
-    const removeLocalStateContact = (id) => {
-        setContacts( prevState => [...prevState].filter(contact => contact.id !== id))
     }
     const toggleForm = () => {
         setFormHidden(!formHidden)
@@ -43,7 +43,7 @@ const Contacts = () => {
             <h1>Kontakty</h1>
             <ul className={"contacts-list"}>
                 {contacts.map((el, index) => {
-                    return (<SingleContact contact={el} onDelete={removeLocalStateContact} key={index}/>)
+                    return (<SingleContact contact={el} key={index}/>)
                 })}
             </ul>
             <h3 onClick={toggleForm} className={"add-contact"}>Dodaj kontakt</h3>
@@ -55,8 +55,7 @@ const Contacts = () => {
                 <div className={"submit-contact-btn"}>
                     <button type={"submit"} disabled={!contactName}>Dodaj</button>
                 </div>
-                </form>
-
+            </form>
         </div>
     )
 }

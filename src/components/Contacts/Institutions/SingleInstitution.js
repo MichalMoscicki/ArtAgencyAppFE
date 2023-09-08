@@ -1,10 +1,9 @@
 import React, {useEffect, useRef, useState} from "react";
 import {confirmAlert} from "react-confirm-alert";
 import {deleteInstitutionById, updateInstitutionById} from "../../../api/institutions";
+import "../ContactDetailsChildren.css"
 
 const SingleInstitution = ({institution, onDeleteInstitution, contactId}) => {
-
-
     const [listHidden, setListHidden] = useState(true);
     const handleDeleteButton = () => {
         confirmAlert({
@@ -30,6 +29,7 @@ const SingleInstitution = ({institution, onDeleteInstitution, contactId}) => {
         setListHidden(!listHidden)
     }
 
+
     const [institutionName, setInstitutionName] = useState(institution.name);
     const [nameFormVisible, setNameFormVisible] = useState(false)
     const nameInputRef = useRef(null);
@@ -43,6 +43,7 @@ const SingleInstitution = ({institution, onDeleteInstitution, contactId}) => {
     const handleNameChange = (e) => {
         setInstitutionName(e.target.value)
     }
+
 
 
     const [institutionCity, setInstitutionCity] = useState(institution.city);
@@ -59,6 +60,7 @@ const SingleInstitution = ({institution, onDeleteInstitution, contactId}) => {
         setInstitutionCity(e.target.value)
     }
 
+
     const [institutionCategory, setInstitutionCategory] = useState(institution.category);
     const [categoryFormVisible, setCategoryFormVisible] = useState(false)
     const categoryInputRef = useRef(null);
@@ -69,9 +71,32 @@ const SingleInstitution = ({institution, onDeleteInstitution, contactId}) => {
         }
         setCategoryFormVisible(!categoryFormVisible)
     }
-    const handleCategoryChange = (e) => {
-        setInstitutionCategory(e.target.value)
+
+
+    const ifNotesPresent = () => {
+        if(institution.notes === ""){
+            return "Brak notatek"
+        } else {
+            return institution.notes
+        }
+
     }
+    const [institutionNotes, setInstitutionNotes] = useState(ifNotesPresent);
+    const [notesFormVisible, setNotesFormVisible] = useState(false)
+    const notesInputRef = useRef(null);
+    const toggleNotesForm = () => {
+        if (notesFormVisible === true && institutionNotes !== institution.notes) {
+            let updatedInstitution = {...institution, notes: institutionNotes}
+            updateInstitutionById(contactId, updatedInstitution)
+        }
+        setNotesFormVisible(!notesFormVisible)
+    }
+
+    const handleCategoryChange = (e) => {
+        setInstitutionNotes(e.target.value)
+    }
+
+
 
     useEffect(() => {
         if (nameFormVisible && nameInputRef.current) {
@@ -83,41 +108,63 @@ const SingleInstitution = ({institution, onDeleteInstitution, contactId}) => {
         if (categoryFormVisible && categoryInputRef.current) {
             categoryInputRef.current.focus();
         }
-    }, [nameFormVisible, cityFormVisible, categoryFormVisible]);
+        if (notesFormVisible && notesInputRef.current) {
+            notesInputRef.current.focus();
+        }
+
+    }, [nameFormVisible, cityFormVisible, categoryFormVisible, notesFormVisible]);
 
 
     return (
-        <div>
-            <div style={{display: "flex"}}>
-                <h6 hidden={nameFormVisible} onClick={toggleNameForm}>{institutionName}</h6>
-                <form hidden={!nameFormVisible} onBlur={toggleNameForm}>
-                    <input type={"text"} ref={nameInputRef} value={institutionName} onChange={handleNameChange}/>
-                </form>
-                <button onClick={handleDetailsButton}>Szczegóły</button>
-                <button onClick={handleDeleteButton}>Usuń</button>
+
+
+        <li className={"cd-children-li"}>
+            <div className={"cd-children-name-container"}>
+                <span className={"cd-children-span"}>
+                    {nameFormVisible ?
+                        <input type={"text"} ref={nameInputRef} value={institutionName} onChange={handleNameChange} onBlur={toggleNameForm} />
+                    :
+                        <h6 onClick={toggleNameForm} className={"cd-children-name"}>{institutionName}</h6>
+                    }
+                </span>
+
+                <span>
+                    <button onClick={handleDetailsButton}>Szczegóły</button>
+                    <button onClick={handleDeleteButton}>Usuń</button>
+                </span>
+
             </div>
 
             <div hidden={listHidden}>
-                <ul>
-                    <li style={{display: "flex"}}>Miasto:
-                        <div hidden={cityFormVisible} onClick={toggleCityForm}>{institutionCity}</div>
-                        <form hidden={!cityFormVisible} onBlur={toggleCityForm}>
-                            <input type={"text"} ref={cityInputRef} value={institutionCity}
-                                   onChange={handleCityChange}/>
-                        </form>
+                <ul className={"cd-children-details-container"}>
+                    <li>
+                            {cityFormVisible ?
+                                <input type={"text"} ref={cityInputRef} value={institutionCity}
+                                       onChange={handleCityChange} onBlur={toggleCityForm}/>
+                                :
+                                <div hidden={cityFormVisible} onClick={toggleCityForm}>{institutionCity}</div>}
                     </li>
 
-                    <li style={{display: "flex"}}>Kategoria:
-                        <div hidden={categoryFormVisible} onClick={toggleCategoryForm}>{institutionCategory}</div>
-                        <form hidden={!categoryFormVisible} onBlur={toggleCategoryForm}>
+                    <li>
+                        {categoryFormVisible ?
                             <input type={"text"} ref={categoryInputRef} value={institutionCategory}
-                                   onChange={handleCategoryChange}/>
-                        </form>
+                                   onChange={handleCategoryChange} onBlur={toggleCategoryForm}/>
+                            :
+                            <div hidden={categoryFormVisible} onClick={toggleCategoryForm}>{institutionCategory}</div>
+                        }
+                    </li>
 
+                    <li>
+                        {notesFormVisible ?
+                            <input type={"textarea"} ref={notesInputRef} value={institutionNotes}
+                                   onChange={handleCategoryChange} onBlur={toggleNotesForm}/>
+                            :
+                            <div hidden={categoryFormVisible} onClick={toggleNotesForm}>{institutionNotes}</div>
+                        }
                     </li>
                 </ul>
             </div>
-        </div>
+        </li>
     )
 }
 export default SingleInstitution

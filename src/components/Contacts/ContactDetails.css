@@ -1,0 +1,49 @@
+.contact-details-container {
+    padding: 5% 10%;
+}
+
+.contact-details-body {
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.contact-details-title-background {
+    display: flex;
+    justify-content: space-between;
+    background-color: blanchedalmond;
+}
+
+.contact-details-delete-button-span {
+    padding-top: 3%;
+    padding-right: 2%;
+}
+
+.contact-details-already-cooperated {
+    line-height: 0;
+}
+
+.contact-details-already-cooperated-choice {
+    line-height: 0;
+    padding-left: 2px;
+    padding-right: 2px;
+    background-color: antiquewhite}
+
+
+.contact-details-already-cooperated-choice:hover{
+    background-color: bisque;
+}
+
+.contact-details-title-span {
+    padding-left: 4%;
+}
+.contact-details-description{
+    padding-left: 3%;
+}
+
+.cd-add-children-container{
+    padding: 3% 5%;
+}
+.cd-add-children-title:hover{
+    background-color: lavender;
+}

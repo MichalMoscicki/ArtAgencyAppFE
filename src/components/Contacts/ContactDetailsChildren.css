@@ -1,0 +1,36 @@
+.cd-children-container{
+    background-color: blanchedalmond;
+    display: inline-block;
+    width: 32%;
+}
+.cd-children-header{
+    padding: 3% 5%;
+
+}
+.cd-children-list{
+    list-style: none;
+    padding-left: 5%;
+    padding-right: 3%;
+}
+.cd-children-name-container{
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 2%;
+}
+.cd-children-name{
+    margin: 0;
+    height: content-box;
+
+}
+
+.cd-children-span{
+    align-self: center;
+}
+.cd-children-li:nth-child(odd){
+    background-color: lavender;
+
+}
+
+.cd-children-details-container{
+    list-style: none;
+}

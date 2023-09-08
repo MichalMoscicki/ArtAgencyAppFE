@@ -5,7 +5,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import {NavLink} from "react-router-dom";
 import "./SingleContact.css"
 
-const SingleContact = ({contact, onDelete}) => {
+const SingleContact = ({contact, removeContact}) => {
 
     const handleOnClick = async () => {
         confirmAlert({
@@ -16,7 +16,7 @@ const SingleContact = ({contact, onDelete}) => {
                     label: 'Yes',
                     onClick: async () => {
                         await deleteContactById(contact.id);
-                        onDelete(contact.id);
+                        removeContact(contact);
                     }
                 },
                 {

@@ -2,10 +2,10 @@ import React from "react";
 
 const ContactPeople = () => {
     return (
-        <div>
+        <span className={"cd-children-container"}>
             <h3>Osoby kontaktowe:</h3>
             <button>Dodaj osobę kontaktową</button>
-        </div>
+        </span>
     )
 }
 

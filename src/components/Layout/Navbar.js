@@ -6,7 +6,6 @@ const Navbar = () => {
         <nav className={"nav"}>
             <a href={"/"} className={"site-title"}>ArtAgencyApp</a>
             <ul>
-                <li><a href={"/api"}>API</a> </li>
                 <li><a href={"/contacts"}>Kontakty</a> </li>
                 <li><a href={"/tasks"}>Zadania</a> </li>
                 <li><a href={"/logout"}>Wyloguj</a> </li>

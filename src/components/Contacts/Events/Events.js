@@ -2,10 +2,10 @@ import React from "react"
 
 const Events = (state) => {
     return (
-        <div>
+        <span className={"cd-children-container"}>
             <h3>Eventy:</h3>
             <button>Dodaj event</button>
-        </div>
+        </span>
     )
 }
 export default Events;

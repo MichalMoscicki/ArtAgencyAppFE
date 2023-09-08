@@ -4,19 +4,19 @@ const UPDATE_CONTACT = "UPDATE_CONTACT";
 const REMOVE_CONTACT = "REMOVE_CONTACT";
 
 
-const addContacts = (contactsList) => {
+const addContactsToState = (contactsList) => {
     return {
-        type: ADD_SINGLE_CONTACT,
+        type: ADD_CONTACTS,
         payload: contactsList
     }
 }
+
 const addSingleContact = (contact) => {
     return {
         type: ADD_SINGLE_CONTACT,
         payload: contact
     }
 }
-
 const updateContact = (contact) => {
     return {
         type: UPDATE_CONTACT,
@@ -24,7 +24,7 @@ const updateContact = (contact) => {
     }
 }
 
-const removeContacts = (contact) => {
+const removeContact = (contact) => {
     return {
         type: REMOVE_CONTACT,
         payload: contact
@@ -32,4 +32,5 @@ const removeContacts = (contact) => {
 }
 
 
-export {ADD_CONTACTS, ADD_SINGLE_CONTACT, REMOVE_CONTACT, UPDATE_CONTACT, addContacts, removeContacts, addSingleContact, updateContact}
+export {ADD_CONTACTS, ADD_SINGLE_CONTACT, REMOVE_CONTACT, UPDATE_CONTACT,
+    addContactsToState, removeContact, addSingleContact, updateContact}
