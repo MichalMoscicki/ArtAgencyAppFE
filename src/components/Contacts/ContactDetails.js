@@ -14,36 +14,49 @@ const ContactDetails = () => {
     const contactId = useParams().contactId;
     const navigate = useNavigate();
     const [contact, setContact] = useState({title: "", alreadyCooperated: false, institutions: []});
-    const [formVisible, setFormVisible] = useState(false);
+    const [titleFormVisible, setTitleFormVisible] = useState(false);
     const [title, setTitle] = useState(contact.title)
     const [cooperationFormVisible, setCooperationFormVisible] = useState(false);
     const [alreadyCooperated, setAlreadyCooperated] = useState(contact.alreadyCooperated)
     const titleInputRef = useRef(null);
+    const [description, setDescription] = useState(false);
+
+    const [descriptionFormVisible, setDescriptionFormVisible] = useState(false);
+    const descriptionInputRef = useRef(null);
 
     const fetchData = async () => {
         let response = await getContactById(contactId);
         await setContact(response)
         setTitle(response.title)
         setAlreadyCooperated(response.alreadyCooperated)
+        if(response.description === null){
+            setDescription("Brak opisu")
+        } else {
+            setDescription(response.description)
+        }
     }
     useEffect(() => {
         fetchData()
+
     }, []);
 
     useEffect(() => {
-        if (formVisible && titleInputRef.current) {
+        if (titleFormVisible && titleInputRef.current) {
             titleInputRef.current.focus();
         }
-    }, [formVisible]);
+        if (descriptionFormVisible && descriptionInputRef.current) {
+            descriptionInputRef.current.focus();
+        }
+    }, [titleFormVisible, descriptionFormVisible]);
 
     const handleTitleClick = () => {
-        setFormVisible(!formVisible)
+        setTitleFormVisible(!titleFormVisible)
     }
     const handleTitleOnBlur = async () => {
         const updatedContact = {...contact, title: title, alreadyCooperated: alreadyCooperated};
         const response = await updateContactById(contact.id, updatedContact);
         await setContact(response);
-        setFormVisible(!formVisible)
+        setTitleFormVisible(!titleFormVisible)
     }
     const handleInputChange = (e) => {
         setTitle(e.target.value)
@@ -88,6 +101,20 @@ const ContactDetails = () => {
         const updatedContact = {...contact, institutions: filteredInstitution};
         setContact(updatedContact)
     }
+    const toggleDescription = async () => {
+        if (descriptionFormVisible && description === "") {
+            setDescription("Brak opisu")
+        }
+        if (descriptionFormVisible && description !== "") {
+            const updatedContact = {...contact, title: title, alreadyCooperated: alreadyCooperated, description: description};
+            const response = await updateContactById(contact.id, updatedContact);
+            await setContact(response);
+        }
+        setDescriptionFormVisible(!descriptionFormVisible)
+    }
+    const handleDescriptionChange = (e) => {
+        setDescription(e.target.value)
+    }
 
     return (
         <div className={"contact-details-container"}>
@@ -95,7 +122,7 @@ const ContactDetails = () => {
                 <div className={"contact-details-title-background"}>
 
                     <span className={"contact-details-title-span"}>
-                        {formVisible ?
+                        {titleFormVisible ?
                             <input type={"text"} onChange={handleInputChange} value={title} ref={titleInputRef}
                                    onBlur={handleTitleOnBlur}/>
                             :
@@ -103,23 +130,24 @@ const ContactDetails = () => {
                         }
 
                         {cooperationFormVisible ?
-                                <div style={{display: "flex"}}>
-                                    <div className={"contact-details-already-cooperated-choice"}
-                                         onClick={() => handleCooperationChoice(true)}>
-                                        <h6>{
-                                            "Już współpracowaliśmy"}
-                                        </h6>
-                                    </div>
+                            <div style={{display: "flex"}}>
+                                <div className={"contact-details-already-cooperated-choice"}
+                                     onClick={() => handleCooperationChoice(true)}>
+                                    <h6>{
+                                        "Już współpracowaliśmy"}
+                                    </h6>
+                                </div>
 
-                                    <div className={"contact-details-already-cooperated-choice"} onClick={() => handleCooperationChoice(false)}>
-                                        <h6>{"Nie współpracowaliśmy"}
-                                        </h6>
-                                    </div>
+                                <div className={"contact-details-already-cooperated-choice"}
+                                     onClick={() => handleCooperationChoice(false)}>
+                                    <h6>{"Nie współpracowaliśmy"}
+                                    </h6>
+                                </div>
 
                             </div>
                             :
                             <h6 className={"contact-details-already-cooperated"} onClick={toggleAlreadyCooperated}>{
-                            alreadyCooperated ? "Już współpracowaliśmy" : "Nie współpracowaliśmy"}
+                                alreadyCooperated ? "Już współpracowaliśmy" : "Nie współpracowaliśmy"}
                             </h6>
                         }
                     </span>
@@ -128,16 +156,21 @@ const ContactDetails = () => {
                          <button onClick={handleDelete}>Usuń</button></span>
                 </div>
                 <div className={"contact-details-description"}>
-                    <h5>Możliwe, że będzie potrzbe dodać opis</h5>
+                    {descriptionFormVisible ? <textarea onBlur={toggleDescription} ref={descriptionInputRef}
+                                                        onChange={handleDescriptionChange}
+                                                        value={description}/>
+                        :
+                        <p onClick={toggleDescription}>{description}</p>}
+
                 </div>
             </div>
 
             <div className={"contact-details-body"}>
-                    <Institutions institutions={contact.institutions}
-                                  onAddInstitution={onAddInstitution}
-                                  contactId={contactId} onDeleteInstitution={onDeleteInstitution}/>
-                    <ContactPeople/>
-                    <Events/>
+                <Institutions institutions={contact.institutions}
+                              onAddInstitution={onAddInstitution}
+                              contactId={contactId} onDeleteInstitution={onDeleteInstitution}/>
+                <ContactPeople/>
+                <Events/>
             </div>
 
         </div>
