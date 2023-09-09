@@ -17,6 +17,9 @@
 .contact-details-delete-button-span {
     padding-top: 3%;
     padding-right: 2%;
+    display: block;
+    text-align: end;
+
 }
 
 .contact-details-already-cooperated {

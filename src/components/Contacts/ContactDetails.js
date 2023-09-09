@@ -6,6 +6,7 @@ import ContactPeople from "./ContactPeople/ContactPeople";
 import {confirmAlert} from "react-confirm-alert";
 import Events from "../../containers/Contacts/Events/Events";
 import "./ContactDetails.css"
+import {blankRegex} from "../../appConstans/appConstans";
 
 
 //todo: nie jestm pewien, jak zyć reduxa w tym kontekście
@@ -29,7 +30,7 @@ const ContactDetails = () => {
         await setContact(response)
         setTitle(response.title)
         setAlreadyCooperated(response.alreadyCooperated)
-        if(response.description === null){
+        if (response.description === null) {
             setDescription("Brak opisu")
         } else {
             setDescription(response.description)
@@ -53,9 +54,13 @@ const ContactDetails = () => {
         setTitleFormVisible(!titleFormVisible)
     }
     const handleTitleOnBlur = async () => {
-        const updatedContact = {...contact, title: title, alreadyCooperated: alreadyCooperated};
-        const response = await updateContactById(contact.id, updatedContact);
-        await setContact(response);
+        if(blankRegex.test(title)){
+            setTitle(contact.title)
+        } else {
+            const updatedContact = {...contact, title: title, alreadyCooperated: alreadyCooperated};
+            const response = await updateContactById(contact.id, updatedContact);
+            await setContact(response);
+        }
         setTitleFormVisible(!titleFormVisible)
     }
     const handleInputChange = (e) => {
@@ -106,7 +111,12 @@ const ContactDetails = () => {
             setDescription("Brak opisu")
         }
         if (descriptionFormVisible && description !== "") {
-            const updatedContact = {...contact, title: title, alreadyCooperated: alreadyCooperated, description: description};
+            const updatedContact = {
+                ...contact,
+                title: title,
+                alreadyCooperated: alreadyCooperated,
+                description: description
+            };
             const response = await updateContactById(contact.id, updatedContact);
             await setContact(response);
         }
@@ -153,7 +163,10 @@ const ContactDetails = () => {
                     </span>
 
                     <span className={"contact-details-delete-button-span"}>
-                         <button onClick={handleDelete}>Usuń</button></span>
+                         <button onClick={handleDelete}>Usuń</button>
+                         <h6>Ostatnia aktualizacja: {contact.updated}</h6>
+                    </span>
+
                 </div>
                 <div className={"contact-details-description"}>
                     {descriptionFormVisible ? <textarea onBlur={toggleDescription} ref={descriptionInputRef}
