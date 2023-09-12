@@ -97,15 +97,26 @@ const ContactDetails = () => {
         });
     }
     const onAddInstitution = (institution) => {
-
         const updatedContact = {...contact, institutions: [...contact.institutions, institution]};
         setContact(updatedContact)
     }
     const onDeleteInstitution = (id) => {
-        const filteredInstitution = contact.institutions.filter(institution => institution.id !== id);
-        const updatedContact = {...contact, institutions: filteredInstitution};
+        const filteredInstitutions = contact.institutions.filter(institution => institution.id !== id);
+        const updatedContact = {...contact, institutions: filteredInstitutions};
         setContact(updatedContact)
     }
+
+    const onAddEvent= (event) => {
+        const updatedContact = {...contact, events: [...contact.events, event]};
+        setContact(updatedContact)
+    }
+    const onDeleteEvent = (id) => {
+        const filteredEvents = contact.events.filter(event => event.id !== id);
+        const updatedContact = {...contact, events: filteredEvents};
+        setContact(updatedContact)
+
+    }
+
     const toggleDescription = async () => {
         if (descriptionFormVisible && description === "") {
             setDescription("Brak opisu")
@@ -183,7 +194,7 @@ const ContactDetails = () => {
                               onAddInstitution={onAddInstitution}
                               contactId={contactId} onDeleteInstitution={onDeleteInstitution}/>
                 <ContactPeople/>
-                <Events events={contact.events} contactId={contactId}/>
+                <Events events={contact.events} contactId={contactId} onAddEvent={onAddEvent} onDeleteEvent={onDeleteEvent}/>
             </div>
 
         </div>

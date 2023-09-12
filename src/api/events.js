@@ -32,3 +32,19 @@ export const updateEventById = async (contactId , event) => {
 
     return data;
 };
+
+export const deleteEventById = async (contactId , eventId) => {
+    try {
+    const response = await fetch(`${API_URL}/contacts/${contactId}/events/${eventId}`, {
+        method: "delete"
+    });
+    if (response.status !== 200) {
+        throw new Error("Błąd!");
+    }
+    const data = await response.json();
+
+        return data;
+    } catch (err) {
+        console.log(err);
+    }
+};

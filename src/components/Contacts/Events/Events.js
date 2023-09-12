@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from "react"
 import {blankRegex} from "../../../appConstans/appConstans";
 import {addEvent} from "../../../api/events";
+import SingleEvent from "./SingleEvent";
 
-const Events = ({events, contactId}) => {
+const Events = ({events, contactId, onAddEvent, onDeleteEvent}) => {
     const [formHidden, setFormHidden] = useState(true);
     const [buttonDisabled, setButtonDisabled] = useState(true)
     const [name, setName] = useState("")
@@ -24,16 +25,20 @@ const Events = ({events, contactId}) => {
         const event = {name: name, description: description, monthWhenOrganized: Number(monthWhenOrganized)}
 
         try {
-           const response = await addEvent(contactId, event)
+            const response = await addEvent(contactId, event)
+            await onAddEvent(response);
             setName("");
-           setDescription("");
-           setMonthWhenOrganized("")
-            //todo zresetować formularz
-        } catch (Error){
+            setDescription("");
+            setMonthWhenOrganized("")
+
+            //todo zresetować select
+        } catch (Error) {
             console.log("Trzeba jakoś obsłużyć potencjalny błąd")
         }
 
         setFormHidden(!formHidden);
+
+        //todo dodać instytcuję
         //dorzucam do listy w stanie
         //update'uję contact w stanie - lista instytucji i data update'owania
         //data update'owania w BE w serwisach (razem z testami)
@@ -52,15 +57,13 @@ const Events = ({events, contactId}) => {
         checkButton()
     }, [name, monthWhenOrganized])
 
-    //name, description, month when organized
-
 
     return (
         <span className={"cd-children-container"}>
             <h3 className={"cd-children-header"}>Wydarzenia:</h3>
             <ul className={"cd-children-list"}>
                 {events.map((el, index) => {
-                    return <li key={index}>{el.name}</li>
+                    return <SingleEvent event={el} key={index} onDeleteEvent={onDeleteEvent} contactId={contactId}/>
                 })}
             </ul>
             <div className={"cd-add-children-container"}>
@@ -68,8 +71,8 @@ const Events = ({events, contactId}) => {
                 <form hidden={formHidden} onSubmit={handleSubmit}>
                     <ul className={"cd-children-list"}>
                         <li><input type={"text"} placeholder={"Nazwa"} value={name} onChange={handleNameChange}/></li>
-                        <li><textarea  placeholder={"Notatki"} value={description}
-                                   onChange={handleNotesChange}/></li>
+                        <li><textarea placeholder={"Notatki"} value={description}
+                                      onChange={handleNotesChange}/></li>
                         <li><select defaultValue={""} onChange={handleSelect}>
                             <option value="" disabled hidden>Kiedy organizowany</option>
                              <option value="1">Styczeń</option>
