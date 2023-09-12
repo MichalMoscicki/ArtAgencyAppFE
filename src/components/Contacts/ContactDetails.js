@@ -14,7 +14,7 @@ import {blankRegex} from "../../appConstans/appConstans";
 const ContactDetails = () => {
     const contactId = useParams().contactId;
     const navigate = useNavigate();
-    const [contact, setContact] = useState({title: "", alreadyCooperated: false, institutions: []});
+    const [contact, setContact] = useState({title: "", alreadyCooperated: false, institutions: [], events: []});
     const [titleFormVisible, setTitleFormVisible] = useState(false);
     const [title, setTitle] = useState(contact.title)
     const [cooperationFormVisible, setCooperationFormVisible] = useState(false);
@@ -183,7 +183,7 @@ const ContactDetails = () => {
                               onAddInstitution={onAddInstitution}
                               contactId={contactId} onDeleteInstitution={onDeleteInstitution}/>
                 <ContactPeople/>
-                <Events/>
+                <Events events={contact.events} contactId={contactId}/>
             </div>
 
         </div>

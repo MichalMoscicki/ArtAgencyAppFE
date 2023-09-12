@@ -21,7 +21,6 @@ export const addInstitution = async (institution, contactId) => {
 };
 
 export const updateInstitutionById = async (contactId , institution) => {
-    try {
         const response = await fetch(`${API_URL}/contacts/${contactId}/institutions/${institution.id}`, {
             method: "PUT",
             body: JSON.stringify(institution),
@@ -29,17 +28,12 @@ export const updateInstitutionById = async (contactId , institution) => {
                 "Content-Type": "application/json",
             },
         });
-
+    if (response.status !== 200) {
+        throw new Error("Błąd!");
+    }
         const data = await response.json();
 
-        if (data.error) {
-            throw new Error("Błąd!");
-        }
         return data;
-
-    } catch (err) {
-        console.log(err);
-    }
 };
 
 

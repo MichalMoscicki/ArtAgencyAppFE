@@ -50,3 +50,9 @@
 .cd-add-children-title:hover{
     background-color: lavender;
 }
+.cd-details-error{
+    color: red;
+}
+.form-field-description{
+    font-size: small ;
+}

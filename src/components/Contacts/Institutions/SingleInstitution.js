@@ -5,6 +5,7 @@ import "../ContactDetailsChildren.css"
 import {blankRegex} from "../../../appConstans/appConstans";
 
 const SingleInstitution = ({institution, onDeleteInstitution, contactId}) => {
+    const [errors, setErrors] = useState([]);
     const [listHidden, setListHidden] = useState(true);
     const handleDeleteButton = () => {
         confirmAlert({
@@ -34,10 +35,15 @@ const SingleInstitution = ({institution, onDeleteInstitution, contactId}) => {
     const [institutionName, setInstitutionName] = useState(institution.name);
     const [nameFormVisible, setNameFormVisible] = useState(false)
     const nameInputRef = useRef(null);
-    const toggleNameForm = () => {
+    const toggleNameForm = async () => {
+        setErrors([]);
         if (nameFormVisible === true && institutionName !== institution.name) {
-            let updatedInstitution = {...institution, name: institutionName}
-            updateInstitutionById(contactId, updatedInstitution)
+            try {
+                let updatedInstitution = {...institution, name: institutionName}
+                await updateInstitutionById(contactId, updatedInstitution)
+            } catch(Error){
+                setErrors((prevState) => [...prevState, "Nazwa nie może być pusta"])
+            }
         }
         setNameFormVisible(!nameFormVisible)
     }
@@ -92,22 +98,17 @@ const SingleInstitution = ({institution, onDeleteInstitution, contactId}) => {
         } else {
             return institution.notes
         }
-
     }
     const [institutionNotes, setInstitutionNotes] = useState(ifNotesPresent);
     const [notesFormVisible, setNotesFormVisible] = useState(false)
     const notesInputRef = useRef(null);
     const toggleNotesForm = () => {
-
-        console.log(blankRegex.test(institutionNotes))
         if (notesFormVisible === true && institutionNotes !== institution.notes) {
-            if (blankRegex.test(institutionNotes)){
+            if (blankRegex.test(institutionNotes)) {
                 setInstitutionNotes("Brak notatek")
             }
-                let updatedInstitution = {...institution, notes: institutionNotes}
-                updateInstitutionById(contactId, updatedInstitution)
-
-
+            let updatedInstitution = {...institution, notes: institutionNotes}
+            updateInstitutionById(contactId, updatedInstitution)
         }
         setNotesFormVisible(!notesFormVisible)
     }
@@ -116,21 +117,110 @@ const SingleInstitution = ({institution, onDeleteInstitution, contactId}) => {
     }
 
 
-    useEffect(() => {
-        if (nameFormVisible && nameInputRef.current) {
-            nameInputRef.current.focus();
+    const ifEmailPresent = () => {
+        if (institution.email === "") {
+            return "Brak emaila"
+        } else {
+            return institution.email
         }
-        if (cityFormVisible && cityInputRef.current) {
-            cityInputRef.current.focus();
+    }
+    const [institutionEmail, setInstitutionEmail] = useState(ifEmailPresent);
+    const [emailFormVisible, setEmailFormVisible] = useState(false);
+    const emailInputRef = useRef(null);
+    const toggleEmailForm = () => {
+        //todo walidacja emaila
+        if (emailFormVisible === true && institutionEmail !== institution.email) {
+            let updatedInstitution = {...institution, email: institutionEmail}
+            updateInstitutionById(contactId, updatedInstitution)
         }
-        if (categoryFormVisible && categoryInputRef.current) {
-            categoryInputRef.current.focus();
-        }
-        if (notesFormVisible && notesInputRef.current) {
-            notesInputRef.current.focus();
-        }
+        setEmailFormVisible(!emailFormVisible);
+    }
+    const handleEmailChange = (e) => {
+        setInstitutionEmail(e.target.value)
+    }
 
-    }, [nameFormVisible, cityFormVisible, categoryFormVisible, notesFormVisible]);
+
+    const ifPhonePresent = () => {
+        if (institution.phone === "") {
+            return "Brak numeru"
+        } else {
+            return institution.phone
+        }
+    }
+    const [institutionPhone, setInstitutionPhone] = useState(ifPhonePresent);
+    const [phoneFormVisible, setPhoneFormVisible] = useState(false);
+    const phoneInputRef = useRef(null);
+    const togglePhoneForm = async () => {
+        setErrors([])
+        if (phoneFormVisible === true && institutionPhone !== institution.email) {
+            //todo sprawdzić, czy jest empty lub blank
+            try {
+                let updatedInstitution = {...institution, phone: institutionPhone}
+                await updateInstitutionById(contactId, updatedInstitution)
+            } catch(Error) {
+                setInstitutionPhone(ifPhonePresent())
+                setErrors((prevState) => [...prevState, "Niepoprawny numer telefonu"])
+            }
+        }
+        setPhoneFormVisible(!phoneFormVisible);
+    }
+    const handlePhoneChange = (e) => {
+        setInstitutionPhone(e.target.value)
+    }
+
+
+
+    const ifWebPagePresent = () => {
+        if (institution.webPage === "") {
+            return "Brak strony"
+        } else {
+            return institution.webPage
+        }
+    }
+    const [institutionWebPage, setInstitutionWebPage] = useState(ifWebPagePresent);
+    const [webPageFormVisible, setWebPageFormVisible] = useState(false);
+    const webPageInputRef = useRef(null);
+    const toggleWebPageForm = () => {
+        if (webPageFormVisible === true && institutionWebPage !== institution.webPage) {
+            let updatedInstitution = {...institution, webPage: institutionWebPage}
+            updateInstitutionById(contactId, updatedInstitution)
+            if(institutionWebPage === ""){
+                setInstitutionWebPage("Brak strony")
+            }
+        }
+        setWebPageFormVisible(!webPageFormVisible);
+    }
+    const handleWebPageChange = (e) => {
+        setInstitutionWebPage(e.target.value)
+    }
+
+
+    useEffect(() => {
+            if (nameFormVisible && nameInputRef.current) {
+                nameInputRef.current.focus();
+            }
+            if (cityFormVisible && cityInputRef.current) {
+                cityInputRef.current.focus();
+            }
+            if (categoryFormVisible && categoryInputRef.current) {
+                categoryInputRef.current.focus();
+            }
+            if (notesFormVisible && notesInputRef.current) {
+                notesInputRef.current.focus();
+            }
+            if (emailFormVisible && emailInputRef.current) {
+                emailInputRef.current.focus();
+            }
+            if (phoneFormVisible && phoneInputRef.current) {
+                phoneInputRef.current.focus();
+            }
+            if (webPageFormVisible && webPageInputRef.current) {
+                webPageInputRef.current.focus();
+            }
+
+        },
+        [nameFormVisible, cityFormVisible, categoryFormVisible, notesFormVisible,
+            emailFormVisible, phoneFormVisible, webPageFormVisible]);
 
 
     return (
@@ -174,17 +264,36 @@ const SingleInstitution = ({institution, onDeleteInstitution, contactId}) => {
                         }
                     </li>
 
-                    <li>
-                        {notesFormVisible ?
-                            <input type={"textarea"} ref={notesInputRef} value={institutionNotes}
-                                   onChange={handleNotesChange} onBlur={toggleNotesForm}/>
-                            :
-                            <div hidden={notesFormVisible} onClick={toggleNotesForm}>{institutionNotes}</div>
-                        }
+                    <li>{notesFormVisible ?
+                        <textarea ref={notesInputRef} value={institutionNotes}
+                                  onChange={handleNotesChange} onBlur={toggleNotesForm}/>
+                        :
+                        <div hidden={notesFormVisible} onClick={toggleNotesForm}>{institutionNotes}</div>
+                    }
                     </li>
+                    <li>{emailFormVisible ?
+                        <input type={"text"} ref={emailInputRef} value={institutionEmail}
+                               onChange={handleEmailChange} onBlur={toggleEmailForm}/>
+                        :
+                        <div hidden={emailFormVisible} onClick={toggleEmailForm}>{institutionEmail}</div>
+                    }</li>
+                    <li>{phoneFormVisible ?
+                        <input type={"text"} ref={phoneInputRef} value={institutionPhone}
+                               onChange={handlePhoneChange} onBlur={togglePhoneForm}/>
+                        :
+                        <div hidden={emailFormVisible} onClick={togglePhoneForm}>{institutionPhone}</div>
+                    }</li>
+                    <li>{webPageFormVisible ?
+                        <input type={"text"} ref={webPageInputRef} value={institutionWebPage}
+                               onChange={handleWebPageChange} onBlur={toggleWebPageForm}/>
+                        :
+                        <div hidden={webPageFormVisible} onClick={toggleWebPageForm}>{institutionWebPage}</div>
+                    }</li>
+                    {errors.map( (el, index) => <li key={index} className={"cd-details-error"}>{el}</li>)}
                 </ul>
             </div>
         </li>
     )
 }
+
 export default SingleInstitution

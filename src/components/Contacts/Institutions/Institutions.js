@@ -10,6 +10,9 @@ const Institutions = (props) => {
     const [city, setCity] = useState("");
     const [category, setCategory] = useState("");
     const [notes, setNotes] = useState("");
+    const [email, setEmail] = useState("")
+    const [webPage, setWebPage] = useState("")
+    const [phone, setPhone] = useState("")
     const [buttonDisabled, setButtonDisabled] = useState(true)
 
     const checkButton = () => {
@@ -24,13 +27,17 @@ const Institutions = (props) => {
     }
     const handleSubmit = async (e) => {
         e.preventDefault();
-        let institution = {name: name, city: city, category: category, notes: notes}
+        let institution = {name: name, city: city, category: category,
+            notes: notes, email:email, phone:phone, webPage:webPage}
         const data = await addInstitution(institution, props.contactId)
         await props.onAddInstitution(data);
         setName("");
         setNotes("");
         setCity("");
         setCategory("");
+        setPhone("");
+        setEmail("");
+        setWebPage("");
     }
     const onNameChange = (e) => {
         setName(e.target.value)
@@ -43,6 +50,16 @@ const Institutions = (props) => {
     }
     const onNotesChange = (e) => {
         setNotes(e.target.value)
+    }
+    const onEmailChange = (e) => {
+        setEmail(e.target.value)
+    }
+
+    const onPhoneChange = (e) => {
+        setPhone(e.target.value)
+    }
+    const onWebPageChange = (e) => {
+        setWebPage(e.target.value)
     }
 
     useEffect(() => {
@@ -69,9 +86,11 @@ const Institutions = (props) => {
                     <ul className={"cd-children-list"}>
                         <li><input type={"text"} placeholder={"Nazwa"} value={name} onChange={onNameChange}/></li>
                         <li><input type={"text"} placeholder={"Miasto"} value={city} onChange={onCityChange}/></li>
-                        <li><input type={"text"} placeholder={"Kategoria"} value={category} onChange={onCategoryChange}/>
-                        </li>
-                        <li><input type={"textarea"} placeholder={"Notatki"} value={notes} onChange={onNotesChange}/></li>
+                        <li><input type={"text"} placeholder={"Kategoria"} value={category} onChange={onCategoryChange}/></li>
+                        <li><input type={"text"} placeholder={"Numer"} value={phone} onChange={onPhoneChange}/></li>
+                        <li><input type={"text"} placeholder={"Strona"} value={webPage} onChange={onWebPageChange}/></li>
+                        <li><input type={"text"} placeholder={"Email"} value={email} onChange={onEmailChange}/></li>
+                        <li><textarea placeholder={"Notatki"} value={notes} onChange={onNotesChange}/></li>
                     </ul>
                     <button type={"submit"} disabled={buttonDisabled}>Dodaj</button>
                 </form>
