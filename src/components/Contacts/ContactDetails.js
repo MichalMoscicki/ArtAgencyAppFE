@@ -14,7 +14,7 @@ import {blankRegex} from "../../appConstans/appConstans";
 const ContactDetails = () => {
     const contactId = useParams().contactId;
     const navigate = useNavigate();
-    const [contact, setContact] = useState({title: "", alreadyCooperated: false, institutions: [], events: []});
+    const [contact, setContact] = useState({title: "", alreadyCooperated: false, institutions: [], events: [], contactPeople: []});
     const [titleFormVisible, setTitleFormVisible] = useState(false);
     const [title, setTitle] = useState(contact.title)
     const [cooperationFormVisible, setCooperationFormVisible] = useState(false);
@@ -117,6 +117,20 @@ const ContactDetails = () => {
 
     }
 
+    const onAddContactPerson= (contactPerson) => {
+        const updatedContact = {...contact, contactPeople: [...contact.contactPeople, contactPerson]};
+        setContact(updatedContact)
+    }
+    const onDeleteContactPerson = (id) => {
+        const filteredPeople = contact.contactPeople.filter(contactPerson => contactPerson.id !== id);
+        const updatedContact = {...contact, contactPeople: filteredPeople};
+        setContact(updatedContact)
+
+    }
+
+
+
+
     const toggleDescription = async () => {
         if (descriptionFormVisible && description === "") {
             setDescription("Brak opisu")
@@ -193,7 +207,7 @@ const ContactDetails = () => {
                 <Institutions institutions={contact.institutions}
                               onAddInstitution={onAddInstitution}
                               contactId={contactId} onDeleteInstitution={onDeleteInstitution}/>
-                <ContactPeople/>
+                <ContactPeople contactPeople={contact.contactPeople} contactId={contactId} onAddContactPerson={onAddContactPerson} onDeleteContactPerson={onDeleteContactPerson}/>
                 <Events events={contact.events} contactId={contactId} onAddEvent={onAddEvent} onDeleteEvent={onDeleteEvent}/>
             </div>
 

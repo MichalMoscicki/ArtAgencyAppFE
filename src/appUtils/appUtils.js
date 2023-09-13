@@ -1,31 +1,44 @@
+import {emailRegex, phoneRegex, blankRegex} from "../appConstans/appConstans";
+
 export const displayMonth = (month) => {
     switch (Number(month)){
         case 1:
-            return "styczeń"
+            return "Styczeń"
         case 2:
-            return "luty"
+            return "Luty"
         case 3:
-            return "marzec"
+            return "Marzec"
         case 4:
-            return "kwiecień"
+            return "Kwiecień"
         case 5:
-            return "maj"
+            return "Maj"
         case 6:
-            return "czerwiec"
+            return "Czerwiec"
         case 7:
-            return "lipiec"
+            return "Lipiec"
         case 8:
-            return "sierpień"
+            return "Sierpień"
         case 9:
-            return "wrzesień"
+            return "Wrzesień"
         case 10:
-            return "październik"
+            return "Październik"
         case 11:
-            return "listopad"
+            return "Listopad"
         case 12:
-            return "grudzień"
+            return "Grudzień"
         default:
             return ;
     }
 
+}
+
+export const phoneOrEmptyCheck = (string) => {
+    return string === "" || phoneRegex.test(string);
+}
+export const emailOrEmptyCheck = (string) => {
+    return string === "" || emailRegex.test(string)
+};
+
+export const blankCheck = (string) => {
+    return blankRegex.test(string);
 }

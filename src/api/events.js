@@ -13,7 +13,6 @@ export const addEvent = async (contactId , event) => {
         throw new Error("Błąd!");
     }
     const data = await response.json();
-    console.log(data)
     return data;
 };
 
