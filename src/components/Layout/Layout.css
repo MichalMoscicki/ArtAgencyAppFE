@@ -20,7 +20,7 @@
 
 .sidebar {
     grid-area: 2 / 1 / 10 / 2;
-    background-color: #555555;
+    padding: 5%;
 }
 
 .outlet {

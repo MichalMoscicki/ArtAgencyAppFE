@@ -6,8 +6,8 @@ const Navbar = () => {
         <nav className={"nav"}>
             <a href={"/"} className={"site-title"}>ArtAgencyApp</a>
             <ul>
-                <li><a href={"/contacts"}>Kontakty</a> </li>
-                <li><a href={"/tasks"}>Zadania</a> </li>
+                <li><a href={"/settings"}>Ustawnienia</a> </li>
+                <li><a href={"/login"}>Zaloguj</a> </li>
                 <li><a href={"/logout"}>Wyloguj</a> </li>
             </ul>
         </nav>
