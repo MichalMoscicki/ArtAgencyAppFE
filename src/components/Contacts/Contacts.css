@@ -29,3 +29,12 @@
 .submit-contact-btn {
     padding-left: 6%;
 }
+
+.contacts-container-header{
+    display: flex;
+    justify-content: space-between;
+
+}
+.contacts-container-header-pagination{
+    display: flex;
+}

@@ -20,7 +20,7 @@ export const addContact = async (contact) => {
     }
 };
 
-export const getContacts = async () => {
+export const getContactsInitialRequest = async () => {
     try {
         const response = await fetch(`${API_URL}/contacts`, {
             method: "GET",
@@ -40,6 +40,28 @@ export const getContacts = async () => {
         console.log(err);
     }
 };
+
+export const getContactsSubsequentRequest = async (pageNo) => {
+    try {
+        const response = await fetch(`${API_URL}/contacts?pageNo=${pageNo}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            throw new Error("Błąd!");
+        }
+
+        return(data);
+    } catch (err) {
+        console.log(err);
+    }
+};
+
 
 export const getContactById = async (id) => {
     try {

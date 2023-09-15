@@ -1,24 +1,51 @@
 import React from "react";
 import {useState, useEffect} from "react";
-import {addContact, getContacts,} from "../../api/contacts";
+import {addContact, getContactsInitialRequest, getContactsSubsequentRequest,} from "../../api/contacts";
 import SingleContact from "../../containers/Contacts/SingleContac";
 import "./Contacts.css"
 
 const Contacts = ({contacts, addContactsToState, addContactToState}) => {
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [isLast, setIsLast] = useState(false);
+    const [prevButtonDisabled, setPrevButtonDisabled] = useState(true);
+    const [nextButtonDisabled, setNextButtonDisabled] = useState(false)
+
     const [contactName, setContactName] = useState("");
     const [alreadyCooperated, setAlreadyCooperated] = useState(false);
     const [formHidden, setFormHidden] = useState(true);
 
-
     useEffect(() => {
-        const fetchData = async () => {
-            let response = await getContacts();
-            await addContactsToState(response);
+        const fetchInitialData = async () => {
+            let response = await getContactsInitialRequest(null);
+            await addContactsToState(response.content);
+            setCurrentPage(response.pageNo);
+            setTotalPages(response.totalPages);
+            setIsLast(response.last)
         }
-        fetchData()
+        fetchInitialData()
 
     }, []);
 
+    const checkPrevButton = () => {
+        if(currentPage === 0){
+            setPrevButtonDisabled(true)
+        } else {
+            setPrevButtonDisabled(false)
+        }
+    }
+    const checkNextButton = () => {
+        if(isLast){
+            setNextButtonDisabled(true)
+        } else {
+            setNextButtonDisabled(false)
+        }
+    }
+
+    useEffect( () => {
+        checkPrevButton()
+        checkNextButton()
+    }, [currentPage, isLast])
 
     const onSubmit = async (e) => {
         e.preventDefault();
@@ -38,9 +65,40 @@ const Contacts = ({contacts, addContactsToState, addContactToState}) => {
         setFormHidden(!formHidden)
     }
 
+    const fetchSubsequentData = async (pageNo) => {
+        let response = await getContactsSubsequentRequest(pageNo);
+        await addContactsToState(response.content);
+        setCurrentPage(response.pageNo);
+        setTotalPages(response.totalPages);
+        setIsLast(response.last)
+    }
+
+    const handlePreviousButton = async () => {
+        await fetchSubsequentData(currentPage-1)
+    }
+    const handleNextButton = async () => {
+        await fetchSubsequentData(currentPage +1)
+    }
+    const handlePageButton = async (index) => {
+        await fetchSubsequentData(index)
+    }
+    const generatePagesButtons = () => {
+        let buttons = [];
+        for(let i = 0; i < totalPages; i++){
+            buttons = [...buttons, <button key={i} onClick={() => handlePageButton(i)}>{i}</button>]
+        }
+        return buttons;
+    }
+
     return (
         <div className="contacts-container">
-            <h1>Kontakty</h1>
+            <div className={"contacts-container-header"}>
+                <span><h1>Kontakty</h1></span>
+                <span className={"contacts-container-header-pagination"}>
+                   <button onClick={handlePreviousButton} disabled={prevButtonDisabled}>poprzednia</button>
+                   <h6>{generatePagesButtons()}</h6>
+                   <button onClick={handleNextButton} disabled={nextButtonDisabled}>kolejna</button></span>
+            </div>
             <ul className={"contacts-list"}>
                 {contacts.map((el, index) => {
                     return (<SingleContact contact={el} key={index}/>)
