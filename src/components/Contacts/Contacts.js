@@ -5,7 +5,6 @@ import SingleContact from "../../containers/Contacts/SingleContac";
 import "./Contacts.css"
 
 const Contacts = ({contacts, pagination, addContactsToState, addContactToState, addPagination}) => {
-
     const [prevButtonDisabled, setPrevButtonDisabled] = useState(true);
     const [nextButtonDisabled, setNextButtonDisabled] = useState(false)
 
@@ -67,26 +66,19 @@ const Contacts = ({contacts, pagination, addContactsToState, addContactToState, 
     const toggleForm = () => {
         setFormHidden(!formHidden)
     }
-
-    const fetchSubsequentData = async (pageNo) => {
-        let response = await getContactsSubsequentRequest(pageNo);
-        await addContactsToState(response.content);
-        await addPagination({
-            pageNo: response.pageNo,
-            pageSize: response.pageSize,
-            totalElements: response.totalElements,
-            totalPages: response.totalPages,
-            last: response.last
-        })
-    }
-
-    const handlePreviousButton = async () => {
-        await fetchSubsequentData(pagination.pageNo - 1)
-    }
-    const handleNextButton = async () => {
-        await fetchSubsequentData(pagination.pageNo + 1)
-    }
     const handlePageButton = async (index) => {
+        const fetchSubsequentData = async (pageNo) => {
+            let response = await getContactsSubsequentRequest(pageNo);
+            await addContactsToState(response.content);
+            await addPagination({
+                pageNo: response.pageNo,
+                pageSize: response.pageSize,
+                totalElements: response.totalElements,
+                totalPages: response.totalPages,
+                last: response.last
+            })
+        }
+
         await fetchSubsequentData(index)
     }
     const generatePagesButtons = () => {
@@ -104,13 +96,13 @@ const Contacts = ({contacts, pagination, addContactsToState, addContactToState, 
                 <span className={"contacts-container-header-pagination"}>
                     <ul>
                         <li>
-                            <button onClick={handlePreviousButton} disabled={prevButtonDisabled}>poprzednia</button>
+                            <button onClick={() => handlePageButton(pagination.pageNo - 1)} disabled={prevButtonDisabled}>poprzednia</button>
                         </li>
                         <li>
                             {generatePagesButtons()}
                         </li>
                         <li>
-                            <button onClick={handleNextButton} disabled={nextButtonDisabled}>kolejna</button>
+                            <button onClick={() => handlePageButton(pagination.pageNo + 1)} disabled={nextButtonDisabled}>kolejna</button>
                         </li>
                     </ul>
                 </span>
