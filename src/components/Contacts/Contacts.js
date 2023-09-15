@@ -28,21 +28,21 @@ const Contacts = ({contacts, addContactsToState, addContactToState}) => {
     }, []);
 
     const checkPrevButton = () => {
-        if(currentPage === 0){
+        if (currentPage === 0) {
             setPrevButtonDisabled(true)
         } else {
             setPrevButtonDisabled(false)
         }
     }
     const checkNextButton = () => {
-        if(isLast){
+        if (isLast) {
             setNextButtonDisabled(true)
         } else {
             setNextButtonDisabled(false)
         }
     }
 
-    useEffect( () => {
+    useEffect(() => {
         checkPrevButton()
         checkNextButton()
     }, [currentPage, isLast])
@@ -74,17 +74,17 @@ const Contacts = ({contacts, addContactsToState, addContactToState}) => {
     }
 
     const handlePreviousButton = async () => {
-        await fetchSubsequentData(currentPage-1)
+        await fetchSubsequentData(currentPage - 1)
     }
     const handleNextButton = async () => {
-        await fetchSubsequentData(currentPage +1)
+        await fetchSubsequentData(currentPage + 1)
     }
     const handlePageButton = async (index) => {
         await fetchSubsequentData(index)
     }
     const generatePagesButtons = () => {
         let buttons = [];
-        for(let i = 0; i < totalPages; i++){
+        for (let i = 0; i < totalPages; i++) {
             buttons = [...buttons, <button key={i} onClick={() => handlePageButton(i)}>{i}</button>]
         }
         return buttons;
@@ -95,9 +95,19 @@ const Contacts = ({contacts, addContactsToState, addContactToState}) => {
             <div className={"contacts-container-header"}>
                 <span><h1>Kontakty</h1></span>
                 <span className={"contacts-container-header-pagination"}>
-                   <button onClick={handlePreviousButton} disabled={prevButtonDisabled}>poprzednia</button>
-                   <h6>{generatePagesButtons()}</h6>
-                   <button onClick={handleNextButton} disabled={nextButtonDisabled}>kolejna</button></span>
+                    <ul>
+                        <li>
+                            <button onClick={handlePreviousButton} disabled={prevButtonDisabled}>poprzednia</button>
+                        </li>
+                        <li>
+                            {generatePagesButtons()}
+                        </li>
+                        <li>
+                            <button onClick={handleNextButton} disabled={nextButtonDisabled}>kolejna</button>
+                        </li>
+                    </ul>
+                </span>
+
             </div>
             <ul className={"contacts-list"}>
                 {contacts.map((el, index) => {

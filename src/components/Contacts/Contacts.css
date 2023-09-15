@@ -1,7 +1,5 @@
 .contacts-container {
-    padding-top: 10%;
-    padding-left: 20%;
-    padding-right: 10%;
+    padding: 5% 10%;
 }
 
 .contacts-list {
@@ -37,4 +35,10 @@
 }
 .contacts-container-header-pagination{
     display: flex;
+}
+
+.contacts-container-header ul{
+    display: flex;
+    list-style: none;
+    padding-top: 3%;
 }
