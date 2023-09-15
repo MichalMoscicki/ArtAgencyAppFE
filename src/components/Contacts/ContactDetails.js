@@ -11,7 +11,8 @@ import {blankRegex} from "../../appConstans/appConstans";
 
 //todo: nie jestm pewien, jak zyć reduxa w tym kontekście
 
-const ContactDetails = () => {
+const ContactDetails = (state) => {
+
     const contactId = useParams().contactId;
     const navigate = useNavigate();
     const [contact, setContact] = useState({title: "", alreadyCooperated: false, institutions: [], events: [], contactPeople: []});

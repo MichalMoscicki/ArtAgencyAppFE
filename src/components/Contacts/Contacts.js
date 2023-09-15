@@ -4,10 +4,8 @@ import {addContact, getContactsInitialRequest, getContactsSubsequentRequest,} fr
 import SingleContact from "../../containers/Contacts/SingleContac";
 import "./Contacts.css"
 
-const Contacts = ({contacts, addContactsToState, addContactToState}) => {
-    const [currentPage, setCurrentPage] = useState(0);
-    const [totalPages, setTotalPages] = useState(0);
-    const [isLast, setIsLast] = useState(false);
+const Contacts = ({contacts, pagination, addContactsToState, addContactToState, addPagination}) => {
+
     const [prevButtonDisabled, setPrevButtonDisabled] = useState(true);
     const [nextButtonDisabled, setNextButtonDisabled] = useState(false)
 
@@ -19,33 +17,38 @@ const Contacts = ({contacts, addContactsToState, addContactToState}) => {
         const fetchInitialData = async () => {
             let response = await getContactsInitialRequest(null);
             await addContactsToState(response.content);
-            setCurrentPage(response.pageNo);
-            setTotalPages(response.totalPages);
-            setIsLast(response.last)
+            await addPagination({
+                pageNo: response.pageNo,
+                pageSize: response.pageSize,
+                totalElements: response.totalElements,
+                totalPages: response.totalPages,
+                last: response.last
+            })
         }
-        fetchInitialData()
+
+        if (contacts.length === 0) {
+            fetchInitialData()
+        }
+
 
     }, []);
+    useEffect( () =>{
+        const checkButtons = () => {
+            if (pagination.pageNo === 0) {
+                setPrevButtonDisabled(true)
+            } else {
+                setPrevButtonDisabled(false)
+            }
 
-    const checkPrevButton = () => {
-        if (currentPage === 0) {
-            setPrevButtonDisabled(true)
-        } else {
-            setPrevButtonDisabled(false)
+            if (pagination.last) {
+                setNextButtonDisabled(true)
+            } else {
+                setNextButtonDisabled(false)
+            }
         }
-    }
-    const checkNextButton = () => {
-        if (isLast) {
-            setNextButtonDisabled(true)
-        } else {
-            setNextButtonDisabled(false)
-        }
-    }
+        checkButtons()
+    }, [pagination])
 
-    useEffect(() => {
-        checkPrevButton()
-        checkNextButton()
-    }, [currentPage, isLast])
 
     const onSubmit = async (e) => {
         e.preventDefault();
@@ -68,23 +71,27 @@ const Contacts = ({contacts, addContactsToState, addContactToState}) => {
     const fetchSubsequentData = async (pageNo) => {
         let response = await getContactsSubsequentRequest(pageNo);
         await addContactsToState(response.content);
-        setCurrentPage(response.pageNo);
-        setTotalPages(response.totalPages);
-        setIsLast(response.last)
+        await addPagination({
+            pageNo: response.pageNo,
+            pageSize: response.pageSize,
+            totalElements: response.totalElements,
+            totalPages: response.totalPages,
+            last: response.last
+        })
     }
 
     const handlePreviousButton = async () => {
-        await fetchSubsequentData(currentPage - 1)
+        await fetchSubsequentData(pagination.pageNo - 1)
     }
     const handleNextButton = async () => {
-        await fetchSubsequentData(currentPage + 1)
+        await fetchSubsequentData(pagination.pageNo + 1)
     }
     const handlePageButton = async (index) => {
         await fetchSubsequentData(index)
     }
     const generatePagesButtons = () => {
         let buttons = [];
-        for (let i = 0; i < totalPages; i++) {
+        for (let i = 0; i < pagination.totalPages; i++) {
             buttons = [...buttons, <button key={i} onClick={() => handlePageButton(i)}>{i}</button>]
         }
         return buttons;
