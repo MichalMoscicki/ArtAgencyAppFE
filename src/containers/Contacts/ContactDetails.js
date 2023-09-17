@@ -1,6 +1,6 @@
 import {connect} from "react-redux";
 import ContactDetails from "../../components/Contacts/ContactDetails";
-import {updateContact, addContactsToState, removeContact} from "../../redux/actions/contacts";
+import {updateContact} from "../../redux/actions/contacts";
 
 const mapStateToProps = (state) => {
     return {
@@ -10,10 +10,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        addContact: (contacts) => dispatch(addContactsToState(contacts)),
         updateContact: (contact) => dispatch(updateContact(contact)),
-        //to chyba nie potrzebne: jest po prostu przekierowanie do contacts
-        deleteContact: (contact) => dispatch(removeContact(contact))
     }
 }
 

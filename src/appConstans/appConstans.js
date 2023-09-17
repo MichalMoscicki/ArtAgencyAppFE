@@ -7,3 +7,7 @@ export const noAssignedPhone = "Brak numeru telefonu";
 export const noAssignedEmail = "Brak emaila";
 export const wrongEmailMessage = "Niepoprawny email";
 export const wrongPhoneMessage = "Niepoprawny numer telefonu";
+
+export  const isFieldEmptyNullOrUndefined = (objectField) => {
+    return blankRegex.test(objectField) || objectField === null || objectField === undefined
+}

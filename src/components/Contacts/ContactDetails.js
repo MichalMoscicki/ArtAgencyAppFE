@@ -6,41 +6,28 @@ import ContactPeople from "./ContactPeople/ContactPeople";
 import {confirmAlert} from "react-confirm-alert";
 import Events from "../../containers/Contacts/Events/Events";
 import "./ContactDetails.css"
-import {blankRegex} from "../../appConstans/appConstans";
+import {blankRegex, isFieldEmptyNullOrUndefined} from "../../appConstans/appConstans";
 
 
-//todo: nie jestm pewien, jak zyć reduxa w tym kontekście
+//Todo sprawdzenie, czy state jest pusty. Jeśli tak, trzeba zfetchować.
+// Możliwe, że w URL trzeba przechowywać dane o paginacji
 
-const ContactDetails = (state) => {
+const ContactDetails = ({contacts, updateContact}) => {
 
-    const contactId = useParams().contactId;
+    const contactId = Number(useParams().contactId);
+    let contact = contacts.find(contact => contact.id === contactId);
+
     const navigate = useNavigate();
-    const [contact, setContact] = useState({title: "", alreadyCooperated: false, institutions: [], events: [], contactPeople: []});
+
     const [titleFormVisible, setTitleFormVisible] = useState(false);
     const [title, setTitle] = useState(contact.title)
-    const [cooperationFormVisible, setCooperationFormVisible] = useState(false);
-    const [alreadyCooperated, setAlreadyCooperated] = useState(contact.alreadyCooperated)
     const titleInputRef = useRef(null);
-    const [description, setDescription] = useState(false);
 
+    const [cooperationFormVisible, setCooperationFormVisible] = useState(false);
+
+    const [description, setDescription] = useState(contact.description);
     const [descriptionFormVisible, setDescriptionFormVisible] = useState(false);
     const descriptionInputRef = useRef(null);
-
-    const fetchData = async () => {
-        let response = await getContactById(contactId);
-        await setContact(response)
-        setTitle(response.title)
-        setAlreadyCooperated(response.alreadyCooperated)
-        if (response.description === null) {
-            setDescription("Brak opisu")
-        } else {
-            setDescription(response.description)
-        }
-    }
-    useEffect(() => {
-        fetchData()
-
-    }, []);
 
     useEffect(() => {
         if (titleFormVisible && titleInputRef.current) {
@@ -58,10 +45,11 @@ const ContactDetails = (state) => {
         if(blankRegex.test(title)){
             setTitle(contact.title)
         } else {
-            const updatedContact = {...contact, title: title, alreadyCooperated: alreadyCooperated};
-            const response = await updateContactById(contact.id, updatedContact);
-            await setContact(response);
-        }
+       const updatedContact = {...contact, title: title};
+       const response = await updateContactById(contactId, updatedContact);
+       await updateContact(response);
+    }
+
         setTitleFormVisible(!titleFormVisible)
     }
     const handleInputChange = (e) => {
@@ -71,11 +59,10 @@ const ContactDetails = (state) => {
         setCooperationFormVisible(!cooperationFormVisible)
     }
     const handleCooperationChoice = async (value) => {
-        const updatedContact = {...contact, title: title, alreadyCooperated: value};
+        const updatedContact = {...contact, alreadyCooperated: value};
         const response = await updateContactById(contact.id, updatedContact);
-        await setContact(response);
+        await updateContact(response);
         setCooperationFormVisible(!cooperationFormVisible);
-        setAlreadyCooperated(value);
     }
     const handleDelete = () => {
         confirmAlert({
@@ -97,54 +84,52 @@ const ContactDetails = (state) => {
             ]
         });
     }
-    const onAddInstitution = (institution) => {
-        const updatedContact = {...contact, institutions: [...contact.institutions, institution]};
-        setContact(updatedContact)
-    }
-    const onDeleteInstitution = (id) => {
-        const filteredInstitutions = contact.institutions.filter(institution => institution.id !== id);
-        const updatedContact = {...contact, institutions: filteredInstitutions};
-        setContact(updatedContact)
-    }
-
-    const onAddEvent= (event) => {
-        const updatedContact = {...contact, events: [...contact.events, event]};
-        setContact(updatedContact)
-    }
-    const onDeleteEvent = (id) => {
-        const filteredEvents = contact.events.filter(event => event.id !== id);
-        const updatedContact = {...contact, events: filteredEvents};
-        setContact(updatedContact)
-
-    }
-
-    const onAddContactPerson= (contactPerson) => {
-        const updatedContact = {...contact, contactPeople: [...contact.contactPeople, contactPerson]};
-        setContact(updatedContact)
-    }
-    const onDeleteContactPerson = (id) => {
-        const filteredPeople = contact.contactPeople.filter(contactPerson => contactPerson.id !== id);
-        const updatedContact = {...contact, contactPeople: filteredPeople};
-        setContact(updatedContact)
-
-    }
 
 
 
+    // const onAddInstitution = (institution) => {
+    //     const updatedContact = {...contact, institutions: [...contact.institutions, institution]};
+    //   //  setContact(updatedContact)
+    // }
+    // const onDeleteInstitution = (id) => {
+    //     const filteredInstitutions = contact.institutions.filter(institution => institution.id !== id);
+    //     const updatedContact = {...contact, institutions: filteredInstitutions};
+    //    // setContact(updatedContact)
+    // }
+    //
+    // const onAddEvent= (event) => {
+    //     const updatedContact = {...contact, events: [...contact.events, event]};
+    //    // setContact(updatedContact)
+    // }
+    // const onDeleteEvent = (id) => {
+    //     const filteredEvents = contact.events.filter(event => event.id !== id);
+    //     const updatedContact = {...contact, events: filteredEvents};
+    //   //  setContact(updatedContact)
+    //
+    // }
+    //
+    // const onAddContactPerson= (contactPerson) => {
+    //     const updatedContact = {...contact, contactPeople: [...contact.contactPeople, contactPerson]};
+    //   //  setContact(updatedContact)
+    // }
+    // const onDeleteContactPerson = (id) => {
+    //     const filteredPeople = contact.contactPeople.filter(contactPerson => contactPerson.id !== id);
+    //     const updatedContact = {...contact, contactPeople: filteredPeople};
+    //    // setContact(updatedContact)
+    //
+    // }
 
-    const toggleDescription = async () => {
-        if (descriptionFormVisible && description === "") {
-            setDescription("Brak opisu")
+    const displayDescription = () => {
+        if(isFieldEmptyNullOrUndefined(contact.description)){
+            return "Brak opisu"
         }
-        if (descriptionFormVisible && description !== "") {
-            const updatedContact = {
-                ...contact,
-                title: title,
-                alreadyCooperated: alreadyCooperated,
-                description: description
-            };
+        return contact.description;
+    }
+    const toggleDescription = async () => {
+        if (descriptionFormVisible && description !== contact.description) {
+            const updatedContact = {...contact, description: description};
             const response = await updateContactById(contact.id, updatedContact);
-            await setContact(response);
+            await updateContact(response);
         }
         setDescriptionFormVisible(!descriptionFormVisible)
     }
@@ -183,7 +168,7 @@ const ContactDetails = (state) => {
                             </div>
                             :
                             <h6 className={"contact-details-already-cooperated"} onClick={toggleAlreadyCooperated}>{
-                                alreadyCooperated ? "Już współpracowaliśmy" : "Nie współpracowaliśmy"}
+                                contact.alreadyCooperated ? "Już współpracowaliśmy" : "Nie współpracowaliśmy"}
                             </h6>
                         }
                     </span>
@@ -199,18 +184,17 @@ const ContactDetails = (state) => {
                                                         onChange={handleDescriptionChange}
                                                         value={description}/>
                         :
-                        <p onClick={toggleDescription}>{description}</p>}
-
+                        <p onClick={toggleDescription}>{displayDescription()}</p>}
                 </div>
             </div>
 
-            <div className={"contact-details-body"}>
-                <Institutions institutions={contact.institutions}
-                              onAddInstitution={onAddInstitution}
-                              contactId={contactId} onDeleteInstitution={onDeleteInstitution}/>
-                <ContactPeople contactPeople={contact.contactPeople} contactId={contactId} onAddContactPerson={onAddContactPerson} onDeleteContactPerson={onDeleteContactPerson}/>
-                <Events events={contact.events} contactId={contactId} onAddEvent={onAddEvent} onDeleteEvent={onDeleteEvent}/>
-            </div>
+            {/*<div className={"contact-details-body"}>*/}
+            {/*    <Institutions institutions={contact.institutions}*/}
+            {/*                  onAddInstitution={onAddInstitution}*/}
+            {/*                  contactId={contactId} onDeleteInstitution={onDeleteInstitution}/>*/}
+            {/*    <ContactPeople contactPeople={contact.contactPeople} contactId={contactId} onAddContactPerson={onAddContactPerson} onDeleteContactPerson={onDeleteContactPerson}/>*/}
+            {/*    <Events events={contact.events} contactId={contactId} onAddEvent={onAddEvent} onDeleteEvent={onDeleteEvent}/>*/}
+            {/*</div>*/}
 
         </div>
     )

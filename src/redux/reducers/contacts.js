@@ -1,4 +1,4 @@
-import {ADD_SINGLE_CONTACT, ADD_CONTACTS, UPDATE_CONTACT, REMOVE_CONTACT} from "../actions/contacts";
+import {ADD_CONTACTS, ADD_SINGLE_CONTACT, REMOVE_CONTACT, UPDATE_CONTACT} from "../actions/contacts";
 
 
 export const contacts = (state = [], action) => {
@@ -9,8 +9,8 @@ export const contacts = (state = [], action) => {
             return action.payload;
         case UPDATE_CONTACT:
             const filteredContacts = [...state].filter( (contact) => contact.id !== action.payload.id);
-            const updatedContacts = [...filteredContacts, action.payload];
-            return [updatedContacts]
+            return [action.payload, ...filteredContacts]
+
         case REMOVE_CONTACT:
             return [...state].filter( (contact) => contact !== action.payload)
         default:

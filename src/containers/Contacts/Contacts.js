@@ -13,7 +13,6 @@ const mapStateToProps = (state) => {
     }
 }
 
-//dispatch to props: get all, delete, add
 const mapDispatchToProps = (dispatch) => {
     return{
         addContactsToState: (contacts) => dispatch(addContactsToState(contacts)),
