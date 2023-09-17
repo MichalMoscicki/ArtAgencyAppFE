@@ -9,11 +9,11 @@ import "./ContactDetails.css"
 import {blankRegex, isFieldEmptyNullOrUndefined} from "../../appConstans/appConstans";
 
 
-//Todo sprawdzenie, czy state jest pusty. Jeśli tak, trzeba zfetchować.
-// Możliwe, że w URL trzeba przechowywać dane o paginacji
+// Todo sprawdzenie, czy state jest pusty. Jeśli tak, trzeba zfetchować.
+//  Możliwe, że w URL trzeba przechowywać dane o paginacji
+// usuwanie ze state
 
-const ContactDetails = ({contacts, updateContact}) => {
-
+const ContactDetails = ({contacts, updateContact, removeContact}) => {
     const contactId = Number(useParams().contactId);
     let contact = contacts.find(contact => contact.id === contactId);
 
@@ -73,7 +73,8 @@ const ContactDetails = ({contacts, updateContact}) => {
                     label: 'Yes',
                     onClick: async () => {
                         await deleteContactById(contact.id);
-                        navigate(`/contacts`)
+                        await navigate(`/contacts`)
+                        await removeContact(contact)
                     }
                 },
                 {
@@ -97,16 +98,7 @@ const ContactDetails = ({contacts, updateContact}) => {
     //    // setContact(updatedContact)
     // }
     //
-    // const onAddEvent= (event) => {
-    //     const updatedContact = {...contact, events: [...contact.events, event]};
-    //    // setContact(updatedContact)
-    // }
-    // const onDeleteEvent = (id) => {
-    //     const filteredEvents = contact.events.filter(event => event.id !== id);
-    //     const updatedContact = {...contact, events: filteredEvents};
-    //   //  setContact(updatedContact)
-    //
-    // }
+
     //
     // const onAddContactPerson= (contactPerson) => {
     //     const updatedContact = {...contact, contactPeople: [...contact.contactPeople, contactPerson]};
@@ -136,6 +128,7 @@ const ContactDetails = ({contacts, updateContact}) => {
     const handleDescriptionChange = (e) => {
         setDescription(e.target.value)
     }
+
 
     return (
         <div className={"contact-details-container"}>
@@ -188,13 +181,13 @@ const ContactDetails = ({contacts, updateContact}) => {
                 </div>
             </div>
 
-            {/*<div className={"contact-details-body"}>*/}
-            {/*    <Institutions institutions={contact.institutions}*/}
-            {/*                  onAddInstitution={onAddInstitution}*/}
-            {/*                  contactId={contactId} onDeleteInstitution={onDeleteInstitution}/>*/}
-            {/*    <ContactPeople contactPeople={contact.contactPeople} contactId={contactId} onAddContactPerson={onAddContactPerson} onDeleteContactPerson={onDeleteContactPerson}/>*/}
-            {/*    <Events events={contact.events} contactId={contactId} onAddEvent={onAddEvent} onDeleteEvent={onDeleteEvent}/>*/}
-            {/*</div>*/}
+            <div className={"contact-details-body"}>
+                {/*<Institutions institutions={contact.institutions}*/}
+                {/*              onAddInstitution={onAddInstitution}*/}
+                {/*              contactId={contactId} onDeleteInstitution={onDeleteInstitution}/>*/}
+                {/*<ContactPeople contactPeople={contact.contactPeople} contactId={contactId} onAddContactPerson={onAddContactPerson} onDeleteContactPerson={onDeleteContactPerson}/>*/}
+                <Events contactId={contactId}/>
+            </div>
 
         </div>
     )

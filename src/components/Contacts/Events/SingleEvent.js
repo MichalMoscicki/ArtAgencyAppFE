@@ -109,8 +109,6 @@ const SingleEvent = ({event, onDeleteEvent, contactId}) => {
 
 
     return (
-
-
         <li className={"cd-children-li"}>
             <div className={"cd-children-name-container"}>
                 <span className={"cd-children-span"}>

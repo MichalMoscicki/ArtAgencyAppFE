@@ -1,13 +1,20 @@
 import React, {useEffect, useState} from "react"
-import {blankRegex} from "../../../appConstans/appConstans";
+import {blankRegex, getCurrentTimeAndDate} from "../../../appConstans/appConstans";
 import {addEvent} from "../../../api/events";
-import SingleEvent from "./SingleEvent";
+import SingleEvent from "../../../containers/Contacts/Events/Events";
+import {useParams} from "react-router-dom";
 
-const Events = ({events, contactId, onAddEvent, onDeleteEvent}) => {
+const Events = ({contacts, updateContact}) => {
+
+    const contactId = Number(useParams().contactId);
+    let contact = contacts.find(contact => contact.id === contactId);
+    let events = contact.events;
+
     const [formHidden, setFormHidden] = useState(true);
-    const [buttonDisabled, setButtonDisabled] = useState(true)
-    const [name, setName] = useState("")
-    const [description, setDescription] = useState("")
+    const [buttonDisabled, setButtonDisabled] = useState(true);
+    const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
+
     const [monthWhenOrganized, setMonthWhenOrganized] = useState("");
 
     const toggleForm = () => {
@@ -20,29 +27,29 @@ const Events = ({events, contactId, onAddEvent, onDeleteEvent}) => {
             setButtonDisabled(false)
         }
     }
+
+    const createUpdatedContact = (event) => {
+        return {...contact, events: [...contact.events, event], updated: getCurrentTimeAndDate()}
+    }
     const handleSubmit = async (e) => {
         e.preventDefault();
         const event = {name: name, description: description, monthWhenOrganized: Number(monthWhenOrganized)}
 
         try {
-            const response = await addEvent(contactId, event)
-            await onAddEvent(response);
+            const response = await addEvent(contactId, event);
+            const updatedContact = await createUpdatedContact(response);
+            await updateContact(updatedContact);
             setName("");
             setDescription("");
-            setMonthWhenOrganized("")
+            setMonthWhenOrganized("");
 
-            //todo zresetować select
         } catch (Error) {
             console.log("Trzeba jakoś obsłużyć potencjalny błąd")
         }
 
         setFormHidden(!formHidden);
-
-        //todo dodać instytcuję
-        //dorzucam do listy w stanie
-        //update'uję contact w stanie - lista instytucji i data update'owania
-        //data update'owania w BE w serwisach (razem z testami)
     }
+
     const handleNameChange = (e) => {
         setName(e.target.value)
     }
@@ -62,9 +69,9 @@ const Events = ({events, contactId, onAddEvent, onDeleteEvent}) => {
         <span className={"cd-children-container"}>
             <h3 className={"cd-children-header"}>Wydarzenia:</h3>
             <ul className={"cd-children-list"}>
-                {events.map((el, index) => {
-                    return <SingleEvent event={el} key={index} onDeleteEvent={onDeleteEvent} contactId={contactId}/>
-                })}
+                {/*{events.map((el, index) => {*/}
+                {/*    return <SingleEvent event={el} key={index} contactId={contactId}/>*/}
+                {/*})}*/}
             </ul>
             <div className={"cd-add-children-container"}>
                 <h6 onClick={toggleForm} className={"cd-add-children-title"}>Dodaj wydarzenie</h6>
@@ -73,7 +80,7 @@ const Events = ({events, contactId, onAddEvent, onDeleteEvent}) => {
                         <li><input type={"text"} placeholder={"Nazwa"} value={name} onChange={handleNameChange}/></li>
                         <li><textarea placeholder={"Notatki"} value={description}
                                       onChange={handleNotesChange}/></li>
-                        <li><select defaultValue={""} onChange={handleSelect}>
+                        <li><select value={monthWhenOrganized} onChange={handleSelect}>
                             <option value="" disabled hidden>Kiedy organizowany</option>
                              <option value="1">Styczeń</option>
                              <option value="2">Luty</option>

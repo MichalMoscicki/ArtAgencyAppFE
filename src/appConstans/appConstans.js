@@ -11,3 +11,7 @@ export const wrongPhoneMessage = "Niepoprawny numer telefonu";
 export  const isFieldEmptyNullOrUndefined = (objectField) => {
     return blankRegex.test(objectField) || objectField === null || objectField === undefined
 }
+
+export const getCurrentTimeAndDate = () => {
+    return new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString()
+}
