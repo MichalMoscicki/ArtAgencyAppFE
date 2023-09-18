@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react"
 import {blankRegex, getCurrentTimeAndDate} from "../../../appConstans/appConstans";
 import {addEvent} from "../../../api/events";
-import SingleEvent from "../../../containers/Contacts/Events/Events";
+import SingleEvent from "../../../containers/Contacts/Events/SingleEvent";
 import {useParams} from "react-router-dom";
 
 const Events = ({contacts, updateContact}) => {
@@ -69,9 +69,9 @@ const Events = ({contacts, updateContact}) => {
         <span className={"cd-children-container"}>
             <h3 className={"cd-children-header"}>Wydarzenia:</h3>
             <ul className={"cd-children-list"}>
-                {/*{events.map((el, index) => {*/}
-                {/*    return <SingleEvent event={el} key={index} contactId={contactId}/>*/}
-                {/*})}*/}
+                {events.map((el, index) => {
+                   return <SingleEvent eventId={el.id} key={index} index={index} contactId={contactId}/>
+                })}
             </ul>
             <div className={"cd-add-children-container"}>
                 <h6 onClick={toggleForm} className={"cd-add-children-title"}>Dodaj wydarzenie</h6>

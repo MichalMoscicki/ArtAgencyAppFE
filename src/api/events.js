@@ -8,7 +8,6 @@ export const addEvent = async (contactId , event) => {
             "Content-Type": "application/json",
         },
     });
-    console.log(response)
     if (response.status !== 201) {
         throw new Error("Błąd!");
     }

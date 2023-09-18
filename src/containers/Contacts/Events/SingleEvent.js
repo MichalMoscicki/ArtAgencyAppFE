@@ -1,13 +1,13 @@
-import SingleEvent from "../../../components/Contacts/Events/Events";
+import SingleEvent from "../../../components/Contacts/Events/SingleEvent";
 import {connect} from "react-redux";
 import {updateContact} from "../../../redux/actions/contacts";
 
-
 const mapStateToProps = (state) => {
     return {
-        contacts: state.contacts
+        contacts :state.contacts
     }
 }
+
 const mapDispatchToProps = (dispatch) => {
     return {
         updateContact: (contact) => dispatch(updateContact(contact))

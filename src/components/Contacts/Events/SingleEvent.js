@@ -1,11 +1,23 @@
 import React, {useEffect, useRef, useState} from "react";
 import {confirmAlert} from "react-confirm-alert";
 import "../ContactDetailsChildren.css"
-import {blankRegex} from "../../../appConstans/appConstans";
+import {blankRegex, isFieldEmptyNullOrUndefined, getCurrentTimeAndDate} from "../../../appConstans/appConstans";
 import {updateEventById, deleteEventById} from "../../../api/events";
 import {displayMonth} from "../../../appUtils/appUtils";
 
-const SingleEvent = ({event, onDeleteEvent, contactId}) => {
+const SingleEvent = ({eventId, contactId, updateContact, contacts, index}) => {
+
+    let contact = contacts.find(contact => contact.id === contactId);
+    const event = contact.events.find(event => event.id === eventId);
+
+    const updateState = (updatedEvent) => {
+        const updatedEvents = [...contact.events]
+        updatedEvents[index] = updatedEvent;
+        const updatedContact = {...contact, events: updatedEvents, updated: getCurrentTimeAndDate()
+        }
+        updateContact(updatedContact)
+    }
+
     const [listHidden, setListHidden] = useState(true);
     const handleDeleteButton = () => {
         confirmAlert({
@@ -15,9 +27,9 @@ const SingleEvent = ({event, onDeleteEvent, contactId}) => {
                 {
                     label: 'Yes',
                     onClick: async () => {
-                        await deleteEventById(contactId, event.id);
-                        onDeleteEvent(event.id)
-
+                        await deleteEventById(contactId, eventId);
+                        const updatedContact = {...contact, events: contact.events.filter(event => event.id !== eventId)}
+                        updateContact(updatedContact)
                     }
                 },
                 {
@@ -32,7 +44,6 @@ const SingleEvent = ({event, onDeleteEvent, contactId}) => {
         setListHidden(!listHidden)
     }
 
-
     const [name, setName] = useState(event.name);
     const [eventFormVisible, setEventFormVisible] = useState(false)
     const nameInputRef = useRef(null);
@@ -44,6 +55,7 @@ const SingleEvent = ({event, onDeleteEvent, contactId}) => {
                 try {
                     let updatedEvent = {...event, name: name}
                     await updateEventById(contactId, updatedEvent)
+                    updateState(updatedEvent)
                 } catch (Error) {
                     console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
                 }
@@ -56,21 +68,22 @@ const SingleEvent = ({event, onDeleteEvent, contactId}) => {
     }
 
 
-    const ifDescriptionPresent = () => {
-        if (event.description === "") {
-            return "Brak opisu"
-        } else {
-            return event.description
-        }
-    }
-    const [description, setDescription] = useState(ifDescriptionPresent);
+    const [description, setDescription] = useState(event.description);
     const [descriptionFormVisible, setDescriptionFormVisible] = useState(false)
     const descriptionInputRef = useRef(null);
+    const displayDescription = () => {
+        if(isFieldEmptyNullOrUndefined(event.description)){
+            return "Brak opisu"
+        }
+        return event.description;
+    }
     const toggleDescriptionForm = async () => {
         if (descriptionFormVisible === true && description !== event.description) {
                     try {
                         let updatedEvent = {...event, description: description}
                         await updateEventById(contactId, updatedEvent)
+                        console.log(updatedEvent)
+                        updateState(updatedEvent)
                     } catch (Error) {
                         console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
                     }
@@ -91,6 +104,7 @@ const SingleEvent = ({event, onDeleteEvent, contactId}) => {
         try {
             let updatedEvent = {...event, monthWhenOrganized: e.target.value}
             await updateEventById(contactId, updatedEvent)
+            await updateState(updatedEvent)
         } catch (Error) {
             console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
         }
@@ -116,8 +130,7 @@ const SingleEvent = ({event, onDeleteEvent, contactId}) => {
                         <input type={"text"} ref={nameInputRef} value={name} onChange={handleNameChange}
                                onBlur={toggleNameForm}/>
                         :
-                        <h6 onClick={toggleNameForm} className={"cd-children-name"}>{name}</h6>
-                    }
+                        <h6 onClick={toggleNameForm} className={"cd-children-name"}>{name}</h6>}
                 </span>
 
                 <span>
@@ -130,9 +143,10 @@ const SingleEvent = ({event, onDeleteEvent, contactId}) => {
             <div hidden={listHidden}>
                 <ul className={"cd-children-details-container"}>
                     <li>{descriptionFormVisible ?
-                        <textarea ref={descriptionInputRef} onChange={handleDescriptionChange} value={description} onBlur={toggleDescriptionForm}/>
+                        <textarea ref={descriptionInputRef} onChange={handleDescriptionChange} value={description}
+                                  onBlur={toggleDescriptionForm}/>
                         :
-                        <div hidden={descriptionFormVisible} onClick={toggleDescriptionForm}>{description}</div>}
+                        <div hidden={descriptionFormVisible} onClick={toggleDescriptionForm}>{displayDescription()}</div>}
                     </li>
                     <li>{monthFormVisible ?
                                <select defaultValue={monthWhenOrganized} onChange={handleSelect}>
