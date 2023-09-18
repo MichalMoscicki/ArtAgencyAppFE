@@ -2,9 +2,18 @@ import React, {useEffect, useRef, useState} from "react";
 import {confirmAlert} from "react-confirm-alert";
 import {deleteInstitutionById, updateInstitutionById} from "../../../api/institutions";
 import "../ContactDetailsChildren.css"
-import {blankRegex} from "../../../appConstans/appConstans";
+import {
+    blankRegex,
+    emailRegex,
+    getCurrentTimeAndDate,
+    isFieldEmptyNullOrUndefined, phoneRegex, wrongEmailMessage, wrongPhoneMessage
+} from "../../../appConstans/appConstans";
+import {deleteEventById} from "../../../api/events";
 
-const SingleInstitution = ({institution, onDeleteInstitution, contactId}) => {
+const SingleInstitution = ({contactId, index, institutionId, updateContact, contacts}) => {
+    let contact = contacts.find(contact => contact.id === contactId);
+    const institution = contact.institutions.find(institution => institution.id === institutionId);
+
     const [errors, setErrors] = useState([]);
     const [listHidden, setListHidden] = useState(true);
     const handleDeleteButton = () => {
@@ -15,8 +24,12 @@ const SingleInstitution = ({institution, onDeleteInstitution, contactId}) => {
                 {
                     label: 'Yes',
                     onClick: async () => {
-                        await deleteInstitutionById(contactId, institution.id);
-                        onDeleteInstitution(institution.id)
+                        await deleteInstitutionById(contactId, institutionId);
+                        const updatedContact = {
+                            ...contact,
+                            institutions: contact.institutions.filter(institution => institution.id !== institutionId)
+                        }
+                        updateContact(updatedContact)
                     }
                 },
                 {
@@ -31,196 +44,232 @@ const SingleInstitution = ({institution, onDeleteInstitution, contactId}) => {
         setListHidden(!listHidden)
     }
 
+    const updateState = (updatedInstitution) => {
+        const updatedInstitutions = [...contact.institutions]
+        updatedInstitutions[index] = updatedInstitution;
+        const updatedContact = {
+            ...contact, institutions: updatedInstitutions, updated: getCurrentTimeAndDate()
+        }
+        updateContact(updatedContact)
+    }
 
-    const [institutionName, setInstitutionName] = useState(institution.name);
+
+    const [name, setName] = useState(institution.name);
     const [nameFormVisible, setNameFormVisible] = useState(false)
     const nameInputRef = useRef(null);
     const toggleNameForm = async () => {
-        setErrors([]);
-        if (nameFormVisible === true && institutionName !== institution.name) {
-            try {
-                let updatedInstitution = {...institution, name: institutionName}
-                await updateInstitutionById(contactId, updatedInstitution)
-            } catch(Error){
-                setErrors((prevState) => [...prevState, "Nazwa nie może być pusta"])
+        if (nameFormVisible === true && name !== institution.name) {
+            if (blankRegex.test(name)) {
+                setName(institution.name)
+            } else {
+                try {
+                    let updatedInstitution = {...institution, name: name}
+                    const response = await updateInstitutionById(contactId, updatedInstitution)
+                    updateState(response)
+                } catch (Error) {
+                    console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
+                }
             }
         }
         setNameFormVisible(!nameFormVisible)
     }
     const handleNameChange = (e) => {
-        setInstitutionName(e.target.value)
+        setName(e.target.value)
     }
 
 
-    const [institutionCity, setInstitutionCity] = useState(institution.city);
+    const [city, setCity] = useState(institution.city);
     const [cityFormVisible, setCityFormVisible] = useState(false)
     const cityInputRef = useRef(null);
-    const toggleCityForm = () => {
-        if (cityFormVisible === true && institutionCity !== institution.city) {
+    const toggleCityForm = async () => {
+        if (cityFormVisible === true && city !== institution.city) {
 
-            if (blankRegex.test(institutionCity)) {
-                setInstitutionCity(institution.city)
+            if (blankRegex.test(city)) {
+                setCity(institution.city)
             } else {
-                let updatedInstitution = {...institution, city: institutionCity}
-                updateInstitutionById(contactId, updatedInstitution)
+                try {
+                    let updatedInstitution = {...institution, city: city}
+                    const response = await updateInstitutionById(contactId, updatedInstitution)
+                    updateState(response)
+                } catch (Error) {
+                    console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
+                }
             }
         }
         setCityFormVisible(!cityFormVisible)
     }
     const handleCityChange = (e) => {
-        setInstitutionCity(e.target.value)
+        setCity(e.target.value)
     }
 
 
-    const [institutionCategory, setInstitutionCategory] = useState(institution.category);
+    const [category, setCategory] = useState(institution.category);
     const [categoryFormVisible, setCategoryFormVisible] = useState(false)
     const categoryInputRef = useRef(null);
-    const toggleCategoryForm = () => {
-        if (categoryFormVisible === true && institutionCategory !== institution.category) {
-
-            if (blankRegex.test(institutionCategory)) {
-                setInstitutionCategory(institution.category)
+    const toggleCategoryForm = async () => {
+        if (categoryFormVisible === true && category !== institution.category) {
+            if (blankRegex.test(category)) {
+                setCategory(institution.category)
             } else {
-                let updatedInstitution = {...institution, category: institutionCategory}
-                updateInstitutionById(contactId, updatedInstitution)
+                try {
+                    let updatedInstitution = {...institution, category: category}
+                    const response = await updateInstitutionById(contactId, updatedInstitution)
+                    updateState(response)
+                } catch (Error) {
+                    console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
+                }
             }
         }
         setCategoryFormVisible(!categoryFormVisible)
     }
     const handleCategoryChange = (e) => {
-        setInstitutionCategory(e.target.value)
+        setCategory(e.target.value)
     }
 
 
-    const ifNotesPresent = () => {
-        if (institution.notes === "") {
-            return "Brak notatek"
-        } else {
-            return institution.notes
-        }
-    }
-    const [institutionNotes, setInstitutionNotes] = useState(ifNotesPresent);
+    const [notes, setNotes] = useState(institution.notes);
     const [notesFormVisible, setNotesFormVisible] = useState(false)
     const notesInputRef = useRef(null);
-    const toggleNotesForm = () => {
-        if (notesFormVisible === true && institutionNotes !== institution.notes) {
-            if (blankRegex.test(institutionNotes)) {
-                setInstitutionNotes("Brak notatek")
+    const toggleNotesForm = async () => {
+        if (notesFormVisible === true && notes !== institution.notes) {
+            try {
+                let updatedInstitution = {...institution, notes: notes}
+                const response = await updateInstitutionById(contactId, updatedInstitution)
+                updateState(response)
+            } catch (Error) {
+                console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
             }
-            let updatedInstitution = {...institution, notes: institutionNotes}
-            updateInstitutionById(contactId, updatedInstitution)
         }
         setNotesFormVisible(!notesFormVisible)
     }
     const handleNotesChange = (e) => {
-        setInstitutionNotes(e.target.value)
+        setNotes(e.target.value)
     }
-
-
-    const ifEmailPresent = () => {
-        if (institution.email === "") {
-            return "Brak emaila"
-        } else {
-            return institution.email
+    const displayNotes = () => {
+        if (isFieldEmptyNullOrUndefined(institution.notes)) {
+            return "Brak notatek"
         }
+        return institution.notes;
     }
-    const [institutionEmail, setInstitutionEmail] = useState(ifEmailPresent);
+
+
+    const [email, setEmail] = useState(institution.email);
     const [emailFormVisible, setEmailFormVisible] = useState(false);
     const emailInputRef = useRef(null);
-    const toggleEmailForm = () => {
-        //todo walidacja emaila
-        if (emailFormVisible === true && institutionEmail !== institution.email) {
-            let updatedInstitution = {...institution, email: institutionEmail}
-            updateInstitutionById(contactId, updatedInstitution)
+    const toggleEmailForm = async () => {
+        setErrors([])
+        if (emailFormVisible === true && email !== institution.email) {
+            if (!emailRegex.test(email) && !isFieldEmptyNullOrUndefined(email)) {
+                setErrors([wrongEmailMessage])
+                return
+            }
+            try {
+                let updatedInstitution = {...institution, email: email}
+                const response = await updateInstitutionById(contactId, updatedInstitution)
+                updateState(response)
+            } catch (Error) {
+                console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
+            }
         }
         setEmailFormVisible(!emailFormVisible);
     }
     const handleEmailChange = (e) => {
-        setInstitutionEmail(e.target.value)
+        setEmail(e.target.value)
     }
-
-
-    const ifPhonePresent = () => {
-        if (institution.phone === "") {
-            return "Brak numeru"
-        } else {
-            return institution.phone
+    const displayEmail = () => {
+        if (isFieldEmptyNullOrUndefined(institution.email)) {
+            return "Brak emaila"
         }
+        return institution.email;
     }
-    const [institutionPhone, setInstitutionPhone] = useState(ifPhonePresent);
+
+
+    const [phone, setPhone] = useState(institution.phone);
     const [phoneFormVisible, setPhoneFormVisible] = useState(false);
     const phoneInputRef = useRef(null);
     const togglePhoneForm = async () => {
         setErrors([])
-        if (phoneFormVisible === true && institutionPhone !== institution.email) {
-            //todo sprawdzić, czy jest empty lub blank
+
+        if (phoneFormVisible === true && phone !== institution.email) {
+            if (!phoneRegex.test(phone) && !isFieldEmptyNullOrUndefined(phone)) {
+                setErrors([wrongPhoneMessage])
+                return
+            }
             try {
-                let updatedInstitution = {...institution, phone: institutionPhone}
-                await updateInstitutionById(contactId, updatedInstitution)
-            } catch(Error) {
-                setInstitutionPhone(ifPhonePresent())
-                setErrors((prevState) => [...prevState, "Niepoprawny numer telefonu"])
+                let updatedInstitution = {...institution, phone: phone}
+                const response = await updateInstitutionById(contactId, updatedInstitution)
+                updateState(response)
+            } catch (Error) {
+                console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
             }
         }
         setPhoneFormVisible(!phoneFormVisible);
     }
     const handlePhoneChange = (e) => {
-        setInstitutionPhone(e.target.value)
+        setPhone(e.target.value)
     }
-
-
-
-    const ifWebPagePresent = () => {
-        if (institution.webPage === "") {
-            return "Brak strony"
-        } else {
-            return institution.webPage
+    const displayPhone = () => {
+        if (isFieldEmptyNullOrUndefined(institution.phone)) {
+            return "Brak telefonu"
         }
+        return institution.phone;
     }
-    const [institutionWebPage, setInstitutionWebPage] = useState(ifWebPagePresent);
+
+
+    const [webPage, setWebPage] = useState(institution.webPage);
     const [webPageFormVisible, setWebPageFormVisible] = useState(false);
     const webPageInputRef = useRef(null);
-    const toggleWebPageForm = () => {
-        if (webPageFormVisible === true && institutionWebPage !== institution.webPage) {
-            let updatedInstitution = {...institution, webPage: institutionWebPage}
-            updateInstitutionById(contactId, updatedInstitution)
-            if(institutionWebPage === ""){
-                setInstitutionWebPage("Brak strony")
+    const toggleWebPageForm = async () => {
+        if (webPageFormVisible === true && webPage !== institution.webPage) {
+            try {
+                let updatedInstitution = {...institution, webPage: webPage}
+                const response = await updateInstitutionById(contactId, updatedInstitution)
+                updateState(response)
+            } catch (Error) {
+                console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
             }
         }
         setWebPageFormVisible(!webPageFormVisible);
     }
     const handleWebPageChange = (e) => {
-        setInstitutionWebPage(e.target.value)
+        setWebPage(e.target.value)
+    }
+
+    const displayWebPage = () => {
+        if (isFieldEmptyNullOrUndefined(institution.webPage)) {
+            return "Brak strony"
+        }
+        return institution.webPage;
     }
 
 
-    useEffect(() => {
-            if (nameFormVisible && nameInputRef.current) {
-                nameInputRef.current.focus();
-            }
-            if (cityFormVisible && cityInputRef.current) {
-                cityInputRef.current.focus();
-            }
-            if (categoryFormVisible && categoryInputRef.current) {
-                categoryInputRef.current.focus();
-            }
-            if (notesFormVisible && notesInputRef.current) {
-                notesInputRef.current.focus();
-            }
-            if (emailFormVisible && emailInputRef.current) {
-                emailInputRef.current.focus();
-            }
-            if (phoneFormVisible && phoneInputRef.current) {
-                phoneInputRef.current.focus();
-            }
-            if (webPageFormVisible && webPageInputRef.current) {
-                webPageInputRef.current.focus();
-            }
 
-        },
-        [nameFormVisible, cityFormVisible, categoryFormVisible, notesFormVisible,
-            emailFormVisible, phoneFormVisible, webPageFormVisible]);
+useEffect(() => {
+        if (nameFormVisible && nameInputRef.current) {
+            nameInputRef.current.focus();
+        }
+        if (cityFormVisible && cityInputRef.current) {
+            cityInputRef.current.focus();
+        }
+        if (categoryFormVisible && categoryInputRef.current) {
+            categoryInputRef.current.focus();
+        }
+        if (notesFormVisible && notesInputRef.current) {
+            notesInputRef.current.focus();
+        }
+        if (emailFormVisible && emailInputRef.current) {
+            emailInputRef.current.focus();
+        }
+        if (phoneFormVisible && phoneInputRef.current) {
+            phoneInputRef.current.focus();
+        }
+        if (webPageFormVisible && webPageInputRef.current) {
+            webPageInputRef.current.focus();
+        }
+
+    },
+    [nameFormVisible, cityFormVisible, categoryFormVisible, notesFormVisible,
+        emailFormVisible, phoneFormVisible, webPageFormVisible]);
 
 
     return (
@@ -230,10 +279,10 @@ const SingleInstitution = ({institution, onDeleteInstitution, contactId}) => {
             <div className={"cd-children-name-container"}>
                 <span className={"cd-children-span"}>
                     {nameFormVisible ?
-                        <input type={"text"} ref={nameInputRef} value={institutionName} onChange={handleNameChange}
+                        <input type={"text"} ref={nameInputRef} value={name} onChange={handleNameChange}
                                onBlur={toggleNameForm}/>
                         :
-                        <h6 onClick={toggleNameForm} className={"cd-children-name"}>{institutionName}</h6>
+                        <h6 onClick={toggleNameForm} className={"cd-children-name"}>{name}</h6>
                     }
                 </span>
 
@@ -248,48 +297,51 @@ const SingleInstitution = ({institution, onDeleteInstitution, contactId}) => {
                 <ul className={"cd-children-details-container"}>
                     <li>
                         {cityFormVisible ?
-                            <input type={"text"} ref={cityInputRef} value={institutionCity}
+                            <input type={"text"} ref={cityInputRef} value={city}
                                    onChange={handleCityChange} onBlur={toggleCityForm}/>
                             :
-                            <div hidden={cityFormVisible} onClick={toggleCityForm}>{institutionCity}</div>}
+                            <div hidden={cityFormVisible} onClick={toggleCityForm}>{city}</div>}
                     </li>
 
                     <li>
                         {categoryFormVisible ?
-                            <input type={"text"} ref={categoryInputRef} value={institutionCategory}
+                            <input type={"text"} ref={categoryInputRef} value={category}
                                    onChange={handleCategoryChange} onBlur={toggleCategoryForm}/>
                             :
                             <div hidden={categoryFormVisible}
-                                 onClick={toggleCategoryForm}>{institutionCategory}</div>
+                                 onClick={toggleCategoryForm}>{category}</div>
                         }
                     </li>
 
                     <li>{notesFormVisible ?
-                        <textarea ref={notesInputRef} value={institutionNotes}
+                        <textarea ref={notesInputRef} value={notes}
                                   onChange={handleNotesChange} onBlur={toggleNotesForm}/>
                         :
-                        <div hidden={notesFormVisible} onClick={toggleNotesForm}>{institutionNotes}</div>
+                        <div hidden={notesFormVisible} onClick={toggleNotesForm}>{displayNotes()}</div>
                     }
                     </li>
+
                     <li>{emailFormVisible ?
-                        <input type={"text"} ref={emailInputRef} value={institutionEmail}
+                        <input type={"text"} ref={emailInputRef} value={email}
                                onChange={handleEmailChange} onBlur={toggleEmailForm}/>
                         :
-                        <div hidden={emailFormVisible} onClick={toggleEmailForm}>{institutionEmail}</div>
-                    }</li>
+                        <div hidden={emailFormVisible} onClick={toggleEmailForm}>{displayEmail()}</div>}
+                    </li>
+
                     <li>{phoneFormVisible ?
-                        <input type={"text"} ref={phoneInputRef} value={institutionPhone}
+                        <input type={"text"} ref={phoneInputRef} value={phone}
                                onChange={handlePhoneChange} onBlur={togglePhoneForm}/>
                         :
-                        <div hidden={emailFormVisible} onClick={togglePhoneForm}>{institutionPhone}</div>
-                    }</li>
+                        <div hidden={emailFormVisible} onClick={togglePhoneForm}>{displayPhone()}</div>}
+                    </li>
+
                     <li>{webPageFormVisible ?
-                        <input type={"text"} ref={webPageInputRef} value={institutionWebPage}
+                        <input type={"text"} ref={webPageInputRef} value={webPage}
                                onChange={handleWebPageChange} onBlur={toggleWebPageForm}/>
                         :
-                        <div hidden={webPageFormVisible} onClick={toggleWebPageForm}>{institutionWebPage}</div>
-                    }</li>
-                    {errors.map( (el, index) => <li key={index} className={"cd-details-error"}>{el}</li>)}
+                        <div hidden={webPageFormVisible} onClick={toggleWebPageForm}>{displayWebPage()}</div>}
+                    </li>
+                    {errors.map((el, index) => <li key={index} className={"cd-details-error"}>{el}</li>)}
                 </ul>
             </div>
         </li>

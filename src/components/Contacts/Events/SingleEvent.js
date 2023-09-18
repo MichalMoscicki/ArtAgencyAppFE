@@ -9,6 +9,7 @@ const SingleEvent = ({eventId, contactId, updateContact, contacts, index}) => {
 
     let contact = contacts.find(contact => contact.id === contactId);
     const event = contact.events.find(event => event.id === eventId);
+
     const updateState = (updatedEvent) => {
         const updatedEvents = [...contact.events]
         updatedEvents[index] = updatedEvent;
@@ -21,7 +22,7 @@ const SingleEvent = ({eventId, contactId, updateContact, contacts, index}) => {
     const [listHidden, setListHidden] = useState(true);
     const handleDeleteButton = () => {
         confirmAlert({
-            title: 'Usuwanie instytucji',
+            title: 'Usuwanie wydarzenia',
             message: 'Czy na pewno?',
             buttons: [
                 {

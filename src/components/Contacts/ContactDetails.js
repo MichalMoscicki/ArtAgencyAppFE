@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useParams, useNavigate} from "react-router-dom";
 import {deleteContactById, getContactById, updateContactById} from "../../api/contacts";
-import Institutions from "./Institutions/Institutions";
+import Institutions from "../../containers/Contacts/Institutions/Institutions";
 import ContactPeople from "../../containers/Contacts/ContactPeople/ContactPeople"
 import {confirmAlert} from "react-confirm-alert";
 import Events from "../../containers/Contacts/Events/Events";
@@ -155,11 +155,9 @@ const ContactDetails = ({contacts, updateContact, removeContact}) => {
             </div>
 
             <div className={"contact-details-body"}>
-                {/*<Institutions institutions={contact.institutions}*/}
-                {/*              onAddInstitution={onAddInstitution}*/}
-                {/*              contactId={contactId} onDeleteInstitution={onDeleteInstitution}/>*/}
-                <ContactPeople contactId={contactId}/>
+                <Institutions contactId={contactId}/>
                 <Events contactId={contactId}/>
+                <ContactPeople contactId={contactId}/>
             </div>
 
         </div>
