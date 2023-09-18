@@ -1,6 +1,6 @@
-import SingleEvent from "../../../components/Contacts/Events/SingleEvent";
-import {connect} from "react-redux";
 import {updateContact} from "../../../redux/actions/contacts";
+import {connect} from "react-redux";
+import ContactPeople from "../../../components/Contacts/ContactPeople/ContactPeople";
 
 const mapStateToProps = (state) => {
     return {
@@ -13,4 +13,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SingleEvent)
+export default connect(mapStateToProps, mapDispatchToProps)(ContactPeople)

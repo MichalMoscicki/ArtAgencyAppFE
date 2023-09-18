@@ -1,9 +1,14 @@
 import React, {useEffect, useState} from "react"
 import {blankCheck, emailOrEmptyCheck, phoneOrEmptyCheck} from "../../../appUtils/appUtils";
-import SinglePerson from "./SinglePerson";
 import {addContactPerson} from "../../../api/contactPeople";
+import {getCurrentTimeAndDate} from "../../../appConstans/appConstans";
+import SinglePerson from "../../../containers/Contacts/ContactPeople/SinglePerson";
 
-const ContactPeople = ({contactPeople, contactId, onAddContactPerson, onDeleteContactPerson}) => {
+const ContactPeople = ({contactId, contacts, updateContact}) => {
+
+    let contact = contacts.find(contact => contact.id === contactId);
+    let contactPeople = contact.contactPeople;
+
     const [formHidden, setFormHidden] = useState(true);
     const [buttonDisabled, setButtonDisabled] = useState(true)
     const [firstName, setFirstName] = useState("");
@@ -11,6 +16,7 @@ const ContactPeople = ({contactPeople, contactId, onAddContactPerson, onDeleteCo
     const [role, setRole] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
+
 
     const toggleForm = () => {
         setFormHidden(!formHidden);
@@ -23,7 +29,6 @@ const ContactPeople = ({contactPeople, contactId, onAddContactPerson, onDeleteCo
             setButtonDisabled(false)
         }
     }
-
     const handleFirstNameChange = (e) => {
         setFirstName(e.target.value);
     }
@@ -40,6 +45,11 @@ const ContactPeople = ({contactPeople, contactId, onAddContactPerson, onDeleteCo
         setPhone(e.target.value)
     }
 
+    const createUpdatedContact = (contactPerson) => {
+        return {...contact, contactPeople: [...contact.contactPeople, contactPerson], updated: getCurrentTimeAndDate()}
+    }
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const contactPerson = {
@@ -50,8 +60,8 @@ const ContactPeople = ({contactPeople, contactId, onAddContactPerson, onDeleteCo
             email:email
         }
         try {
-            const response = await addContactPerson(contactId, contactPerson)
-            await onAddContactPerson(response)
+            const response = await addContactPerson(contactId, contactPerson);
+            updateContact(createUpdatedContact(response))
             setFirstName("")
             setLastName("")
             setRole("")
@@ -73,7 +83,7 @@ const ContactPeople = ({contactPeople, contactId, onAddContactPerson, onDeleteCo
             <h3 className={"cd-children-header"}>Osoby kontaktowe:</h3>
             <ul className={"cd-children-list"}>
                 {contactPeople.map((el, index) => {
-                    return <SinglePerson person={el} key={index} onDeletePerson={onDeleteContactPerson} contactId={contactId}/>
+                    return <SinglePerson personId={el.id} key={index} index={index} contactId={contactId}/>
                 })}
             </ul>
             <div className={"cd-add-children-container"}>

@@ -2,11 +2,9 @@ import React, {useEffect, useState} from "react"
 import {blankRegex, getCurrentTimeAndDate} from "../../../appConstans/appConstans";
 import {addEvent} from "../../../api/events";
 import SingleEvent from "../../../containers/Contacts/Events/SingleEvent";
-import {useParams} from "react-router-dom";
 
-const Events = ({contacts, updateContact}) => {
+const Events = ({contacts, updateContact, contactId}) => {
 
-    const contactId = Number(useParams().contactId);
     let contact = contacts.find(contact => contact.id === contactId);
     let events = contact.events;
 

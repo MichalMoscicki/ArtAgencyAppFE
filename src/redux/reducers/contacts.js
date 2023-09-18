@@ -10,7 +10,6 @@ export const contacts = (state = [], action) => {
         case UPDATE_CONTACT:
             const filteredContacts = [...state].filter( (contact) => contact.id !== action.payload.id);
             return [action.payload, ...filteredContacts]
-
         case REMOVE_CONTACT:
             return [...state].filter( (contact) => contact !== action.payload)
         default:

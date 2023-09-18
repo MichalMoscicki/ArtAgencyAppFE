@@ -1,7 +1,7 @@
 import React from "react";
 import {useState, useEffect} from "react";
 import {addContact, getContactsInitialRequest, getContactsSubsequentRequest,} from "../../api/contacts";
-import SingleContact from "../../containers/Contacts/SingleContac";
+import SingleContact from "../../containers/Contacts/SingleContact";
 import "./Contacts.css"
 
 const Contacts = ({contacts, pagination, addContactsToState, addContactToState, addPagination}) => {

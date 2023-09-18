@@ -9,11 +9,11 @@ const SingleEvent = ({eventId, contactId, updateContact, contacts, index}) => {
 
     let contact = contacts.find(contact => contact.id === contactId);
     const event = contact.events.find(event => event.id === eventId);
-
     const updateState = (updatedEvent) => {
         const updatedEvents = [...contact.events]
         updatedEvents[index] = updatedEvent;
-        const updatedContact = {...contact, events: updatedEvents, updated: getCurrentTimeAndDate()
+        const updatedContact = {
+            ...contact, events: updatedEvents, updated: getCurrentTimeAndDate()
         }
         updateContact(updatedContact)
     }
@@ -28,7 +28,10 @@ const SingleEvent = ({eventId, contactId, updateContact, contacts, index}) => {
                     label: 'Yes',
                     onClick: async () => {
                         await deleteEventById(contactId, eventId);
-                        const updatedContact = {...contact, events: contact.events.filter(event => event.id !== eventId)}
+                        const updatedContact = {
+                            ...contact,
+                            events: contact.events.filter(event => event.id !== eventId)
+                        }
                         updateContact(updatedContact)
                     }
                 },
@@ -67,26 +70,25 @@ const SingleEvent = ({eventId, contactId, updateContact, contacts, index}) => {
         setName(e.target.value)
     }
 
-
     const [description, setDescription] = useState(event.description);
     const [descriptionFormVisible, setDescriptionFormVisible] = useState(false)
     const descriptionInputRef = useRef(null);
     const displayDescription = () => {
-        if(isFieldEmptyNullOrUndefined(event.description)){
+        if (isFieldEmptyNullOrUndefined(event.description)) {
             return "Brak opisu"
         }
         return event.description;
     }
     const toggleDescriptionForm = async () => {
         if (descriptionFormVisible === true && description !== event.description) {
-                    try {
-                        let updatedEvent = {...event, description: description}
-                        await updateEventById(contactId, updatedEvent)
-                        console.log(updatedEvent)
-                        updateState(updatedEvent)
-                    } catch (Error) {
-                        console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
-                    }
+            try {
+                let updatedEvent = {...event, description: description}
+                await updateEventById(contactId, updatedEvent)
+                console.log(updatedEvent)
+                updateState(updatedEvent)
+            } catch (Error) {
+                console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
+            }
         }
         setDescriptionFormVisible(!descriptionFormVisible);
     }
@@ -146,25 +148,27 @@ const SingleEvent = ({eventId, contactId, updateContact, contacts, index}) => {
                         <textarea ref={descriptionInputRef} onChange={handleDescriptionChange} value={description}
                                   onBlur={toggleDescriptionForm}/>
                         :
-                        <div hidden={descriptionFormVisible} onClick={toggleDescriptionForm}>{displayDescription()}</div>}
+                        <div hidden={descriptionFormVisible}
+                             onClick={toggleDescriptionForm}>{displayDescription()}</div>}
                     </li>
                     <li>{monthFormVisible ?
-                               <select defaultValue={monthWhenOrganized} onChange={handleSelect}>
-                                    <option value="1">Styczeń</option>
-                                    <option value="2">Luty</option>
-                                    <option value="3">Marzec</option>
-                                    <option value="4">Kwiecień</option>
-                                    <option value="5">Maj</option>
-                                    <option value="6">Czerwiec</option>
-                                    <option value="7">Lipiec</option>
-                                    <option value="8">Sierpień</option>
-                                    <option value="9">Wrzesień</option>
-                                    <option value="10">Październik</option>
-                                    <option value="11">Listopad</option>
-                                    <option value="12">Grudzień</option>
-                                </select>
-                    :
-                        <div hidden={monthFormVisible} onClick={toggleMonthForm}>{displayMonth(monthWhenOrganized)}</div>
+                        <select defaultValue={monthWhenOrganized} onChange={handleSelect}>
+                            <option value="1">Styczeń</option>
+                            <option value="2">Luty</option>
+                            <option value="3">Marzec</option>
+                            <option value="4">Kwiecień</option>
+                            <option value="5">Maj</option>
+                            <option value="6">Czerwiec</option>
+                            <option value="7">Lipiec</option>
+                            <option value="8">Sierpień</option>
+                            <option value="9">Wrzesień</option>
+                            <option value="10">Październik</option>
+                            <option value="11">Listopad</option>
+                            <option value="12">Grudzień</option>
+                        </select>
+                        :
+                        <div hidden={monthFormVisible}
+                             onClick={toggleMonthForm}>{displayMonth(monthWhenOrganized)}</div>
                     }</li>
                 </ul>
             </div>

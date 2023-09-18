@@ -4,16 +4,29 @@ import "../ContactDetailsChildren.css"
 import {blankCheck} from "../../../appUtils/appUtils";
 import {deleteContactPersonById, updateContactPersonById} from "../../../api/contactPeople";
 import {
-    noAssignedEmail,
-    noAssignedPhone,
-    noAssignedRole,
+    emailRegex,
+    getCurrentTimeAndDate, isFieldEmptyNullOrUndefined,
+    phoneRegex,
     wrongEmailMessage,
     wrongPhoneMessage
 } from "../../../appConstans/appConstans";
 
-const SinglePerson = ({person, onDeletePerson, contactId}) => {
+const SinglePerson = ({contactId, contacts, index, personId, updateContact}) => {
+
+    let contact = contacts.find(contact => contact.id === contactId);
+    const person = contact.contactPeople.find(person => person.id === personId);
+
     const [listHidden, setListHidden] = useState(true);
     const [errors, setErrors] = useState([])
+
+    const updateState = (updatedPerson) => {
+        const updatedPeople = [...contact.contactPeople]
+        updatedPeople[index] = updatedPerson;
+        const updatedContact = {
+            ...contact, contactPeople: updatedPeople, updated: getCurrentTimeAndDate()
+        }
+        updateContact(updatedContact)
+    }
     const handleDeleteButton = () => {
         confirmAlert({
             title: 'Usuwanie osoby',
@@ -22,8 +35,12 @@ const SinglePerson = ({person, onDeletePerson, contactId}) => {
                 {
                     label: 'Yes',
                     onClick: async () => {
-                        await deleteContactPersonById(contactId, person.id);
-                        onDeletePerson(person.id)
+                        await deleteContactPersonById(contactId, personId);
+                        const updatedContact = {
+                            ...contact,
+                            contactPeople: contact.contactPeople.filter(person => person.id !== personId)
+                            }
+                        updateContact(updatedContact)
                     }
                 },
                 {
@@ -49,7 +66,9 @@ const SinglePerson = ({person, onDeletePerson, contactId}) => {
             } else {
                 try {
                     let updatedPerson = {...person, firstName: firstName}
-                    await updateContactPersonById(contactId, updatedPerson)
+                    const response = await updateContactPersonById(contactId, updatedPerson)
+                    updateState(response);
+
                 } catch (Error) {
                     console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
                 }
@@ -71,7 +90,8 @@ const SinglePerson = ({person, onDeletePerson, contactId}) => {
             } else {
                 try {
                     let updatedPerson = {...person, lastName: lastName}
-                    await updateContactPersonById(contactId, updatedPerson)
+                    const response = await updateContactPersonById(contactId, updatedPerson)
+                    updateState(response);
                 } catch (Error) {
                     console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
                 }
@@ -83,25 +103,16 @@ const SinglePerson = ({person, onDeletePerson, contactId}) => {
         setLastName(e.target.value)
     }
 
-    const ifRolePresent = () => {
-        if (person.role === "") {
-            return noAssignedRole
-        } else {
-            return person.role
-        }
-    }
-    const [role, setRole] = useState(ifRolePresent);
+
+    const [role, setRole] = useState(person.role);
     const [roleFormVisible, setRoleFormVisible] = useState(false)
     const roleInputRef = useRef(null);
     const toggleRoleForm = async () => {
-        if (role === noAssignedRole) {
-            setRoleFormVisible(!roleFormVisible);
-            return;
-        }
         if (roleFormVisible === true && role !== person.role) {
             try {
                 let updatedPerson = {...person, role: role}
-                await updateContactPersonById(contactId, updatedPerson)
+                const response = await updateContactPersonById(contactId, updatedPerson)
+                updateState(response);
             } catch (Error) {
                 console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
             }
@@ -111,75 +122,75 @@ const SinglePerson = ({person, onDeletePerson, contactId}) => {
     const handleRoleChange = (e) => {
         setRole(e.target.value)
     }
-
-    //error handling
-
-    const ifEmailPresent = () => {
-        if (person.email === "") {
-            return noAssignedEmail
-        } else {
-            return person.email
+    const displayRole = () => {
+        if (isFieldEmptyNullOrUndefined(person.role)) {
+            return "Brak roli"
         }
+        return person.role;
     }
-    const [email, setEmail] = useState(ifEmailPresent);
+
+
+    const [email, setEmail] = useState(person.email);
     const [emailFormVisible, setEmailFormVisible] = useState(false)
     const emailInputRef = useRef(null);
     const toggleEmailForm = async () => {
         setErrors([])
-
-        if (email === noAssignedEmail) {
-            setEmailFormVisible(!emailFormVisible);
-            return;
+        if(!emailRegex.test(email) && !isFieldEmptyNullOrUndefined(email)){
+            setErrors([wrongEmailMessage])
+            return
         }
+
         if (emailFormVisible === true && email !== person.email) {
             try {
                 let updatedPerson = {...person, email: email}
-                await updateContactPersonById(contactId, updatedPerson)
-
+                const response = await updateContactPersonById(contactId, updatedPerson)
+                updateState(response);
             } catch (Error) {
-                setErrors([wrongEmailMessage])
-                return
+                console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
             }
         }
         setEmailFormVisible(!emailFormVisible);
-
     }
     const handleEmailChange = (e) => {
         setEmail(e.target.value)
     }
-
-    const ifPhonePresent = () => {
-        if (person.phone === "") {
-            return noAssignedPhone
-        } else {
-            return person.phone
+    const displayEmail = () => {
+        if (isFieldEmptyNullOrUndefined(person.email)) {
+            return "Brak emaila"
         }
+        return person.email;
     }
-    const [phone, setPhone] = useState(ifPhonePresent);
+
+    const [phone, setPhone] = useState(person.phone);
     const [phoneFormVisible, setPhoneFormVisible] = useState(false)
     const phoneInputRef = useRef(null);
     const togglePhoneForm = async () => {
         setErrors([])
 
-        if (phone === noAssignedPhone) {
-            setPhoneFormVisible(!phoneFormVisible);
+        if (!phoneRegex.test(phone) && !isFieldEmptyNullOrUndefined(phone) ) {
+           setErrors([wrongPhoneMessage])
             return;
         }
         if (phoneFormVisible === true && phone !== person.phone) {
             try {
                 let updatedPerson = {...person, phone: phone}
-                await updateContactPersonById(contactId, updatedPerson)
-
+                const response = await updateContactPersonById(contactId, updatedPerson)
+                updateState(response);
             } catch (Error) {
                 setErrors([wrongPhoneMessage])
                 return
             }
         }
         setPhoneFormVisible(!phoneFormVisible);
-
     }
     const handlePhoneChange = (e) => {
         setPhone(e.target.value)
+    }
+    const displayPhone = () => {
+        if (isFieldEmptyNullOrUndefined(person.phone)) {
+            return "Brak numeru telefonu"
+        }
+        return person.phone;
     }
 
 
@@ -196,12 +207,14 @@ const SinglePerson = ({person, onDeletePerson, contactId}) => {
             if (emailFormVisible && emailInputRef.current) {
                 emailInputRef.current.focus();
             }
+            if (phoneFormVisible && phoneInputRef.current) {
+                phoneInputRef.current.focus();
+            }
         },
-        [firstNameFormVisible, lastNameFormVisible, roleFormVisible, emailFormVisible]);
+        [firstNameFormVisible, lastNameFormVisible, roleFormVisible, emailFormVisible, phoneFormVisible]);
 
 
     return (
-
 
         <li className={"cd-children-li"}>
             <div className={"cd-children-name-container"}>
@@ -232,19 +245,19 @@ const SinglePerson = ({person, onDeletePerson, contactId}) => {
                     <li>{roleFormVisible ?
                         <textarea ref={roleInputRef} onChange={handleRoleChange} value={role} onBlur={toggleRoleForm}/>
                         :
-                        <div hidden={roleFormVisible} onClick={toggleRoleForm}>{role}</div>}
+                        <div hidden={roleFormVisible} onClick={toggleRoleForm}>{displayRole()}</div>}
                     </li>
                     <li>{emailFormVisible ?
                         <textarea ref={emailInputRef} onChange={handleEmailChange} value={email}
                                   onBlur={toggleEmailForm}/>
                         :
-                        <div hidden={emailFormVisible} onClick={toggleEmailForm}>{email}</div>}
+                        <div hidden={emailFormVisible} onClick={toggleEmailForm}>{displayEmail()}</div>}
                     </li>
                     <li>{phoneFormVisible ?
                         <textarea ref={phoneInputRef} onChange={handlePhoneChange} value={phone}
                                   onBlur={togglePhoneForm}/>
                         :
-                        <div hidden={phoneFormVisible} onClick={togglePhoneForm}>{phone}</div>}
+                        <div hidden={phoneFormVisible} onClick={togglePhoneForm}>{displayPhone()}</div>}
                     </li>
                     {errors.map((el, index) => <li key={index} className={"cd-details-error"}>{el}</li>)}
                 </ul>

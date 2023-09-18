@@ -2,16 +2,14 @@ import React, {useEffect, useRef, useState} from "react";
 import {useParams, useNavigate} from "react-router-dom";
 import {deleteContactById, getContactById, updateContactById} from "../../api/contacts";
 import Institutions from "./Institutions/Institutions";
-import ContactPeople from "./ContactPeople/ContactPeople";
+import ContactPeople from "../../containers/Contacts/ContactPeople/ContactPeople"
 import {confirmAlert} from "react-confirm-alert";
 import Events from "../../containers/Contacts/Events/Events";
 import "./ContactDetails.css"
 import {blankRegex, isFieldEmptyNullOrUndefined} from "../../appConstans/appConstans";
 
-
 // Todo sprawdzenie, czy state jest pusty. Jeśli tak, trzeba zfetchować.
 //  Możliwe, że w URL trzeba przechowywać dane o paginacji
-// usuwanie ze state
 
 const ContactDetails = ({contacts, updateContact, removeContact}) => {
     const contactId = Number(useParams().contactId);
@@ -85,31 +83,6 @@ const ContactDetails = ({contacts, updateContact, removeContact}) => {
             ]
         });
     }
-
-
-
-    // const onAddInstitution = (institution) => {
-    //     const updatedContact = {...contact, institutions: [...contact.institutions, institution]};
-    //   //  setContact(updatedContact)
-    // }
-    // const onDeleteInstitution = (id) => {
-    //     const filteredInstitutions = contact.institutions.filter(institution => institution.id !== id);
-    //     const updatedContact = {...contact, institutions: filteredInstitutions};
-    //    // setContact(updatedContact)
-    // }
-    //
-
-    //
-    // const onAddContactPerson= (contactPerson) => {
-    //     const updatedContact = {...contact, contactPeople: [...contact.contactPeople, contactPerson]};
-    //   //  setContact(updatedContact)
-    // }
-    // const onDeleteContactPerson = (id) => {
-    //     const filteredPeople = contact.contactPeople.filter(contactPerson => contactPerson.id !== id);
-    //     const updatedContact = {...contact, contactPeople: filteredPeople};
-    //    // setContact(updatedContact)
-    //
-    // }
 
     const displayDescription = () => {
         if(isFieldEmptyNullOrUndefined(contact.description)){
@@ -185,7 +158,7 @@ const ContactDetails = ({contacts, updateContact, removeContact}) => {
                 {/*<Institutions institutions={contact.institutions}*/}
                 {/*              onAddInstitution={onAddInstitution}*/}
                 {/*              contactId={contactId} onDeleteInstitution={onDeleteInstitution}/>*/}
-                {/*<ContactPeople contactPeople={contact.contactPeople} contactId={contactId} onAddContactPerson={onAddContactPerson} onDeleteContactPerson={onDeleteContactPerson}/>*/}
+                <ContactPeople contactId={contactId}/>
                 <Events contactId={contactId}/>
             </div>
 

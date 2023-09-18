@@ -4,7 +4,7 @@ import {removeContact, updateContact} from "../../../redux/actions/contacts";
 
 const mapStateToProps = (state) => {
     return {
-        contacts :state.contacts
+        contacts: state.contacts
     }
 }
 const mapDispatchToProps = (dispatch) => {
