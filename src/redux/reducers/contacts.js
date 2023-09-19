@@ -8,8 +8,14 @@ export const contacts = (state = [], action) => {
         case ADD_CONTACTS:
             return action.payload;
         case UPDATE_CONTACT:
-            const filteredContacts = [...state].filter( (contact) => contact.id !== action.payload.id);
-            return [action.payload, ...filteredContacts]
+            const updatedContacts = [...state];
+            const index = updatedContacts.findIndex( (el) => el.id === action.payload.id)
+            if(index === -1){
+                console.log("Błąd! Spr contacs reducer!")
+                return state
+            }
+            updatedContacts[index] = action.payload
+            return updatedContacts
         case REMOVE_CONTACT:
             return [...state].filter( (contact) => contact !== action.payload)
         default:
