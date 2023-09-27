@@ -33,11 +33,16 @@
     justify-content: space-between;
 
 }
-.contacts-container-header-pagination{
+.contacts-container-header select{
     display: flex;
 }
 
-.contacts-container-header ul{
+.contacts-container-footer{
+    display: flex;
+    justify-content: space-between;
+}
+
+.contacts-container-footer ul{
     display: flex;
     list-style: none;
     padding-top: 3%;

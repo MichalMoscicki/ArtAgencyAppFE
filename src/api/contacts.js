@@ -41,9 +41,9 @@ export const getContactsInitialRequest = async () => {
     }
 };
 
-export const getContactsSubsequentRequest = async (pageNo) => {
+export const getContactsSubsequentRequest = async (pageNo, sortBy, sortDir) => {
     try {
-        const response = await fetch(`${API_URL}/contacts?pageNo=${pageNo}`, {
+        const response = await fetch(`${API_URL}/contacts?pageNo=${pageNo}${sortBy}${sortDir}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

@@ -1,6 +1,7 @@
 import React from "react";
 import {useState, useEffect} from "react";
 import {addContact, getContactsInitialRequest, getContactsSubsequentRequest,} from "../../api/contacts";
+import {SORT_DIR_ASC, SORT_DIR_DESC, SORT_BY_TITLE, SORT_BY_UPDATED} from "../../api/constans"
 import SingleContact from "../../containers/Contacts/SingleContact";
 import "./Contacts.css"
 
@@ -11,6 +12,39 @@ const Contacts = ({contacts, pagination, addContactsToState, addContactToState, 
     const [contactName, setContactName] = useState("");
     const [alreadyCooperated, setAlreadyCooperated] = useState(false);
     const [formHidden, setFormHidden] = useState(true);
+
+    const [sortBy, setSortBy] = useState("");
+    const [sortDir, setSortDir] = useState("");
+    const [pageNo, setPageNo] = useState(0);
+
+    const TITLE_ASC = "TITLE_ASC"
+    const TITLE_DESC = "TITLE_DESC"
+    const UPDATED_ASC = "UPDATED_ASC"
+    const UPDATED_DESC = "UPDATED_DESC"
+
+    const handleSelect = (e) => {
+
+        switch(e.target.value){
+            case TITLE_DESC:
+                setSortBy(SORT_BY_TITLE);
+                setSortDir(SORT_DIR_DESC);
+                break
+            case TITLE_ASC:
+                setSortBy(SORT_BY_TITLE);
+                setSortDir(SORT_DIR_ASC);
+                break
+            case UPDATED_DESC:
+                setSortBy(SORT_BY_UPDATED);
+                setSortDir(SORT_DIR_DESC);
+                break
+            case UPDATED_ASC:
+                setSortBy(SORT_BY_UPDATED);
+                setSortDir(SORT_DIR_ASC);
+                break
+            default:
+                return
+        }
+    }
 
     useEffect(() => {
         const fetchInitialData = async () => {
@@ -31,7 +65,7 @@ const Contacts = ({contacts, pagination, addContactsToState, addContactToState, 
 
 
     }, []);
-    useEffect( () =>{
+    useEffect(() => {
         const checkButtons = () => {
             if (pagination.pageNo === 0) {
                 setPrevButtonDisabled(true)
@@ -47,6 +81,21 @@ const Contacts = ({contacts, pagination, addContactsToState, addContactToState, 
         }
         checkButtons()
     }, [pagination])
+    useEffect( () => {
+        const fetchSubsequentData = async () => {
+            let response = await getContactsSubsequentRequest(pageNo, sortBy, sortDir);
+            await addContactsToState(response.content);
+            await addPagination({
+                pageNo: response.pageNo,
+                pageSize: response.pageSize,
+                totalElements: response.totalElements,
+                totalPages: response.totalPages,
+                last: response.last
+            })
+        }
+
+        fetchSubsequentData()
+    }, [sortDir, sortBy, pageNo])
 
 
     const onSubmit = async (e) => {
@@ -66,20 +115,8 @@ const Contacts = ({contacts, pagination, addContactsToState, addContactToState, 
     const toggleForm = () => {
         setFormHidden(!formHidden)
     }
-    const handlePageButton = async (index) => {
-        const fetchSubsequentData = async (pageNo) => {
-            let response = await getContactsSubsequentRequest(pageNo);
-            await addContactsToState(response.content);
-            await addPagination({
-                pageNo: response.pageNo,
-                pageSize: response.pageSize,
-                totalElements: response.totalElements,
-                totalPages: response.totalPages,
-                last: response.last
-            })
-        }
-
-        await fetchSubsequentData(index)
+    const handlePageButton = (index) => {
+        setPageNo(index)
     }
     const generatePagesButtons = () => {
         let buttons = [];
@@ -94,26 +131,40 @@ const Contacts = ({contacts, pagination, addContactsToState, addContactToState, 
             <div className={"contacts-container-header"}>
                 <span><h1>Kontakty</h1></span>
                 <span className={"contacts-container-header-pagination"}>
-                    <ul>
-                        <li>
-                            <button onClick={() => handlePageButton(pagination.pageNo - 1)} disabled={prevButtonDisabled}>poprzednia</button>
-                        </li>
-                        <li>
-                            {generatePagesButtons()}
-                        </li>
-                        <li>
-                            <button onClick={() => handlePageButton(pagination.pageNo + 1)} disabled={nextButtonDisabled}>kolejna</button>
-                        </li>
-                    </ul>
+                    <select onChange={handleSelect}>
+                        <option value={UPDATED_DESC}>Data aktualizacji: od najnowszych</option>
+                        <option value={UPDATED_ASC}>Data aktualizacji: od najstarszych</option>
+                        <option value={TITLE_ASC}>Nazwa: rosnąco</option>
+                        <option value={TITLE_DESC}>Nazwa: malejąco</option>
+                    </select>
                 </span>
-
             </div>
             <ul className={"contacts-list"}>
                 {contacts.map((el, index) => {
                     return (<SingleContact contact={el} key={index}/>)
                 })}
             </ul>
-            <h3 onClick={toggleForm} className={"add-contact"}>Dodaj kontakt</h3>
+            <div className={"contacts-container-footer"}>
+                <span>
+                     <h3 onClick={toggleForm} className={"add-contact"}>Dodaj kontakt</h3>
+                </span>
+                <span>
+                    <ul>
+                <li>
+                    <button onClick={() => handlePageButton(pagination.pageNo - 1)}
+                            disabled={prevButtonDisabled}>poprzednia</button>
+                </li>
+                <li>
+                    {generatePagesButtons()}
+                </li>
+                <li>
+                    <button onClick={() => handlePageButton(pagination.pageNo + 1)}
+                            disabled={nextButtonDisabled}>kolejna</button>
+                </li>
+            </ul>
+                </span>
+            </div>
+
             <form onSubmit={onSubmit} hidden={formHidden}>
                 <ul className={"contacts-form-list"}>
                     <li><input onChange={onChange} placeholder={"Nazwa kontaktu"} value={contactName}/></li>
