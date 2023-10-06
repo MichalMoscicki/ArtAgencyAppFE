@@ -6,7 +6,7 @@ import {Layout} from "./components/Layout/Layout";
 import Main from "./components/Main/Main";
 import Contacts from "./containers/Contacts/Contacts";
 import ContactDetails from "./containers/Contacts/ContactDetails";
-import Tasks from "./components/Tasks/Tasks";
+import Tasks from "./containers/Tasks/Tasks";
 import store from "./redux/store";
 
 function App() {

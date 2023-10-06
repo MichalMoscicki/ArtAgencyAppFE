@@ -1,4 +1,3 @@
-
 import {connect} from "react-redux";
 import Contacts from "../../components/Contacts/Contacts";
 import {addContactsToState, addSingleContact} from "../../redux/actions/contacts";
