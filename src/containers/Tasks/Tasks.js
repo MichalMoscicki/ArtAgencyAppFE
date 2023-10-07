@@ -1,21 +1,21 @@
 import {connect} from "react-redux";
 import Tasks from "../../components/Tasks/Tasks";
 import {addSingleTask, addTasksToState} from "../../redux/actions/tasks";
-//import {addContactsPaginationToState} from "../../redux/actions/contactsPagination";
+import {addTasksPaginationToState} from "../../redux/actions/taskPagination"
 
 
 const mapStateToProps = (state) => {
     return {
         tasks : state.tasks,
-        // pagination: state.contactsPagination
+        pagination: state.contactsPagination
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return{
         addTasksToState: (tasks) => dispatch(addTasksToState(tasks)),
-        addTaskToState: (task) => dispatch(addSingleTask(task))
-        // addPagination: pagination => dispatch(addContactsPaginationToState(pagination))
+        addTaskToState: (task) => dispatch(addSingleTask(task)),
+        addPagination: pagination => dispatch(addTasksPaginationToState(pagination))
     }
 }
 

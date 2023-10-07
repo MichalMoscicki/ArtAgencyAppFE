@@ -1,0 +1,40 @@
+.tasks-container {
+    padding: 5% 10%;
+}
+
+.tasks-header{
+    display: flex;
+    justify-content: space-between;
+}
+
+.tasks-header span{
+   padding-top: 3%;
+}
+
+.tasks-container ul{
+    width: 100%;
+    position: relative;
+    box-sizing: border-box;
+    list-style: none;
+}
+.tasks-footer{
+    display: flex;
+    justify-content: space-between;
+}
+
+.tasks-footer h3{
+    background: blanchedalmond;
+    padding-left: 6%;
+    padding-bottom: 3px;
+    border: 1px solid #a98888;
+}
+
+.tasks-footer h3:hover{
+    background: antiquewhite;
+}
+
+.tasks-footer ul{
+    display: flex;
+    list-style: none;
+    padding-top: 3%;
+}

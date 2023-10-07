@@ -1,22 +1,24 @@
 import React, {useEffect, useState} from "react";
-import {addTask, getTasksInitialRequest} from "../../api/tasks";
-import SingleContact from "../../containers/Contacts/SingleContact";
+import {addTask, getTasksInitialRequest, getTasksSubsequentRequest} from "../../api/tasks";
 import {isFieldEmptyNullOrUndefined} from "../../appConstans/appConstans";
 import {WrongDatePopup} from "./WrongDatePopup";
+import SingleTask from "../../containers/Tasks/SingleTask";
+import {SORT_BY_TITLE, SORT_BY_UPDATED, SORT_DIR_ASC, SORT_DIR_DESC} from "../../api/constans";
+import "./Tasks.css"
 
-const Tasks = ({tasks, addTasksToState, addTaskToState}) => {
+const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPagination}) => {
 
     useEffect(() => {
         const fetchInitialData = async () => {
             let response = await getTasksInitialRequest();
             await addTasksToState(response.content);
-            // await addPagination({
-            //     pageNo: response.pageNo,
-            //     pageSize: response.pageSize,
-            //     totalElements: response.totalElements,
-            //     totalPages: response.totalPages,
-            //     last: response.last
-            // })
+            await addPagination({
+                pageNo: response.pageNo,
+                pageSize: response.pageSize,
+                totalElements: response.totalElements,
+                totalPages: response.totalPages,
+                last: response.last
+            })
         }
 
         if (tasks.length === 0) {
@@ -62,7 +64,7 @@ const Tasks = ({tasks, addTasksToState, addTaskToState}) => {
             return date > currentDate;
         }
 
-        if(isDateInFuture(e.target.value)){
+        if (isDateInFuture(e.target.value)) {
             setActivationDate(e.target.value)
         } else {
             setPopupVisible(true)
@@ -84,9 +86,16 @@ const Tasks = ({tasks, addTasksToState, addTaskToState}) => {
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        const task = {title: taskTitle, description: description, priority: Number(priority), active: active, activationDate: activationDate};
+        const task = {
+            title: taskTitle,
+            description: description,
+            priority: Number(priority),
+            active: active,
+            activationDate: activationDate
+        };
         let response = await addTask(task);
         await addTaskToState(response);
+
         function restartFields() {
             setFormHidden(true);
             setTaskTitle("");
@@ -95,36 +104,127 @@ const Tasks = ({tasks, addTasksToState, addTaskToState}) => {
             setActive(false)
             setActivationDate("")
         }
+
         restartFields();
     }
 
+    const [sortBy, setSortBy] = useState("");
+    const [sortDir, setSortDir] = useState("");
+    const [pageNo, setPageNo] = useState(0);
+
+    const TITLE_ASC = "TITLE_ASC";
+    const TITLE_DESC = "TITLE_DESC";
+    const UPDATED_ASC = "UPDATED_ASC";
+    const UPDATED_DESC = "UPDATED_DESC";
+
+    const [prevButtonDisabled, setPrevButtonDisabled] = useState(true);
+    const [nextButtonDisabled, setNextButtonDisabled] = useState(false);
+
+    const handlePageButton = (index) => {
+        setPageNo(index)
+    }
+
+    useEffect(() => {
+        const checkButtons = () => {
+            if (pagination.pageNo === 0) {
+                setPrevButtonDisabled(true)
+            } else {
+                setPrevButtonDisabled(false)
+            }
+
+            if (pagination.last) {
+                setNextButtonDisabled(true)
+            } else {
+                setNextButtonDisabled(false)
+            }
+        }
+        checkButtons()
+    }, [pagination])
+    useEffect( () => {
+        const fetchSubsequentData = async () => {
+            let response = await getTasksSubsequentRequest(pageNo, sortBy, sortDir);
+            await addTasksToState(response.content);
+            await addPagination({
+                pageNo: response.pageNo,
+                pageSize: response.pageSize,
+                totalElements: response.totalElements,
+                totalPages: response.totalPages,
+                last: response.last
+            })
+        }
+
+        fetchSubsequentData()
+    }, [sortDir, sortBy, pageNo])
+
+    const generatePagesButtons = () => {
+        let buttons = [];
+        for (let i = 0; i < pagination.totalPages; i++) {
+            buttons = [...buttons, <button key={i} onClick={() => handlePageButton(i)}>{i}</button>]
+        }
+        return buttons;
+    }
+
+    const handleSelect = (e) => {
+
+        switch(e.target.value){
+            case TITLE_DESC:
+                setSortBy(SORT_BY_TITLE);
+                setSortDir(SORT_DIR_DESC);
+                break
+            case TITLE_ASC:
+                setSortBy(SORT_BY_TITLE);
+                setSortDir(SORT_DIR_ASC);
+                break
+            case UPDATED_DESC:
+                setSortBy(SORT_BY_UPDATED);
+                setSortDir(SORT_DIR_DESC);
+                break
+            case UPDATED_ASC:
+                setSortBy(SORT_BY_UPDATED);
+                setSortDir(SORT_DIR_ASC);
+                break
+            default:
+                return
+        }
+    }
+
     return (
-        <div>
-            <h1>Tasks</h1>
-            <ul className={"contacts-list"}>
+        <div className={"tasks-container"}>
+            <div className={"tasks-header"}>
+                <h1>Zadania</h1>
+                <span>
+                    <select onChange={handleSelect}>
+                        <option value={UPDATED_DESC}>Data aktualizacji: od najnowszych</option>
+                        <option value={UPDATED_ASC}>Data aktualizacji: od najstarszych</option>
+                        <option value={TITLE_ASC}>Nazwa: rosnąco</option>
+                        <option value={TITLE_DESC}>Nazwa: malejąco</option>
+                    </select>
+                </span>
+            </div>
+            <ul>
                 {tasks.map((el, index) => {
-                    return (el.title)
+                    return (<SingleTask key={index} task={el}/>)
                 })}
             </ul>
 
-            <div className={"contacts-container-footer"}>
+            <div className={"tasks-footer"}>
                 <span>
-                     <h3 onClick={toggleForm} className={"add-contact"}>Dodaj zadanie</h3>
+                     <h3 onClick={toggleForm} >Dodaj zadanie</h3>
                 </span>
                 <span>
                     <ul>
-                {/*<li>*/}
-                        {/*    <button onClick={() => handlePageButton(pagination.pageNo - 1)}*/}
-                        {/*            disabled={prevButtonDisabled}>poprzednia</button>*/}
-                        {/*</li>*/}
-                        {/*<li>*/}
-                        {/*    {generatePagesButtons()}*/}
-                        {/*</li>*/}
-                        {/*<li>*/}
-                        {/*    <button onClick={() => handlePageButton(pagination.pageNo + 1)}*/}
-                        {/*            disabled={nextButtonDisabled}>kolejna</button>*/}
-                        {/*</li>*/}
-            </ul>
+                        <li>
+                            <button onClick={() => handlePageButton(pagination.pageNo - 1)}
+                                    disabled={prevButtonDisabled}>poprzednia</button>
+                        </li>
+                        <li>
+                            {generatePagesButtons()}
+                        </li>
+                        <li>
+                            <button onClick={() => handlePageButton(pagination.pageNo + 1)}
+                                    disabled={nextButtonDisabled}>kolejna</button>
+                        </li>
+                    </ul>
                 </span>
             </div>
 
@@ -139,7 +239,8 @@ const Tasks = ({tasks, addTasksToState, addTaskToState}) => {
 
                     <li>
                         <label htmlFor="description">Opis zadania: </label>
-                        <textarea id={"description"} value={description} onChange={handleDescriptionChange} placeholder={"Dodaj opis"}/>
+                        <textarea id={"description"} value={description} onChange={handleDescriptionChange}
+                                  placeholder={"Dodaj opis"}/>
                     </li>
 
                     <li>
@@ -159,7 +260,8 @@ const Tasks = ({tasks, addTasksToState, addTaskToState}) => {
 
                     <li hidden={active}>
                         <label htmlFor={"activation-date"}>Zaplanuj aktywację:</label>
-                        <input type={"date"} id={"activation-date"} onChange={handleActivationDate} value={activationDate}/>
+                        <input type={"date"} id={"activation-date"} onChange={handleActivationDate}
+                               value={activationDate}/>
                         {popupVisible && <WrongDatePopup setPopupVisible={setPopupVisible}/>}
                     </li>
 

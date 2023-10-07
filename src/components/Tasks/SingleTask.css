@@ -1,0 +1,13 @@
+.task{
+    border: 2px solid #616154;
+    padding: 1%;
+    margin: 5px 0;
+    display: flex;
+    justify-content: space-between;
+}
+.task:hover{
+    background: antiquewhite;
+}
+.task-title{
+    padding-right: 5%;
+}
