@@ -1,5 +1,4 @@
 import {emailRegex, phoneRegex, blankRegex} from "../appConstans/appConstans";
-import React from "react";
 
 export const displayMonth = (month) => {
     switch (Number(month)){
@@ -30,7 +29,19 @@ export const displayMonth = (month) => {
         default:
             return ;
     }
+}
 
+export const displayPriority = (priority) => {
+    switch (Number(priority)){
+        case 1:
+            return "Niski"
+        case 2:
+            return "Średni"
+        case 3:
+            return "Wysoki"
+        default:
+            return ;
+    }
 }
 
 export const phoneOrEmptyCheck = (string) => {

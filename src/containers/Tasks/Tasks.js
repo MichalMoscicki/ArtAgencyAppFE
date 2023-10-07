@@ -7,7 +7,8 @@ import {addTasksPaginationToState} from "../../redux/actions/taskPagination"
 const mapStateToProps = (state) => {
     return {
         tasks : state.tasks,
-        pagination: state.contactsPagination
+        pagination: state.contactsPagination,
+        contacts: state.contacts
     }
 }
 

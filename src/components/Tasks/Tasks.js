@@ -5,9 +5,11 @@ import {WrongDatePopup} from "./WrongDatePopup";
 import SingleTask from "../../containers/Tasks/SingleTask";
 import {SORT_BY_TITLE, SORT_BY_UPDATED, SORT_DIR_ASC, SORT_DIR_DESC} from "../../api/constans";
 import "./Tasks.css"
+import {addAttachment} from "../../api/taskAttachments";
 
-const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPagination}) => {
+//todo Now only adding tasks from store is possible. Create component providing browsing all tasks from db.
 
+const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPagination, contacts}) => {
     useEffect(() => {
         const fetchInitialData = async () => {
             let response = await getTasksInitialRequest();
@@ -20,7 +22,6 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
                 last: response.last
             })
         }
-
         if (tasks.length === 0) {
             fetchInitialData()
         }
@@ -52,6 +53,10 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
         setActivationDate("")
     }
 
+    const [contactId, setContactId] = useState(null);
+    const handleAttachment = (e) => {
+        setContactId(e.target.value)
+    }
 
     const [popupVisible, setPopupVisible] = useState(false);
     const [activationDate, setActivationDate] = useState("");
@@ -94,18 +99,21 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
             activationDate: activationDate
         };
         let response = await addTask(task);
-        await addTaskToState(response);
 
-        function restartFields() {
+        const contact = contacts.filter( (el) => el.id === Number(contactId))[0]
+        const attachment = {contacts: [contact]}
+        const attachmentResponse =  await addAttachment(response.id, attachment);
+
+        const taskWithAttachment = {...response, attachment: attachmentResponse}
+        await addTaskToState(taskWithAttachment);
+        console.log(taskWithAttachment)
+
             setFormHidden(true);
             setTaskTitle("");
             setDescription("")
             setPriority("");
             setActive(false)
             setActivationDate("")
-        }
-
-        restartFields();
     }
 
     const [sortBy, setSortBy] = useState("");
@@ -123,7 +131,6 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
     const handlePageButton = (index) => {
         setPageNo(index)
     }
-
     useEffect(() => {
         const checkButtons = () => {
             if (pagination.pageNo === 0) {
@@ -140,22 +147,6 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
         }
         checkButtons()
     }, [pagination])
-    useEffect( () => {
-        const fetchSubsequentData = async () => {
-            let response = await getTasksSubsequentRequest(pageNo, sortBy, sortDir);
-            await addTasksToState(response.content);
-            await addPagination({
-                pageNo: response.pageNo,
-                pageSize: response.pageSize,
-                totalElements: response.totalElements,
-                totalPages: response.totalPages,
-                last: response.last
-            })
-        }
-
-        fetchSubsequentData()
-    }, [sortDir, sortBy, pageNo])
-
     const generatePagesButtons = () => {
         let buttons = [];
         for (let i = 0; i < pagination.totalPages; i++) {
@@ -166,7 +157,7 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
 
     const handleSelect = (e) => {
 
-        switch(e.target.value){
+        switch (e.target.value) {
             case TITLE_DESC:
                 setSortBy(SORT_BY_TITLE);
                 setSortDir(SORT_DIR_DESC);
@@ -187,6 +178,21 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
                 return
         }
     }
+    useEffect(() => {
+        const fetchSubsequentData = async () => {
+            let response = await getTasksSubsequentRequest(pageNo, sortBy, sortDir);
+            await addTasksToState(response.content);
+            await addPagination({
+                pageNo: response.pageNo,
+                pageSize: response.pageSize,
+                totalElements: response.totalElements,
+                totalPages: response.totalPages,
+                last: response.last
+            })
+        }
+
+        fetchSubsequentData()
+    }, [sortDir, sortBy, pageNo])
 
     return (
         <div className={"tasks-container"}>
@@ -209,7 +215,7 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
 
             <div className={"tasks-footer"}>
                 <span>
-                     <h3 onClick={toggleForm} >Dodaj zadanie</h3>
+                     <h3 onClick={toggleForm}>Dodaj zadanie</h3>
                 </span>
                 <span>
                     <ul>
@@ -265,7 +271,13 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
                         {popupVisible && <WrongDatePopup setPopupVisible={setPopupVisible}/>}
                     </li>
 
-                    <li>{/*taskAttachments*/}</li>
+                    <li>
+                        <select onChange={handleAttachment}>
+                            {contacts.map((el, index) => {
+                                return (<option value={el.id} key={index}>{el.title}</option>)
+                            })}
+                        </select>
+                    </li>
                 </ul>
                 <div className={"submit-contact-btn"}>
                     <button type={"submit"} disabled={buttonDisabled}>Dodaj</button>

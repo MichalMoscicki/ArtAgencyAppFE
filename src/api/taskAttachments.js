@@ -1,6 +1,8 @@
 import {API_URL} from "./constans";
 
 export const addAttachment = async (taskId , attachment) => {
+    console.log(attachment)
+    console.log(JSON.stringify(attachment))
     const response = await fetch(`${API_URL}/tasks/${taskId}/attachments`, {
         method: "POST",
         body: JSON.stringify(attachment),
