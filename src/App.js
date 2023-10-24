@@ -2,7 +2,7 @@ import React from "react";
 import {Provider} from "react-redux";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import './App.css';
-import {Layout} from "./components/Layout/Layout";
+import Layout from "./containers/Layout/Layout";
 import Main from "./components/Main/Main";
 import Contacts from "./containers/Contacts/Contacts";
 import ContactDetails from "./containers/Contacts/ContactDetails";
