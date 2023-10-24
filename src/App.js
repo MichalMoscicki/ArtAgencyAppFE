@@ -8,6 +8,7 @@ import Contacts from "./containers/Contacts/Contacts";
 import ContactDetails from "./containers/Contacts/ContactDetails";
 import Tasks from "./containers/Tasks/Tasks";
 import store from "./redux/store";
+import Login from "./containers/Auth/Login";
 
 function App() {
     return (
@@ -15,8 +16,9 @@ function App() {
             <BrowserRouter>
                 <div className="container">
                     <Routes>
+                        <Route path="/login" element={<Login/>}/>
                         <Route path="/" element={<Layout/>}>
-                            <Route path="/" element={<Main/>}/>
+                            <Route path="/main" element={<Main/>}/>
                             <Route path="/contacts" element={<Contacts/>}/>
                             <Route path='/contacts/:contactId' element={<ContactDetails/>}/>
                             <Route path="/tasks" element={<Tasks/>}/>

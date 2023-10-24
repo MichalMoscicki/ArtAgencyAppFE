@@ -6,6 +6,12 @@ import {Sidebar} from "./SideBar";
 
 
 export const Layout = () => {
+    //bierzemy ze stora token
+
+
+    //jeśli token jest empty - wyświetlamy login
+
+    //jak nie- zwracamy to:
     return (
         <>
             <section>

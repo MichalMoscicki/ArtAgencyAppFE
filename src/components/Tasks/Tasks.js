@@ -100,6 +100,8 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
         };
         let response = await addTask(task);
 
+        //todo jeśli kontakt jest nullem, nie dodawaj załącznika
+
         const contact = contacts.filter( (el) => el.id === Number(contactId))[0]
         const attachment = {contacts: [contact]}
         const attachmentResponse =  await addAttachment(response.id, attachment);
@@ -273,6 +275,7 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
 
                     <li>
                         <select onChange={handleAttachment}>
+                            <option value={null}>załącz kontakt</option>
                             {contacts.map((el, index) => {
                                 return (<option value={el.id} key={index}>{el.title}</option>)
                             })}
