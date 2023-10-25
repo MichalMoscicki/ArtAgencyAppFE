@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {Button, Dialog, Grid, List, ListItem, Typography} from "@mui/material";
 import Instruments from "../../containers/Musicians/Instruments";
+import AddMusicianForm from "../../containers/Musicians/AddMusicianForm";
 
 
 
@@ -9,6 +10,11 @@ const Musicians = () => {
     const [instrumentsOpen, setInstrumentsOpen] = useState(false);
     const toggleInstruments = () => {
         setInstrumentsOpen(!instrumentsOpen);
+    }
+
+    const [addFormOpen, setAddFormOpen] = useState(false);
+    const toggleForm = () => {
+        setAddFormOpen(!addFormOpen)
     }
 
     return (
@@ -37,9 +43,14 @@ const Musicians = () => {
                 <ListItem>10Janek</ListItem>
             </List>
             <Button variant={"outlined"} color={"secondary"}  style={{justifyContent: "flex-start"}}
+                    onClick={toggleForm}>Dodaj muzyka</Button>
+            <Button variant={"outlined"} color={"secondary"}  style={{justifyContent: "flex-start"}}
                     onClick={toggleInstruments}>Instrumenty</Button>
             <Dialog open={instrumentsOpen}>
                 <Instruments toggle={toggleInstruments}/>
+            </Dialog>
+            <Dialog open={addFormOpen}>
+              <AddMusicianForm toggle={toggleForm}/>
             </Dialog>
         </Grid>
     )

@@ -1,10 +1,10 @@
 import {API_URL} from "./constans";
 
-export const addTask = async (task, token) => {
+export const addMusician = async (musician, token) => {
     try {
-        const response = await fetch(`${API_URL}/tasks`, {
+        const response = await fetch(`${API_URL}/musicians`, {
             method: "POST",
-            body: JSON.stringify(task),
+            body: JSON.stringify(musician),
             headers: {
                 'Authorization': token,
                 "Content-Type": "application/json"
@@ -21,9 +21,9 @@ export const addTask = async (task, token) => {
     }
 };
 
-export const getTasksInitialRequest = async (token) => {
+export const getMusiciansInitialRequest = async (token) => {
     try {
-        const response = await fetch(`${API_URL}/tasks`, {
+        const response = await fetch(`${API_URL}/musicians`, {
             method: "GET",
             headers: {
                 'Authorization': token,
@@ -43,9 +43,9 @@ export const getTasksInitialRequest = async (token) => {
     }
 };
 
-export const getTasksSubsequentRequest = async (pageNo, sortBy, sortDir, token) => {
+export const getMusiciansSubsequentRequest = async (pageNo, sortBy, sortDir, token) => {
     try {
-        const response = await fetch(`${API_URL}/tasks?pageNo=${pageNo}${sortBy}${sortDir}`, {
+        const response = await fetch(`${API_URL}/musicians?pageNo=${pageNo}${sortBy}${sortDir}`, {
             method: "GET",
             headers: {
                 'Authorization': token,
@@ -66,9 +66,9 @@ export const getTasksSubsequentRequest = async (pageNo, sortBy, sortDir, token) 
 };
 
 
-export const getTaskById = async (id, token) => {
+export const getMusicianById = async (id, token) => {
     try {
-        const response = await fetch(`${API_URL}/tasks/${id}`, {
+        const response = await fetch(`${API_URL}/musicians/${id}`, {
             method: "GET",
             headers: {
                 'Authorization': token,
@@ -82,9 +82,9 @@ export const getTaskById = async (id, token) => {
     }
 };
 
-export const deleteTaskById = async (id, token) => {
+export const deleteMusicianById = async (id, token) => {
     try {
-        const response = await fetch(`${API_URL}/tasks/${id}`, {
+        const response = await fetch(`${API_URL}/musicians/${id}`, {
             method: "DELETE",
             headers: {
                 'Authorization': token,
@@ -102,11 +102,11 @@ export const deleteTaskById = async (id, token) => {
     }
 };
 
-export const updateTaskById = async (id , task, token) => {
+export const updateMusicianById = async (id , musician, token) => {
     try {
-        const response = await fetch(`${API_URL}/tasks/${id}`, {
+        const response = await fetch(`${API_URL}/musicians/${id}`, {
             method: "PUT",
-            body: JSON.stringify(task),
+            body: JSON.stringify(musician),
             headers: {
                 "Content-Type": "application/json",
                 'Authorization': token,

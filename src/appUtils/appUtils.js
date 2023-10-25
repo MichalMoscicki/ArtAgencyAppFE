@@ -42,15 +42,21 @@ export const displayPriority = (priority) => {
         default:
             return ;
     }
-}
+};
 
 export const phoneOrEmptyCheck = (string) => {
     return string === "" || phoneRegex.test(string);
-}
+};
 export const emailOrEmptyCheck = (string) => {
     return string === "" || emailRegex.test(string)
+};
+export const phoneCheck = (string) => {
+    return phoneRegex.test(string);
+};
+export const emailCheck = (string) => {
+   return emailRegex.test(string)
 };
 
 export const blankCheck = (string) => {
     return blankRegex.test(string);
-}
+};

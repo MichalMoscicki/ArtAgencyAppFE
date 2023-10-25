@@ -20,8 +20,6 @@ const mapDispatchToProps = (dispatch) => {
         addInstrumentToState: (instrument) => dispatch(addSingleInstrument(instrument)),
         updateInstrumentInState: (instrument) => dispatch(updateInstrument(instrument)),
         removeInstrument: (instrument) => dispatch(removeInstrument(instrument)),
-
-        // addPagination: pagination => dispatch(addContactsPaginationToState(pagination))
     }
 }
 
