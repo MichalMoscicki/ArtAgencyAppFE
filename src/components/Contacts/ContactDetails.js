@@ -11,7 +11,7 @@ import {blankRegex, isFieldEmptyNullOrUndefined} from "../../appConstans/appCons
 // Todo sprawdzenie, czy state jest pusty. Jeśli tak, trzeba zfetchować.
 //  Możliwe, że w URL trzeba przechowywać dane o paginacji
 
-const ContactDetails = ({contacts, updateContact, removeContact}) => {
+const ContactDetails = ({contacts, updateContact, removeContact, auth}) => {
     const contactId = Number(useParams().contactId);
     let contact = contacts.find(contact => contact.id === contactId);
 
@@ -44,7 +44,7 @@ const ContactDetails = ({contacts, updateContact, removeContact}) => {
             setTitle(contact.title)
         } else {
        const updatedContact = {...contact, title: title};
-       const response = await updateContactById(contactId, updatedContact);
+       const response = await updateContactById(contactId, updatedContact, auth);
        await updateContact(response);
     }
 
@@ -58,7 +58,7 @@ const ContactDetails = ({contacts, updateContact, removeContact}) => {
     }
     const handleCooperationChoice = async (value) => {
         const updatedContact = {...contact, alreadyCooperated: value};
-        const response = await updateContactById(contact.id, updatedContact);
+        const response = await updateContactById(contact.id, updatedContact, auth);
         await updateContact(response);
         setCooperationFormVisible(!cooperationFormVisible);
     }
@@ -70,7 +70,7 @@ const ContactDetails = ({contacts, updateContact, removeContact}) => {
                 {
                     label: 'Yes',
                     onClick: async () => {
-                        await deleteContactById(contact.id);
+                        await deleteContactById(contact.id, auth);
                         await navigate(`/contacts`)
                         await removeContact(contact)
                     }
@@ -93,7 +93,7 @@ const ContactDetails = ({contacts, updateContact, removeContact}) => {
     const toggleDescription = async () => {
         if (descriptionFormVisible && description !== contact.description) {
             const updatedContact = {...contact, description: description};
-            const response = await updateContactById(contact.id, updatedContact);
+            const response = await updateContactById(contact.id, updatedContact, auth);
             await updateContact(response);
         }
         setDescriptionFormVisible(!descriptionFormVisible)

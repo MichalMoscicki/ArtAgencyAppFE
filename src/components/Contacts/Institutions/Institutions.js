@@ -6,7 +6,7 @@ import {getCurrentTimeAndDate} from "../../../appConstans/appConstans";
 import {blankCheck, emailOrEmptyCheck, phoneOrEmptyCheck} from "../../../appUtils/appUtils";
 
 
-const Institutions = ({contactId, updateContact, contacts}) => {
+const Institutions = ({contactId, updateContact, contacts, auth}) => {
     let contact = contacts.find(contact => contact.id === contactId);
     let institutions = contact.institutions;
 
@@ -40,7 +40,7 @@ const Institutions = ({contactId, updateContact, contacts}) => {
         e.preventDefault();
         let institution = {name: name, city: city, category: category,
             notes: notes, email:email, phone:phone, webPage:webPage}
-        const response = await addInstitution(institution, contactId)
+        const response = await addInstitution(institution, contactId, auth)
         updateContact(createUpdatedContact(response))
         restartInputs();
         setFormHidden(true)

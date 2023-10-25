@@ -5,7 +5,7 @@ import {blankRegex, isFieldEmptyNullOrUndefined, getCurrentTimeAndDate} from "..
 import {updateEventById, deleteEventById} from "../../../api/events";
 import {displayMonth} from "../../../appUtils/appUtils";
 
-const SingleEvent = ({eventId, contactId, updateContact, contacts, index}) => {
+const SingleEvent = ({eventId, contactId, updateContact, contacts, index, auth}) => {
 
     let contact = contacts.find(contact => contact.id === contactId);
     const event = contact.events.find(event => event.id === eventId);
@@ -28,7 +28,7 @@ const SingleEvent = ({eventId, contactId, updateContact, contacts, index}) => {
                 {
                     label: 'Yes',
                     onClick: async () => {
-                        await deleteEventById(contactId, eventId);
+                        await deleteEventById(contactId, eventId, auth);
                         const updatedContact = {
                             ...contact,
                             events: contact.events.filter(event => event.id !== eventId)
@@ -58,7 +58,7 @@ const SingleEvent = ({eventId, contactId, updateContact, contacts, index}) => {
             } else {
                 try {
                     let updatedEvent = {...event, name: name}
-                    await updateEventById(contactId, updatedEvent)
+                    await updateEventById(contactId, updatedEvent, auth)
                     updateState(updatedEvent)
                 } catch (Error) {
                     console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
@@ -84,7 +84,7 @@ const SingleEvent = ({eventId, contactId, updateContact, contacts, index}) => {
         if (descriptionFormVisible === true && description !== event.description) {
             try {
                 let updatedEvent = {...event, description: description}
-                await updateEventById(contactId, updatedEvent)
+                await updateEventById(contactId, updatedEvent, auth)
                 console.log(updatedEvent)
                 updateState(updatedEvent)
             } catch (Error) {
@@ -99,15 +99,15 @@ const SingleEvent = ({eventId, contactId, updateContact, contacts, index}) => {
 
     const [monthWhenOrganized, setMonthWhenOrganized] = useState(event.monthWhenOrganized);
     const [monthFormVisible, setMonthFormVisible] = useState(false)
-    const toggleMonthForm = async () => {
+    const toggleMonthForm = () => {
         setMonthFormVisible(!monthFormVisible)
     }
     const handleSelect = async (e) => {
         setMonthWhenOrganized(e.target.value)
         try {
             let updatedEvent = {...event, monthWhenOrganized: e.target.value}
-            await updateEventById(contactId, updatedEvent)
-            await updateState(updatedEvent)
+            await updateEventById(contactId, updatedEvent, auth)
+            updateState(updatedEvent)
         } catch (Error) {
             console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
         }

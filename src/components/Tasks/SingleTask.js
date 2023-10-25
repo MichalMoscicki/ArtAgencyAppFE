@@ -4,7 +4,7 @@ import "./SingleTask.css"
 import {displayPriority} from "../../appUtils/appUtils";
 
 
-export const SingleTask = ({task, updateTaskInState, removeTaskFromState}) => {
+export const SingleTask = ({task, updateTaskInState, removeTaskFromState, auth}) => {
 
     const [detailsHidden, setDetailsHidden] = useState(true);
     const toggleDetails = () => {
@@ -12,12 +12,12 @@ export const SingleTask = ({task, updateTaskInState, removeTaskFromState}) => {
     }
 
     const handleDelete = () => {
-        deleteTaskById(task.id)
+        deleteTaskById(task.id, auth)
         removeTaskFromState(task);
     }
     const handleCompleted = async () => {
         const updatedTask = {...task, finished: true, active:false};
-        const response = await updateTaskById(updatedTask.id, updatedTask)
+        const response = await updateTaskById(updatedTask.id, updatedTask, auth)
         await updateTaskInState(response)
     }
 

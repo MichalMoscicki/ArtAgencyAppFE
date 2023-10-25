@@ -8,9 +8,9 @@ import {
     getCurrentTimeAndDate,
     isFieldEmptyNullOrUndefined, phoneRegex, wrongEmailMessage, wrongPhoneMessage
 } from "../../../appConstans/appConstans";
-import {deleteEventById} from "../../../api/events";
 
-const SingleInstitution = ({contactId, index, institutionId, updateContact, contacts}) => {
+
+const SingleInstitution = ({contactId, index, institutionId, updateContact, contacts, auth}) => {
     let contact = contacts.find(contact => contact.id === contactId);
     const institution = contact.institutions.find(institution => institution.id === institutionId);
 
@@ -24,7 +24,7 @@ const SingleInstitution = ({contactId, index, institutionId, updateContact, cont
                 {
                     label: 'Yes',
                     onClick: async () => {
-                        await deleteInstitutionById(contactId, institutionId);
+                        await deleteInstitutionById(contactId, institutionId, auth);
                         const updatedContact = {
                             ...contact,
                             institutions: contact.institutions.filter(institution => institution.id !== institutionId)
@@ -64,7 +64,7 @@ const SingleInstitution = ({contactId, index, institutionId, updateContact, cont
             } else {
                 try {
                     let updatedInstitution = {...institution, name: name}
-                    const response = await updateInstitutionById(contactId, updatedInstitution)
+                    const response = await updateInstitutionById(contactId, updatedInstitution, auth)
                     updateState(response)
                 } catch (Error) {
                     console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
@@ -89,7 +89,7 @@ const SingleInstitution = ({contactId, index, institutionId, updateContact, cont
             } else {
                 try {
                     let updatedInstitution = {...institution, city: city}
-                    const response = await updateInstitutionById(contactId, updatedInstitution)
+                    const response = await updateInstitutionById(contactId, updatedInstitution, auth)
                     updateState(response)
                 } catch (Error) {
                     console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
@@ -113,7 +113,7 @@ const SingleInstitution = ({contactId, index, institutionId, updateContact, cont
             } else {
                 try {
                     let updatedInstitution = {...institution, category: category}
-                    const response = await updateInstitutionById(contactId, updatedInstitution)
+                    const response = await updateInstitutionById(contactId, updatedInstitution, auth)
                     updateState(response)
                 } catch (Error) {
                     console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
@@ -134,7 +134,7 @@ const SingleInstitution = ({contactId, index, institutionId, updateContact, cont
         if (notesFormVisible === true && notes !== institution.notes) {
             try {
                 let updatedInstitution = {...institution, notes: notes}
-                const response = await updateInstitutionById(contactId, updatedInstitution)
+                const response = await updateInstitutionById(contactId, updatedInstitution, auth)
                 updateState(response)
             } catch (Error) {
                 console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
@@ -165,7 +165,7 @@ const SingleInstitution = ({contactId, index, institutionId, updateContact, cont
             }
             try {
                 let updatedInstitution = {...institution, email: email}
-                const response = await updateInstitutionById(contactId, updatedInstitution)
+                const response = await updateInstitutionById(contactId, updatedInstitution, auth)
                 updateState(response)
             } catch (Error) {
                 console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
@@ -197,7 +197,7 @@ const SingleInstitution = ({contactId, index, institutionId, updateContact, cont
             }
             try {
                 let updatedInstitution = {...institution, phone: phone}
-                const response = await updateInstitutionById(contactId, updatedInstitution)
+                const response = await updateInstitutionById(contactId, updatedInstitution, auth)
                 updateState(response)
             } catch (Error) {
                 console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
@@ -223,7 +223,7 @@ const SingleInstitution = ({contactId, index, institutionId, updateContact, cont
         if (webPageFormVisible === true && webPage !== institution.webPage) {
             try {
                 let updatedInstitution = {...institution, webPage: webPage}
-                const response = await updateInstitutionById(contactId, updatedInstitution)
+                const response = await updateInstitutionById(contactId, updatedInstitution, auth)
                 updateState(response)
             } catch (Error) {
                 console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
@@ -241,7 +241,6 @@ const SingleInstitution = ({contactId, index, institutionId, updateContact, cont
         }
         return institution.webPage;
     }
-
 
 
 useEffect(() => {

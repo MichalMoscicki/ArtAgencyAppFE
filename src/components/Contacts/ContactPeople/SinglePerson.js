@@ -11,7 +11,7 @@ import {
     wrongPhoneMessage
 } from "../../../appConstans/appConstans";
 
-const SinglePerson = ({contactId, contacts, index, personId, updateContact}) => {
+const SinglePerson = ({contactId, contacts, index, personId, updateContact, auth}) => {
 
     let contact = contacts.find(contact => contact.id === contactId);
     const person = contact.contactPeople.find(person => person.id === personId);
@@ -35,7 +35,7 @@ const SinglePerson = ({contactId, contacts, index, personId, updateContact}) => 
                 {
                     label: 'Yes',
                     onClick: async () => {
-                        await deleteContactPersonById(contactId, personId);
+                        await deleteContactPersonById(contactId, personId, auth);
                         const updatedContact = {
                             ...contact,
                             contactPeople: contact.contactPeople.filter(person => person.id !== personId)
@@ -66,7 +66,7 @@ const SinglePerson = ({contactId, contacts, index, personId, updateContact}) => 
             } else {
                 try {
                     let updatedPerson = {...person, firstName: firstName}
-                    const response = await updateContactPersonById(contactId, updatedPerson)
+                    const response = await updateContactPersonById(contactId, updatedPerson, auth)
                     updateState(response);
 
                 } catch (Error) {
@@ -90,7 +90,7 @@ const SinglePerson = ({contactId, contacts, index, personId, updateContact}) => 
             } else {
                 try {
                     let updatedPerson = {...person, lastName: lastName}
-                    const response = await updateContactPersonById(contactId, updatedPerson)
+                    const response = await updateContactPersonById(contactId, updatedPerson, auth)
                     updateState(response);
                 } catch (Error) {
                     console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
@@ -111,7 +111,7 @@ const SinglePerson = ({contactId, contacts, index, personId, updateContact}) => 
         if (roleFormVisible === true && role !== person.role) {
             try {
                 let updatedPerson = {...person, role: role}
-                const response = await updateContactPersonById(contactId, updatedPerson)
+                const response = await updateContactPersonById(contactId, updatedPerson, auth)
                 updateState(response);
             } catch (Error) {
                 console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
@@ -143,7 +143,7 @@ const SinglePerson = ({contactId, contacts, index, personId, updateContact}) => 
         if (emailFormVisible === true && email !== person.email) {
             try {
                 let updatedPerson = {...person, email: email}
-                const response = await updateContactPersonById(contactId, updatedPerson)
+                const response = await updateContactPersonById(contactId, updatedPerson, auth)
                 updateState(response);
             } catch (Error) {
                 console.log("Tutaj obsługa wyjątków, o których nie mam pojęcia, że się mogą wydarzyć")
@@ -174,7 +174,7 @@ const SinglePerson = ({contactId, contacts, index, personId, updateContact}) => 
         if (phoneFormVisible === true && phone !== person.phone) {
             try {
                 let updatedPerson = {...person, phone: phone}
-                const response = await updateContactPersonById(contactId, updatedPerson)
+                const response = await updateContactPersonById(contactId, updatedPerson, auth)
                 updateState(response);
             } catch (Error) {
                 setErrors([wrongPhoneMessage])

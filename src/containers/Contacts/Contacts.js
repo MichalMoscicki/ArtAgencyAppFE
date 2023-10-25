@@ -7,7 +7,8 @@ import {addContactsPaginationToState} from "../../redux/actions/contactsPaginati
 const mapStateToProps = (state) => {
     return {
         contacts :state.contacts,
-        pagination: state.contactsPagination
+        pagination: state.contactsPagination,
+        auth: state.auth
 
     }
 }

@@ -4,7 +4,8 @@ import {connect} from "react-redux";
 
 const mapStateToProps = (state) => {
     return {
-        contacts: state.contacts
+        contacts: state.contacts,
+        auth: state.auth
     }
 }
 const mapDispatchToProps = (dispatch) => {

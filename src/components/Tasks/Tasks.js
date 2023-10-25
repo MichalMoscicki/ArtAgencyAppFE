@@ -9,10 +9,10 @@ import {addAttachment} from "../../api/taskAttachments";
 
 //todo Now only adding tasks from store is possible. Create component providing browsing all tasks from db.
 
-const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPagination, contacts}) => {
+const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPagination, contacts, auth}) => {
     useEffect(() => {
         const fetchInitialData = async () => {
-            let response = await getTasksInitialRequest();
+            let response = await getTasksInitialRequest(auth);
             await addTasksToState(response.content);
             await addPagination({
                 pageNo: response.pageNo,
@@ -98,9 +98,10 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
             active: active,
             activationDate: activationDate
         };
-        let response = await addTask(task);
+        let response = await addTask(task, auth);
 
         //todo jeśli kontakt jest nullem, nie dodawaj załącznika
+        //todo autoryzacja równiez do tokenu
 
         const contact = contacts.filter( (el) => el.id === Number(contactId))[0]
         const attachment = {contacts: [contact]}
@@ -182,7 +183,7 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
     }
     useEffect(() => {
         const fetchSubsequentData = async () => {
-            let response = await getTasksSubsequentRequest(pageNo, sortBy, sortDir);
+            let response = await getTasksSubsequentRequest(pageNo, sortBy, sortDir, auth);
             await addTasksToState(response.content);
             await addPagination({
                 pageNo: response.pageNo,

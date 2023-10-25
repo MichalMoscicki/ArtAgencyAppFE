@@ -3,7 +3,7 @@ import {blankRegex, getCurrentTimeAndDate} from "../../../appConstans/appConstan
 import {addEvent} from "../../../api/events";
 import SingleEvent from "../../../containers/Contacts/Events/SingleEvent";
 
-const Events = ({contacts, updateContact, contactId}) => {
+const Events = ({contacts, updateContact, contactId, auth}) => {
 
     let contact = contacts.find(contact => contact.id === contactId);
     let events = contact.events;
@@ -34,8 +34,8 @@ const Events = ({contacts, updateContact, contactId}) => {
         const event = {name: name, description: description, monthWhenOrganized: Number(monthWhenOrganized)}
 
         try {
-            const response = await addEvent(contactId, event);
-            const updatedContact = await createUpdatedContact(response);
+            const response = await addEvent(contactId, event, auth);
+            const updatedContact = await createUpdatedContact(response, auth);
             await updateContact(updatedContact);
             setName("");
             setDescription("");

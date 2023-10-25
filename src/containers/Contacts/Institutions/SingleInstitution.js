@@ -5,7 +5,8 @@ import SingleInstitution from "../../../components/Contacts/Institutions/SingleI
 
 const mapStateToProps = (state) => {
     return {
-        contacts: state.contacts
+        contacts: state.contacts,
+        auth: state.auth
     }
 }
 const mapDispatchToProps = (dispatch) => {

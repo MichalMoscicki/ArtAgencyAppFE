@@ -4,7 +4,8 @@ import {updateContact, removeContact} from "../../redux/actions/contacts";
 
 const mapStateToProps = (state) => {
     return {
-        contacts: state.contacts
+        contacts: state.contacts,
+        auth: state.auth
     }
 }
 

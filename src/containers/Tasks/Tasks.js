@@ -8,7 +8,8 @@ const mapStateToProps = (state) => {
     return {
         tasks : state.tasks,
         pagination: state.contactsPagination,
-        contacts: state.contacts
+        contacts: state.contacts,
+        auth: state.auth
     }
 }
 

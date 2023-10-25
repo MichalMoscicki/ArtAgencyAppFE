@@ -4,7 +4,7 @@ import {addContactPerson} from "../../../api/contactPeople";
 import {getCurrentTimeAndDate} from "../../../appConstans/appConstans";
 import SinglePerson from "../../../containers/Contacts/ContactPeople/SinglePerson";
 
-const ContactPeople = ({contactId, contacts, updateContact}) => {
+const ContactPeople = ({contactId, contacts, updateContact, auth}) => {
 
     let contact = contacts.find(contact => contact.id === contactId);
     let contactPeople = contact.contactPeople;
@@ -60,7 +60,7 @@ const ContactPeople = ({contactId, contacts, updateContact}) => {
             email:email
         }
         try {
-            const response = await addContactPerson(contactId, contactPerson);
+            const response = await addContactPerson(contactId, contactPerson, auth);
             updateContact(createUpdatedContact(response))
             setFirstName("")
             setLastName("")

@@ -1,12 +1,13 @@
 import {API_URL} from "./constans";
 
-export const addInstitution = async (institution, contactId) => {
+export const addInstitution = async (institution, contactId, token) => {
     try {
         const response = await fetch(`${API_URL}/contacts/${contactId}/institutions`, {
             method: "POST",
             body: JSON.stringify(institution),
             headers: {
                 "Content-Type": "application/json",
+                'Authorization': token
             },
         });
 
@@ -20,12 +21,13 @@ export const addInstitution = async (institution, contactId) => {
     }
 };
 
-export const updateInstitutionById = async (contactId , institution) => {
+export const updateInstitutionById = async (contactId , institution, token) => {
         const response = await fetch(`${API_URL}/contacts/${contactId}/institutions/${institution.id}`, {
             method: "PUT",
             body: JSON.stringify(institution),
             headers: {
                 "Content-Type": "application/json",
+                'Authorization': token
             },
         });
     if (response.status !== 200) {
@@ -37,10 +39,13 @@ export const updateInstitutionById = async (contactId , institution) => {
 };
 
 
-export const deleteInstitutionById = async (contactId, institutionId) => {
+export const deleteInstitutionById = async (contactId, institutionId, token) => {
     try {
         const response = await fetch(`${API_URL}/contacts/${contactId}/institutions/${institutionId}`, {
             method: "DELETE",
+            headers: {
+                'Authorization': token
+            },
         });
 
         const data = await response.json();

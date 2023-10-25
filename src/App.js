@@ -3,12 +3,12 @@ import {Provider} from "react-redux";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import './App.css';
 import Layout from "./containers/Layout/Layout";
-import Main from "./components/Main/Main";
 import Contacts from "./containers/Contacts/Contacts";
 import ContactDetails from "./containers/Contacts/ContactDetails";
 import Tasks from "./containers/Tasks/Tasks";
 import store from "./redux/store";
 import Login from "./containers/Auth/Login";
+import Musicians from "./components/Musicians/Musicians";
 
 function App() {
     return (
@@ -18,10 +18,10 @@ function App() {
                     <Routes>
                         <Route path="/login" element={<Login/>}/>
                         <Route path="/" element={<Layout/>}>
-                            <Route path="/main" element={<Main/>}/>
+                            <Route path="/" element={<Tasks/>}/>
                             <Route path="/contacts" element={<Contacts/>}/>
                             <Route path='/contacts/:contactId' element={<ContactDetails/>}/>
-                            <Route path="/tasks" element={<Tasks/>}/>
+                            <Route path="/musicians" element={<Musicians/>}/>
                         </Route>
                     </Routes>
                 </div>

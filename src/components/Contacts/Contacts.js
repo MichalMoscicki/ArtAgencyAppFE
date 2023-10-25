@@ -5,7 +5,7 @@ import {SORT_DIR_ASC, SORT_DIR_DESC, SORT_BY_TITLE, SORT_BY_UPDATED} from "../..
 import SingleContact from "../../containers/Contacts/SingleContact";
 import "./Contacts.css"
 
-const Contacts = ({contacts, pagination, addContactsToState, addContactToState, addPagination}) => {
+const Contacts = ({contacts, pagination, addContactsToState, addContactToState, addPagination, auth}) => {
     const [prevButtonDisabled, setPrevButtonDisabled] = useState(true);
     const [nextButtonDisabled, setNextButtonDisabled] = useState(false)
 
@@ -48,7 +48,7 @@ const Contacts = ({contacts, pagination, addContactsToState, addContactToState, 
 
     useEffect(() => {
         const fetchInitialData = async () => {
-            let response = await getContactsInitialRequest(null);
+            let response = await getContactsInitialRequest(auth);
             await addContactsToState(response.content);
             await addPagination({
                 pageNo: response.pageNo,
@@ -62,9 +62,8 @@ const Contacts = ({contacts, pagination, addContactsToState, addContactToState, 
         if (contacts.length === 0) {
             fetchInitialData()
         }
-
-
     }, []);
+
     useEffect(() => {
         const checkButtons = () => {
             if (pagination.pageNo === 0) {
@@ -83,7 +82,7 @@ const Contacts = ({contacts, pagination, addContactsToState, addContactToState, 
     }, [pagination])
     useEffect( () => {
         const fetchSubsequentData = async () => {
-            let response = await getContactsSubsequentRequest(pageNo, sortBy, sortDir);
+            let response = await getContactsSubsequentRequest(pageNo, sortBy, sortDir, auth);
             await addContactsToState(response.content);
             await addPagination({
                 pageNo: response.pageNo,
@@ -101,7 +100,7 @@ const Contacts = ({contacts, pagination, addContactsToState, addContactToState, 
     const onSubmit = async (e) => {
         e.preventDefault();
         const contact = {title: contactName, alreadyCooperated: alreadyCooperated}
-        let response = await addContact(contact);
+        let response = await addContact(contact, auth);
         await addContactToState(response)
         setContactName("");
         setFormHidden(!formHidden);
