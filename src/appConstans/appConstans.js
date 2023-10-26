@@ -12,3 +12,5 @@ export  const isFieldEmptyNullOrUndefined = (objectField) => {
 export const getCurrentTimeAndDate = () => {
     return new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString()
 }
+
+export const SORT_BY_LASTNAME = "&sortBy=lastName"

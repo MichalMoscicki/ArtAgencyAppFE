@@ -11,7 +11,7 @@ export const musicians = (state = [], action) => {
             const updatedContacts = [...state];
             const index = updatedContacts.findIndex( (el) => el.id === action.payload.id)
             if(index === -1){
-                console.log("Błąd! Spr tasks reducer!")
+                console.log("Błąd! Spr musicians reducer!")
                 return state
             }
             updatedContacts[index] = action.payload

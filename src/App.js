@@ -8,7 +8,7 @@ import ContactDetails from "./containers/Contacts/ContactDetails";
 import Tasks from "./containers/Tasks/Tasks";
 import store from "./redux/store";
 import Login from "./containers/Auth/Login";
-import Musicians from "./components/Musicians/Musicians";
+import Musicians from "./containers/Musicians/Musicians";
 
 function App() {
     return (

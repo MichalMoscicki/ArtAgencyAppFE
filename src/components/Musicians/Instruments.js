@@ -44,16 +44,6 @@ const Instruments = ({
         removeInstrument(instrument);
     }
 
-    useEffect(() => {
-        const fetchInitialData = async () => {
-            let response = await getInstrumentsInitialRequest(auth);
-            await addInstrumentsToState(response);
-        }
-        if (instruments.length === 0) {
-            fetchInitialData()
-        }
-    }, []);
-
     return (
         <Container sx={{paddingBottom: 2, paddingTop: 2}}>
             <TableContainer

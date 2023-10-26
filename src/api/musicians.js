@@ -23,7 +23,7 @@ export const addMusician = async (musician, token) => {
 
 export const getMusiciansInitialRequest = async (token) => {
     try {
-        const response = await fetch(`${API_URL}/musicians`, {
+        const response = await fetch(`${API_URL}/musicians?pageSize=6`, {
             method: "GET",
             headers: {
                 'Authorization': token,
@@ -45,7 +45,7 @@ export const getMusiciansInitialRequest = async (token) => {
 
 export const getMusiciansSubsequentRequest = async (pageNo, sortBy, sortDir, token) => {
     try {
-        const response = await fetch(`${API_URL}/musicians?pageNo=${pageNo}${sortBy}${sortDir}`, {
+        const response = await fetch(`${API_URL}/musicians?pageSize=6&pageNo=${pageNo}${sortBy}${sortDir}`, {
             method: "GET",
             headers: {
                 'Authorization': token,
@@ -102,9 +102,10 @@ export const deleteMusicianById = async (id, token) => {
     }
 };
 
-export const updateMusicianById = async (id , musician, token) => {
+export const updateMusician = async (musician, token) => {
+    console.log(musician)
     try {
-        const response = await fetch(`${API_URL}/musicians/${id}`, {
+        const response = await fetch(`${API_URL}/musicians/${musician.id}`, {
             method: "PUT",
             body: JSON.stringify(musician),
             headers: {

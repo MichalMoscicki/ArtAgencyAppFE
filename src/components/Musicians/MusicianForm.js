@@ -1,16 +1,18 @@
 import React, {useEffect, useState} from "react";
 import {Button, ButtonGroup, Grid, InputLabel, MenuItem, Select, TextField} from "@mui/material";
 import {blankCheck, emailCheck, phoneCheck} from "../../appUtils/appUtils";
-import {addMusician} from "../../api/musicians";
+import {addMusician, updateMusician} from "../../api/musicians";
 //todo - dodawanie listy instrumentów zamiast pojedynczego!
-const AddMusicianForm = ({toggle, instruments, auth, addMusicianToState}) => {
+const MusicianForm = ({toggle, instruments, auth, addMusicianToState, musician, updateMusicianInState}) => {
 
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
-    const [notes, setNotes] = useState("");
-    const [instrumentList, setInstrumentList] = useState([]);
+    const musicianPresent = typeof musician !== "undefined";
+
+    const [firstName, setFirstName] = useState(musicianPresent? musician.firstName : "");
+    const [lastName, setLastName] = useState(musicianPresent? musician.lastName : "");
+    const [email, setEmail] = useState(musicianPresent? musician.email : "");
+    const [phone, setPhone] = useState(musicianPresent? musician.phone : "");
+    const [notes, setNotes] = useState(musicianPresent? musician.notes : "");
+    const [instrumentList, setInstrumentList] = useState(musicianPresent? musician.instruments : []);
 
     const handleFirstName = (e) => {
         setFirstName(e.target.value)
@@ -32,7 +34,8 @@ const AddMusicianForm = ({toggle, instruments, auth, addMusicianToState}) => {
     }
 
     const handleSubmit = async () => {
-        const musician = {
+        const musicianOutput = {
+            id: musician.id,
             firstName: firstName,
             lastName: lastName,
             email: email,
@@ -41,8 +44,14 @@ const AddMusicianForm = ({toggle, instruments, auth, addMusicianToState}) => {
             instruments: instrumentList
         }
         try {
-            const response = await addMusician(musician, auth);
-            await addMusicianToState(response)
+
+            if(musicianPresent){
+                const response = await updateMusician(musicianOutput, auth);
+                await updateMusicianInState(response)
+            } else{
+                const response = await addMusician(musicianOutput, auth);
+                await addMusicianToState(response)
+            }
         } catch (Error) {
             console.log("Nie można dodać muzyka: " + Error.value)
         }
@@ -109,4 +118,4 @@ const AddMusicianForm = ({toggle, instruments, auth, addMusicianToState}) => {
     )
 }
 
-export default AddMusicianForm;
+export default MusicianForm;

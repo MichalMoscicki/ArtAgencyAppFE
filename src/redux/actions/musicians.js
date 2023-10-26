@@ -4,10 +4,10 @@ const UPDATE_MUSICIAN = "UPDATE_MUSICIAN";
 const REMOVE_MUSICIAN = "REMOVE_MUSICIAN";
 
 
-const addMusiciansToState = (tasksList) => {
+const addMusiciansToState = (musiciansList) => {
     return {
         type: ADD_MUSICIANS,
-        payload: tasksList
+        payload: musiciansList
     }
 }
 

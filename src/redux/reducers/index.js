@@ -6,6 +6,7 @@ import {tasksPagination} from "./taskPagination";
 import {auth} from "./auth";
 import {instruments} from "./instruments";
 import {musicians} from "./musicians";
+import {musiciansPagination} from "./musiciansPagination";
 
 
 export default combineReducers({
@@ -15,5 +16,6 @@ export default combineReducers({
     tasksPagination,
     auth,
     instruments,
-    musicians
+    musicians,
+    musiciansPagination
 })
