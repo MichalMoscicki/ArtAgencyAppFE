@@ -110,7 +110,8 @@ const Musicians = ({
             paddingTop={"5%"}
             paddingLeft={"10%"}
             paddingRight={"5%"}
-            sx={{minHeight: '100vh'}}
+            sx={{minHeight: '100vh',
+        }}
         >
             <Container sx={{display: 'inline-flex', justifyContent: "space-between"}}>
                 <Typography variant={"h4"} color={"black"} gutterBottom>
@@ -136,18 +137,19 @@ const Musicians = ({
                             onChange={handlePagination}
                 />
             </Container>
-            <TableContainer>
+            <TableContainer >
                 <Table
                     sx={{
                         tableLayout: "auto",
-                        width: "max-content",
-                        height: "max-content"
+                        width: "100%",
+                        height: "100%"
                     }}
                 >
                     <TableHead>
                         <TableRow
                             sx={{
-                                backgroundColor: "lightGrey"
+                                backgroundColor: "lightGrey",
+
                             }}
                         >
                             <TableCell>

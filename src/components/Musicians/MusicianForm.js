@@ -35,7 +35,7 @@ const MusicianForm = ({toggle, instruments, auth, addMusicianToState, musician, 
 
     const handleSubmit = async () => {
         const musicianOutput = {
-            id: musician.id,
+            id: (musicianPresent? musician.id : null),
             firstName: firstName,
             lastName: lastName,
             email: email,

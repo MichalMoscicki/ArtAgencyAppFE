@@ -103,7 +103,6 @@ export const deleteMusicianById = async (id, token) => {
 };
 
 export const updateMusician = async (musician, token) => {
-    console.log(musician)
     try {
         const response = await fetch(`${API_URL}/musicians/${musician.id}`, {
             method: "PUT",
