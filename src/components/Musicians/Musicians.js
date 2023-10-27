@@ -110,8 +110,6 @@ const Musicians = ({
             paddingTop={"5%"}
             paddingLeft={"10%"}
             paddingRight={"5%"}
-            sx={{minHeight: '100vh',
-        }}
         >
             <Container sx={{display: 'inline-flex', justifyContent: "space-between"}}>
                 <Typography variant={"h4"} color={"black"} gutterBottom>
@@ -179,42 +177,51 @@ const Musicians = ({
                         </TableRow>
                     </TableHead>
                     <TableBody fullWidth>
-                        {musicians.map((el, index) => (
-                            <TableRow key={index}>
-                                <TableCell>
-                                    {el.lastName}
-                                </TableCell>
-                                <TableCell>
-                                    {el.firstName}
-                                </TableCell>
-                                <TableCell>
-                                    {el.email}
-                                </TableCell>
-                                <TableCell>
-                                    {el.phone}
-                                </TableCell>
-                                <TableCell>
-                                    {el.notes}
-                                </TableCell>
-                                <TableCell>
-                                    {el.instruments[0].name}
-                                </TableCell>
-                                <TableCell>
-                                    <Button variant={"outlined"}
-                                    onClick={() => toggleUpdate(el)}
-                                    >Edytuj</Button>
-                                </TableCell>
-                                <TableCell>
-                                    <Button
-                                        variant={"outlined"}
-                                        onClick={() => handleDelete(el)}
-                                    >
-                                        Usuń
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                        ))}
+                        {musicians.map((el, index) => {
+                            if (index <= 5) {
+                                return (
+                                    <TableRow key={index}>
+                                        <TableCell>
+                                            {el.lastName}
+                                        </TableCell>
+                                        <TableCell>
+                                            {el.firstName}
+                                        </TableCell>
+                                        <TableCell>
+                                            {el.email}
+                                        </TableCell>
+                                        <TableCell>
+                                            {el.phone}
+                                        </TableCell>
+                                        <TableCell>
+                                            {el.notes}
+                                        </TableCell>
+                                        <TableCell>
+                                            {el.instruments[0].name}
+                                        </TableCell>
+                                        <TableCell>
+                                            <Button
+                                                variant={"outlined"}
+                                                onClick={() => toggleUpdate(el)}
+                                            >
+                                                Edytuj
+                                            </Button>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Button
+                                                variant={"outlined"}
+                                                onClick={() => handleDelete(el)}
+                                            >
+                                                Usuń
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            }
+                            return null; // Return null for index > 5 to skip rendering.
+                        })}
                     </TableBody>
+
                 </Table>
             </TableContainer>
             <Button variant={"outlined"} color={"secondary"} style={{justifyContent: "flex-start"}}

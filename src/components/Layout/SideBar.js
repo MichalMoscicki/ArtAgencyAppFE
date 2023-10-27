@@ -5,7 +5,6 @@ import "./SideBar.css"
 
 export const Sidebar = () => {
     return (
-        <div className={"sidebar centered"}>
             <ul className={"sidebar ul"}>
                 <li><NavLink to={"/"} className={"navlink"}>Zadania</NavLink></li>
                 <li><NavLink to={"/contacts"} className={"navlink"}>Kontakty</NavLink></li>
@@ -13,7 +12,5 @@ export const Sidebar = () => {
                 <li><NavLink to={"/musicians"} className={"navlink"}>Muzycy</NavLink></li>
                 <li><NavLink to={"/jobs"} className={"navlink"}>Zlecenia</NavLink></li>
             </ul>
-        </div>
-
     );
 };
