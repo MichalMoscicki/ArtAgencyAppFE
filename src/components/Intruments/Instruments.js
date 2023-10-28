@@ -23,6 +23,7 @@ const Instruments = ({
                      }) => {
 
     const [instrumentName, setInstrumentName] = useState("");
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!blankCheck(instrumentName)) {
@@ -43,6 +44,17 @@ const Instruments = ({
         await deleteInstrumentById(instrument.id, auth)
         removeInstrument(instrument);
     }
+
+    useEffect(() => {
+        const fetchInitialData = async () => {
+            let responseInstruments = await getInstrumentsInitialRequest(auth);
+            await addInstrumentsToState(responseInstruments);
+
+        }
+        if (instruments.length === 0) {
+            fetchInitialData()
+        }
+    }, []);
 
     return (
         <Container sx={{paddingBottom: 2, paddingTop: 2}}>

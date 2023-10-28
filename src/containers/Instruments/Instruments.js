@@ -1,9 +1,8 @@
 import {connect} from "react-redux";
-import Instruments from "../../components/Musicians/Instruments";
+import Instruments from "../../components/Intruments/Instruments";
 import {
     addInstrumentsToState,
     addSingleInstrument,
-    updateInstrument,
     removeInstrument
 } from "../../redux/actions/instruments";
 
@@ -18,7 +17,6 @@ const mapDispatchToProps = (dispatch) => {
     return {
         addInstrumentsToState: (instruments) => dispatch(addInstrumentsToState(instruments)),
         addInstrumentToState: (instrument) => dispatch(addSingleInstrument(instrument)),
-        updateInstrumentInState: (instrument) => dispatch(updateInstrument(instrument)),
         removeInstrument: (instrument) => dispatch(removeInstrument(instrument)),
     }
 }

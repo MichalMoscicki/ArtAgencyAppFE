@@ -1,7 +1,7 @@
 
 import {connect} from "react-redux";
 import MusicianForm from "../../components/Musicians/MusicianForm";
-import {addSingleMusician, removeMusician, updateMusician} from "../../redux/actions/musicians";
+import {addSingleMusician, updateMusician} from "../../redux/actions/musicians";
 
 const mapStateToProps = (state) => {
     return {
@@ -15,7 +15,6 @@ const mapDispatchToProps = (dispatch) => {
     return {
         addMusicianToState: (musician) => dispatch(addSingleMusician(musician)),
         updateMusicianInState: (musician) => dispatch(updateMusician(musician)),
-        removeMusician: (musician) => dispatch(removeMusician(musician)),
     }
 }
 

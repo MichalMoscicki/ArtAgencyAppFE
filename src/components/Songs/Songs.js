@@ -12,22 +12,68 @@ import {
     Typography
 } from "@mui/material";
 import {SORT_BY_TITLE, SORT_DIR_ASC, SORT_DIR_DESC} from "../../appConstans/appConstans"
-import {getInstrumentsInitialRequest} from "../../api/instruments";
 import {deleteSongById, getSongsInitialRequest, getSongsSubsequentRequest} from "../../api/songs";
 import ConfirmationPopUp from "../PopUp/ConfirmationPopUp";
 import SongForm from "../../containers/Songs/SongForm";
+import Instruments from "../../containers/Instruments/Instruments";
 
+const Songs = ({
+                   auth,
+                   addSongsToState,
+                   removeSongFromState,
+                   addPagination,
+                   songs,
+                   pagination
+               }) => {
 
-const Songs = ({auth, addSongsToState, addInstrumentsToState, removeSongFromState, addPagination, instruments, songs, pagination}) => {
+    const [pageNo, setPageNo] = useState(0);
+    const [sortDir, setSortDir] = useState("");
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [songToPass, setSongToPass] = useState(undefined);
+    const [detailsOpen, setDetailsOpen] = useState(false);
+    const [instrumentsOpen, setInstrumentOpen] = useState(false);
+
+    const handlePagination = (e, p) => {
+        setPageNo(p - 1);
+    }
+    const handleSelect = (e) => {
+        if (e.target.value === "ASC") {
+            setSortDir(SORT_DIR_ASC);
+        } else {
+            setSortDir(SORT_DIR_DESC);
+        }
+    }
+    const toggleDelete = () => {
+        setConfirmOpen(!confirmOpen);
+    }
+    const handleDelete = (song) => {
+        setSongToPass(song)
+        toggleDelete();
+    }
+    const removeSong = async () => {
+        await deleteSongById(songToPass.id, auth);
+        removeSongFromState(songToPass);
+        toggleDelete();
+    }
+    const toggleDetails = () => {
+        setDetailsOpen(!detailsOpen);
+    }
+    const handleDetails = (song) => {
+        setSongToPass(song);
+        toggleDetails();
+    }
+    const handleAdd = () => {
+        setSongToPass(undefined)
+        toggleDetails()
+    }
+    const toggleInstruments = () => {
+        setInstrumentOpen(!instrumentsOpen);
+    }
 
     useEffect(() => {
         const fetchInitialData = async () => {
             const responseMusicians = await getSongsInitialRequest(auth);
             await addSongsToState(responseMusicians.content);
-
-            let responseInstruments = await getInstrumentsInitialRequest(auth);
-            await addInstrumentsToState(responseInstruments);
-
             await addPagination({
                 pageNo: responseMusicians.pageNo,
                 pageSize: responseMusicians.pageSize,
@@ -36,25 +82,10 @@ const Songs = ({auth, addSongsToState, addInstrumentsToState, removeSongFromStat
                 last: responseMusicians.last
             })
         }
-        if (instruments.length === 0 || songs.length === 0) {
+        if (songs.length === 0) {
             fetchInitialData()
         }
     }, []);
-
-    const [pageNo, setPageNo] = useState(0);
-    const [sortDir, setSortDir] = useState("")
-
-    const handlePagination = (e, p) => {
-        setPageNo(p - 1);
-    }
-    const handleSelect = (e) => {
-        if(e.target.value === "ASC"){
-            setSortDir(SORT_DIR_ASC);
-        } else {
-            setSortDir(SORT_DIR_DESC);
-        }
-    }
-
     useEffect(() => {
             const fetchSubsequentData = async () => {
                 let response = await getSongsSubsequentRequest(pageNo, SORT_BY_TITLE, sortDir, auth);
@@ -70,34 +101,6 @@ const Songs = ({auth, addSongsToState, addInstrumentsToState, removeSongFromStat
             fetchSubsequentData()
         }, [sortDir, pageNo]
     )
-
-    const [confirmOpen, setConfirmOpen] = useState(false);
-    const toggleDelete = () => {
-        setConfirmOpen(!confirmOpen);
-    }
-    const[songToPass, setSongToPass] = useState(undefined);
-    const handleDelete = (song) => {
-        setSongToPass(song)
-        toggleDelete();
-    }
-    const removeSong = async () => {
-        await deleteSongById(songToPass.id, auth);
-        removeSongFromState(songToPass);
-        toggleDelete();
-    }
-
-    const [detailsOpen, setDetailsOpen] = useState(false);
-    const toggleDetails = () => {
-        setDetailsOpen(!detailsOpen);
-    }
-    const handleDetails = (song) => {
-        setSongToPass(song);
-        toggleDetails();
-    }
-    const handleAdd = () => {
-        setSongToPass(undefined)
-        toggleDetails()
-    }
 
     return (
         <Grid
@@ -130,7 +133,7 @@ const Songs = ({auth, addSongsToState, addInstrumentsToState, removeSongFromStat
                 </Grid>
                 <Pagination
                     count={pagination.totalPages}
-                            onChange={handlePagination}
+                    onChange={handlePagination}
                 />
             </Container>
             <TableContainer>
@@ -200,17 +203,13 @@ const Songs = ({auth, addSongsToState, addInstrumentsToState, removeSongFromStat
                 </Table>
             </TableContainer>
             <Button variant={"outlined"} color={"secondary"} style={{justifyContent: "flex-start"}}
-                onClick={handleAdd}
+                    onClick={handleAdd}
             >Dodaj utwór</Button>
             <Button variant={"outlined"} color={"secondary"} style={{justifyContent: "flex-start"}}
-                // onClick={toggleInstruments}
-            >Instrumenty</Button>
-            {/*<Dialog open={instrumentsOpen}>*/}
-            {/*    <Instruments toggle={toggleInstruments}/>*/}
-            {/*</Dialog>*/}
-            {/*<Dialog open={addFormOpen}>*/}
-            {/*    <MusicianForm toggle={toggleForm}/>*/}
-            {/*</Dialog>*/}
+                    onClick={toggleInstruments}>Instrumenty</Button>
+            <Dialog open={instrumentsOpen}>
+                <Instruments toggle={toggleInstruments}/>
+            </Dialog>
             <SongForm onClose={toggleDetails} open={detailsOpen} song={songToPass}/>
             <Dialog open={confirmOpen}>
                 <ConfirmationPopUp close={toggleDelete} confirm={removeSong}/>
@@ -218,7 +217,6 @@ const Songs = ({auth, addSongsToState, addInstrumentsToState, removeSongFromStat
         </Grid>
     )
 }
-
 
 export default Songs;
 

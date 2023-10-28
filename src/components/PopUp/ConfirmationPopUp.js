@@ -4,7 +4,6 @@ import {Button, ButtonGroup, Grid, Typography} from "@mui/material";
 const ConfirmationPopUp = ({confirm, close}) => {
 
     return (
-
         <Grid padding={3} >
             <Typography>Czy na pewno?</Typography>
             <ButtonGroup>
@@ -12,7 +11,6 @@ const ConfirmationPopUp = ({confirm, close}) => {
                 <Button onClick={close}>Zamknij</Button>
             </ButtonGroup>
         </Grid>
-
     )
 }
 

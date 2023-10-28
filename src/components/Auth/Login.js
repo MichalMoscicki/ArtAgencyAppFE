@@ -8,14 +8,16 @@ export const Login = ({addTokenToState}) => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [errorHidden, setErrorHidden] = useState(true);
+    const paperStyle = {padding: 20, display:"box"};
+    const navigate = useNavigate();
+
     const handlePasswordChange = (e) => {
         setPassword(e.target.value)
     }
     const handleEmailChange = (e) => {
         setEmail(e.target.value)
     }
-    const [errorHidden, setErrorHidden] = useState(true);
-    const navigate = useNavigate();
     const handleSubmit = async (e) => {
         e.preventDefault();
         const credentials = {
@@ -31,7 +33,6 @@ export const Login = ({addTokenToState}) => {
         }
     };
 
-    const paperStyle = {padding: 20, display:"box"};
     return (
             <Grid
                 container

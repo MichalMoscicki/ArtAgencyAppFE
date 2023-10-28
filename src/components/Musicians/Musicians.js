@@ -9,31 +9,58 @@ import {
     TableRow,
     Typography
 } from "@mui/material";
-import Instruments from "../../containers/Musicians/Instruments";
+import Instruments from "../../containers/Instruments/Instruments";
 import MusicianForm from "../../containers/Musicians/MusicianForm";
-import {getInstrumentsInitialRequest} from "../../api/instruments";
 import {deleteMusicianById, getMusiciansInitialRequest, getMusiciansSubsequentRequest} from "../../api/musicians";
 import {SORT_BY_LASTNAME, SORT_DIR_DESC, SORT_DIR_ASC} from "../../appConstans/appConstans";
 
 
 const Musicians = ({
                        musicians,
-                       instruments,
                        auth,
-                       addInstrumentsToState,
                        addMusiciansToState,
                        pagination,
                        addPagination,
                        removeMusician
                    }) => {
 
+
+    const [instrumentsOpen, setInstrumentsOpen] = useState(false);
+    const [addFormOpen, setAddFormOpen] = useState(false);
+    const [pageNo, setPageNo] = useState(0);
+    const [sortDir, setSortDir] = useState("");
+    const [updateFormOpen, setUpdateFormOpen] = useState(false);
+    const [musicianToUpdate, setMusicianToUpdate] = useState();
+
+    const toggleInstruments = () => {
+        setInstrumentsOpen(!instrumentsOpen);
+    }
+    const toggleForm = () => {
+        setAddFormOpen(!addFormOpen)
+    }
+    const handleDelete = async (musician) => {
+        const response = await deleteMusicianById(musician.id, auth);
+        removeMusician(musician)
+    }
+    const handlePagination = (e, p) => {
+        setPageNo(p - 1);
+    }
+    const handleSelect = (e) => {
+        if (e.target.value === "ASC") {
+            setSortDir(SORT_DIR_ASC)
+        } else {
+            setSortDir(SORT_DIR_DESC)
+        }
+    }
+    const toggleUpdate = (musician) => {
+        setUpdateFormOpen(!updateFormOpen)
+        setMusicianToUpdate(musician)
+    }
+
     useEffect(() => {
         const fetchInitialData = async () => {
             const responseMusicians = await getMusiciansInitialRequest(auth);
             await addMusiciansToState(responseMusicians.content);
-
-            let responseInstruments = await getInstrumentsInitialRequest(auth);
-            await addInstrumentsToState(responseInstruments);
 
             await addPagination({
                 pageNo: responseMusicians.pageNo,
@@ -43,65 +70,24 @@ const Musicians = ({
                 last: responseMusicians.last
             })
         }
-        if (instruments.length === 0 || musicians.length === 0) {
+        if (musicians.length === 0) {
             fetchInitialData()
         }
     }, []);
-
-
-    const [instrumentsOpen, setInstrumentsOpen] = useState(false);
-    const toggleInstruments = () => {
-        setInstrumentsOpen(!instrumentsOpen);
-    }
-
-    const [addFormOpen, setAddFormOpen] = useState(false);
-    const toggleForm = () => {
-        setAddFormOpen(!addFormOpen)
-    }
-
-    const handleDelete = async (musician) => {
-        const response = await deleteMusicianById(musician.id, auth);
-        removeMusician(musician)
-    }
-
-    const [pageNo, setPageNo] = useState(0);
-    const [sortDir, setSortDir] = useState("")
-
-    const handlePagination = (e, p) => {
-        setPageNo(p - 1);
-    }
-
-    const handleSelect = (e) => {
-        if(e.target.value === "ASC"){
-            setSortDir(SORT_DIR_ASC)
-        } else {
-            setSortDir(SORT_DIR_DESC)
-        }
-    }
-
-    const [updateFormOpen, setUpdateFormOpen] = useState(false)
-    const [musicianToUpdate, setMusicianToUpdate] = useState();
-    const toggleUpdate = (musician) => {
-        setUpdateFormOpen(!updateFormOpen)
-        setMusicianToUpdate(musician)
-    }
-
     useEffect(() => {
-            const fetchSubsequentData = async () => {
-                let response = await getMusiciansSubsequentRequest(pageNo, SORT_BY_LASTNAME, sortDir, auth);
-                await addMusiciansToState(response.content);
-                await addPagination({
-                    pageNo: response.pageNo,
-                    pageSize: response.pageSize,
-                    totalElements: response.totalElements,
-                    totalPages: response.totalPages,
-                    last: response.last
-                })
-            }
-            fetchSubsequentData()
-        }, [sortDir, pageNo]
-    )
-
+        const fetchSubsequentData = async () => {
+            let response = await getMusiciansSubsequentRequest(pageNo, SORT_BY_LASTNAME, sortDir, auth);
+            await addMusiciansToState(response.content);
+            await addPagination({
+                pageNo: response.pageNo,
+                pageSize: response.pageSize,
+                totalElements: response.totalElements,
+                totalPages: response.totalPages,
+                last: response.last
+            })
+        }
+        fetchSubsequentData()
+    }, [sortDir, pageNo]);
 
     return (
         <Grid
@@ -117,7 +103,7 @@ const Musicians = ({
                     Muzycy
                 </Typography>
                 <Grid full sx={{
-                    width:200
+                    width: 200
                 }}>
                     <FormControl fullWidth>
                         <InputLabel id="demo-simple-select-label">Sortuj</InputLabel>
@@ -136,7 +122,7 @@ const Musicians = ({
                             onChange={handlePagination}
                 />
             </Container>
-            <TableContainer >
+            <TableContainer>
                 <Table
                     sx={{
                         tableLayout: "auto",

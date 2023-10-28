@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {Button, ButtonGroup, Grid, InputLabel, MenuItem, Select, TextField} from "@mui/material";
 import {blankCheck, emailCheck, phoneCheck} from "../../appUtils/appUtils";
 import {addMusician, updateMusician} from "../../api/musicians";
-//todo - dodawanie listy instrumentów zamiast pojedynczego!
 const MusicianForm = ({toggle, instruments, auth, addMusicianToState, musician, updateMusicianInState}) => {
 
     const musicianPresent = typeof musician !== "undefined";
@@ -13,6 +12,7 @@ const MusicianForm = ({toggle, instruments, auth, addMusicianToState, musician, 
     const [phone, setPhone] = useState(musicianPresent? musician.phone : "");
     const [notes, setNotes] = useState(musicianPresent? musician.notes : "");
     const [instrumentList, setInstrumentList] = useState(musicianPresent? musician.instruments : []);
+    const [buttonDisabled, setButtonDisabled] = useState(true);
 
     const handleFirstName = (e) => {
         setFirstName(e.target.value)
@@ -32,7 +32,6 @@ const MusicianForm = ({toggle, instruments, auth, addMusicianToState, musician, 
     const handleInstruments = (e) => {
         setInstrumentList([e.target.value])
     }
-
     const handleSubmit = async () => {
         const musicianOutput = {
             id: (musicianPresent? musician.id : null),
@@ -58,8 +57,6 @@ const MusicianForm = ({toggle, instruments, auth, addMusicianToState, musician, 
         toggle();
     }
 
-    const [buttonDisabled, setButtonDisabled] = useState(true);
-
     useEffect(() => {
         const checkButtons = () => {
             if (!blankCheck(firstName) &&
@@ -76,7 +73,6 @@ const MusicianForm = ({toggle, instruments, auth, addMusicianToState, musician, 
         checkButtons()
 
     }, [firstName, lastName, email, phone, instrumentList])
-
 
     return (
         <Grid sx={{padding: 2, display: "block"}} alignItems="center">
