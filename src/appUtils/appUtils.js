@@ -60,3 +60,11 @@ export const emailCheck = (string) => {
 export const blankCheck = (string) => {
     return blankRegex.test(string);
 };
+
+export const isObject =(value) => {
+    return (
+        typeof value === 'object' &&
+        value !== null &&
+        !Array.isArray(value)
+    );
+}

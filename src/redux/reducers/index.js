@@ -7,6 +7,8 @@ import {auth} from "./auth";
 import {instruments} from "./instruments";
 import {musicians} from "./musicians";
 import {musiciansPagination} from "./musiciansPagination";
+import {songs} from "./songs";
+import {songsPagination} from "./songsPagination";
 
 
 export default combineReducers({
@@ -17,5 +19,7 @@ export default combineReducers({
     auth,
     instruments,
     musicians,
-    musiciansPagination
+    musiciansPagination,
+    songs,
+    songsPagination
 })

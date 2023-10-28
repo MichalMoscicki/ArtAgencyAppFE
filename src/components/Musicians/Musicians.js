@@ -13,7 +13,8 @@ import Instruments from "../../containers/Musicians/Instruments";
 import MusicianForm from "../../containers/Musicians/MusicianForm";
 import {getInstrumentsInitialRequest} from "../../api/instruments";
 import {deleteMusicianById, getMusiciansInitialRequest, getMusiciansSubsequentRequest} from "../../api/musicians";
-import {SORT_BY_LASTNAME} from "../../appConstans/appConstans";
+import {SORT_BY_LASTNAME, SORT_DIR_DESC, SORT_DIR_ASC} from "../../appConstans/appConstans";
+
 
 const Musicians = ({
                        musicians,
@@ -72,9 +73,9 @@ const Musicians = ({
 
     const handleSelect = (e) => {
         if(e.target.value === "ASC"){
-            setSortDir("&sortDir=ASC")
+            setSortDir(SORT_DIR_ASC)
         } else {
-            setSortDir("&sortDir=DESC")
+            setSortDir(SORT_DIR_DESC)
         }
     }
 
@@ -160,7 +161,7 @@ const Musicians = ({
                                 Email
                             </TableCell>
                             <TableCell>
-                                Notatki
+                                Telefon
                             </TableCell>
                             <TableCell>
                                 Uwagi
@@ -218,10 +219,9 @@ const Musicians = ({
                                     </TableRow>
                                 );
                             }
-                            return null; // Return null for index > 5 to skip rendering.
+                            return null;
                         })}
                     </TableBody>
-
                 </Table>
             </TableContainer>
             <Button variant={"outlined"} color={"secondary"} style={{justifyContent: "flex-start"}}

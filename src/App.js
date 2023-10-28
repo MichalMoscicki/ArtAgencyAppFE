@@ -9,6 +9,7 @@ import Tasks from "./containers/Tasks/Tasks";
 import store from "./redux/store";
 import Login from "./containers/Auth/Login";
 import Musicians from "./containers/Musicians/Musicians";
+import Songs from "./containers/Songs/Songs";
 
 function App() {
     return (
@@ -21,7 +22,8 @@ function App() {
                             <Route path="/tasks" element={<Tasks/>}/>
                             <Route path="/contacts" element={<Contacts/>}/>
                             <Route path='/contacts/:contactId' element={<ContactDetails/>}/>
-                            <Route path="/" element={<Musicians/>}/>
+                            <Route path="/musicians" element={<Musicians/>}/>
+                            <Route path="/songs" element={<Songs/>}/>
                         </Route>
                     </Routes>
                 </div>

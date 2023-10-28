@@ -13,4 +13,7 @@ export const getCurrentTimeAndDate = () => {
     return new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString()
 }
 
-export const SORT_BY_LASTNAME = "&sortBy=lastName"
+export const SORT_DIR_ASC = "&sortDir=asc";
+export const SORT_DIR_DESC = "&sortDir=desc";
+export const SORT_BY_LASTNAME = "&sortBy=lastName";
+export const SORT_BY_TITLE = "&sortBy=title";
