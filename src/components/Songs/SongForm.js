@@ -23,15 +23,12 @@ const SongForm = ({onClose, open, song, updateSongInState, addSongToState, auth,
     const [textAuthors, setTextAuthors] = useState("");
     const [composers, setComposers] = useState("");
     const [description, setDescription] = useState("");
-    const [parts, setParts] = useState([])
-
-    useEffect(() => {
-        setTitle(songPresent ? song.title : "");
-        setTextAuthors(songPresent ? song.textAuthors : "");
-        setComposers(songPresent ? song.composers : "");
-        setDescription(songPresent ? song.description : "");
-        setParts(songPresent ? song.parts : [])
-    }, [song])
+    const [parts, setParts] = useState([]);
+    const [partForm, setPartForm] = useState(false);
+    const [instrument, setInstrument] = useState("");
+    const [file, setFile] = useState("");
+    const [loadDisabled, setLoadDisabled] = useState(true);
+    const [saveDisabled, setSaveDisabled] = useState(true);
 
     const handleTitle = (e) => {
         setTitle(e.target.value)
@@ -45,7 +42,6 @@ const SongForm = ({onClose, open, song, updateSongInState, addSongToState, auth,
     const handleDescription = (e) => {
         setDescription(e.target.value)
     }
-
     const handleSave = async () => {
         const songOutput = {
             id: (songPresent ? song.id : null),
@@ -64,18 +60,14 @@ const SongForm = ({onClose, open, song, updateSongInState, addSongToState, auth,
         }
         onClose();
     }
-
-    const [partForm, setPartForm] = useState(false);
     const togglePartForm = () => {
         setPartForm(!partForm)
         setInstrument("");
         setFile("")
     }
-    const [instrument, setInstrument] = useState("");
     const handleInstrument = (e) => {
         setInstrument(e.target.value)
     }
-    const [file, setFile] = useState("");
     const handleFile = (e) => {
         setFile(e.target.files[0])
     }
@@ -85,23 +77,26 @@ const SongForm = ({onClose, open, song, updateSongInState, addSongToState, auth,
         updateSongInState({...song, parts:[...parts, response]});
         togglePartForm();
     }
-
-    const [loadDisabled, setLoadDisabled] = useState(true);
-    useEffect(() => {
-            setLoadDisabled(!isObject(instrument) || !(file instanceof File))
-    }, [file, instrument])
-
-    const [saveDisabled, setSaveDisabled] = useState(true);
-    useEffect(() => {
-        setSaveDisabled(blankCheck(title))
-    }, [title]);
-
     const handleDeleteSong = (el) => {
         deletePartById(song.id, el.id, auth);
         const filteredParts = parts.filter((part) => part.id !== el.id );
         setParts([...filteredParts]);
         updateSongInState({...song, parts:[...filteredParts]});
     }
+
+    useEffect(() => {
+            setLoadDisabled(!isObject(instrument) || !(file instanceof File))
+    }, [file, instrument])
+    useEffect(() => {
+        setTitle(songPresent ? song.title : "");
+        setTextAuthors(songPresent ? song.textAuthors : "");
+        setComposers(songPresent ? song.composers : "");
+        setDescription(songPresent ? song.description : "");
+        setParts(songPresent ? song.parts : [])
+    }, [song])
+    useEffect(() => {
+        setSaveDisabled(blankCheck(title))
+    }, [title]);
 
     return (
         <Dialog open={open}
@@ -181,7 +176,3 @@ const SongForm = ({onClose, open, song, updateSongInState, addSongToState, auth,
     )
 }
 export default SongForm
-
-//pobieranie
-//usuwanie - najpier wyświetl potwierdzenie, potem usuń
-//refactor
