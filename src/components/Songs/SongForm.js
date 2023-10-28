@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import {addSong, updateSong} from "../../api/songs";
 import {blankCheck, isObject} from "../../appUtils/appUtils";
-import {addPart} from "../../api/songParts";
+import {addPart, deletePartById} from "../../api/songParts";
 
 const SongForm = ({onClose, open, song, updateSongInState, addSongToState, auth, instruments}) => {
 
@@ -81,8 +81,9 @@ const SongForm = ({onClose, open, song, updateSongInState, addSongToState, auth,
     }
     const handleSubmit = async () => {
         const response = await addPart(song.id, file, instrument, auth);
-        console.log(response)
-        //update state
+        setParts([...parts, response])
+        updateSongInState({...song, parts:[...parts, response]});
+        togglePartForm();
     }
 
     const [loadDisabled, setLoadDisabled] = useState(true);
@@ -93,14 +94,21 @@ const SongForm = ({onClose, open, song, updateSongInState, addSongToState, auth,
     const [saveDisabled, setSaveDisabled] = useState(true);
     useEffect(() => {
         setSaveDisabled(blankCheck(title))
-    }, [title])
+    }, [title]);
+
+    const handleDeleteSong = (el) => {
+        deletePartById(song.id, el.id, auth);
+        const filteredParts = parts.filter((part) => part.id !== el.id );
+        setParts([...filteredParts]);
+        updateSongInState({...song, parts:[...filteredParts]});
+    }
 
     return (
         <Dialog open={open}
                 fullWidth
                 PaperProps={{
                     style: {
-                        minHeight: '70%',
+                        minHeight: '50%',
                         maxHeight: '90%'
                     }
                 }}
@@ -120,17 +128,26 @@ const SongForm = ({onClose, open, song, updateSongInState, addSongToState, auth,
 
             </Grid>
 
-
+            {songPresent &&
             <Grid>
-                <List>
+                    <List>
                     <ListItem> Lista partii: </ListItem>
-                    <ListItem> bas <Button>Usuń</Button></ListItem>
-                    <ListItem> bęben <Button>Usuń</Button></ListItem>
-                    <ListItem> puzon <Button>Usuń</Button></ListItem>
+                    { songPresent &&
+                        parts.map((el, index) => {
+                        return (
+                            <ListItem key={index} sx={{justifyContent: "space-between"}}>
+                                <Typography>{el.instrumentName}</Typography>
+                                <ButtonGroup>
+                                   <a href={el.url}><Button>Pobierz</Button></a>
+                                    <Button onClick={()=> handleDeleteSong(el)}>Usuń</Button>
+                                </ButtonGroup>
+                                </ListItem>
+                        )
+                    })}
                 </List>
-                <Button variant={"outlined"} fullWidth color={"secondary"} onClick={togglePartForm}>Dodaj
-                    Partię</Button>
+                <Button variant={"outlined"} fullWidth color={"secondary"} onClick={togglePartForm}>Dodaj partię</Button>
             </Grid>
+            }
             <Grid>
                 <Button variant={"contained"} fullWidth color={"secondary"} onClick={onClose}>Zamknij</Button>
             </Grid>
@@ -164,3 +181,7 @@ const SongForm = ({onClose, open, song, updateSongInState, addSongToState, auth,
     )
 }
 export default SongForm
+
+//pobieranie
+//usuwanie - najpier wyświetl potwierdzenie, potem usuń
+//refactor
