@@ -1,23 +1,25 @@
 import {connect} from "react-redux";
 import Concerts from "../../components/Concerts/Concerts";
+import {addMusiciansToState} from "../../redux/actions/musicians";
+import {addSongsToState} from "../../redux/actions/songs";
+import {addConcertsPaginationToState} from "../../redux/actions/concertPagination";
+import {removeConcertFromState} from "../../redux/actions/concerts";
 
+const mapStateToProps = (state) => {
+    return {
+        concerts: state.concerts,
+        auth: state.auth,
+        pagination: state.concertsPagination
+    }
+}
 
-// const mapStateToProps = (state) => {
-//     return {
-//         songs: state.songs,
-//         instruments: state.instruments,
-//         auth: state.auth,
-//         pagination: state.songsPagination
-//     }
-// }
-//
-// const mapDispatchToProps = (dispatch) => {
-//     return {
-//         addSongsToState: (songs) => dispatch(addSongsToState(songs)),
-//         removeSongFromState: (song) => dispatch(removeSong(song)),
-//         addInstrumentsToState: (instruments) => dispatch(addInstrumentsToState(instruments)),
-//         addPagination: pagination => dispatch(addSongsPaginationToState(pagination))
-//     }
-// }
+const mapDispatchToProps = (dispatch) => {
+    return {
+        removeConcertFromState: (concert) => dispatch(removeConcertFromState(concert)),
+        addMusiciansToState: (musicians) => dispatch(addMusiciansToState(musicians)),
+        addSongsToState: (songs) => dispatch(addSongsToState(songs)),
+        addPagination: pagination => dispatch(addConcertsPaginationToState(pagination))
+    }
+}
 
-export default connect(null, null)(Concerts)
+export default connect(mapStateToProps, mapDispatchToProps)(Concerts)

@@ -1,10 +1,9 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Navbar from "./Navbar";
 import {Outlet} from "react-router-dom";
 import "./Layout.css"
 import {Sidebar} from "./SideBar";
 import { Navigate } from "react-router-dom";
-
 
 export const Layout = (auth) => {
     if(auth.auth === ""){

@@ -10,22 +10,11 @@ import {addAttachment} from "../../api/taskAttachments";
 //todo Now only adding tasks from store is possible. Create component providing browsing all tasks from db.
 
 const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPagination, contacts, auth}) => {
-    useEffect(() => {
-        const fetchInitialData = async () => {
-            let response = await getTasksInitialRequest(auth);
-            await addTasksToState(response.content);
-            await addPagination({
-                pageNo: response.pageNo,
-                pageSize: response.pageSize,
-                totalElements: response.totalElements,
-                totalPages: response.totalPages,
-                last: response.last
-            })
-        }
-        if (tasks.length === 0) {
-            fetchInitialData()
-        }
-    }, []);
+
+
+    console.log("Komponent tasks: ")
+    console.log(tasks)
+    console.log(pagination)
 
     const [formHidden, setFormHidden] = useState(true)
     const toggleForm = () => {

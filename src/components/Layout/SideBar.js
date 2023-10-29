@@ -10,7 +10,7 @@ export const Sidebar = () => {
                 <li><NavLink to={"/contacts"} className={"navlink"}>Kontakty</NavLink></li>
                 <li><NavLink to={"/songs"} className={"navlink"}>Repertuar</NavLink></li>
                 <li><NavLink to={"/musicians"} className={"navlink"}>Muzycy</NavLink></li>
-                <li><NavLink to={"/jobs"} className={"navlink"}>Zlecenia</NavLink></li>
+                <li><NavLink to={"/concerts"} className={"navlink"}>Zlecenia</NavLink></li>
             </ul>
     );
 };

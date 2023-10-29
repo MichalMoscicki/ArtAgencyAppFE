@@ -71,22 +71,6 @@ const Songs = ({
     }
 
     useEffect(() => {
-        const fetchInitialData = async () => {
-            const responseMusicians = await getSongsInitialRequest(auth);
-            await addSongsToState(responseMusicians.content);
-            await addPagination({
-                pageNo: responseMusicians.pageNo,
-                pageSize: responseMusicians.pageSize,
-                totalElements: responseMusicians.totalElements,
-                totalPages: responseMusicians.totalPages,
-                last: responseMusicians.last
-            })
-        }
-        if (songs.length === 0) {
-            fetchInitialData()
-        }
-    }, []);
-    useEffect(() => {
             const fetchSubsequentData = async () => {
                 let response = await getSongsSubsequentRequest(pageNo, SORT_BY_TITLE, sortDir, auth);
                 await addSongsToState(response.content);

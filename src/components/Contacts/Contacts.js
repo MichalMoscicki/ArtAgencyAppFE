@@ -47,24 +47,6 @@ const Contacts = ({contacts, pagination, addContactsToState, addContactToState, 
     }
 
     useEffect(() => {
-        const fetchInitialData = async () => {
-            let response = await getContactsInitialRequest(auth);
-            await addContactsToState(response.content);
-            await addPagination({
-                pageNo: response.pageNo,
-                pageSize: response.pageSize,
-                totalElements: response.totalElements,
-                totalPages: response.totalPages,
-                last: response.last
-            })
-        }
-
-        if (contacts.length === 0) {
-            fetchInitialData()
-        }
-    }, []);
-
-    useEffect(() => {
         const checkButtons = () => {
             if (pagination.pageNo === 0) {
                 setPrevButtonDisabled(true)

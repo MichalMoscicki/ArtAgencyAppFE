@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import Instruments from "../../containers/Instruments/Instruments";
 import MusicianForm from "../../containers/Musicians/MusicianForm";
-import {deleteMusicianById, getMusiciansInitialRequest, getMusiciansSubsequentRequest} from "../../api/musicians";
+import {deleteMusicianById, getMusiciansSubsequentRequest} from "../../api/musicians";
 import {SORT_BY_LASTNAME, SORT_DIR_DESC, SORT_DIR_ASC} from "../../appConstans/appConstans";
 
 
@@ -23,7 +23,6 @@ const Musicians = ({
                        addPagination,
                        removeMusician
                    }) => {
-
 
     const [instrumentsOpen, setInstrumentsOpen] = useState(false);
     const [addFormOpen, setAddFormOpen] = useState(false);
@@ -57,23 +56,6 @@ const Musicians = ({
         setMusicianToUpdate(musician)
     }
 
-    useEffect(() => {
-        const fetchInitialData = async () => {
-            const responseMusicians = await getMusiciansInitialRequest(auth);
-            await addMusiciansToState(responseMusicians.content);
-
-            await addPagination({
-                pageNo: responseMusicians.pageNo,
-                pageSize: responseMusicians.pageSize,
-                totalElements: responseMusicians.totalElements,
-                totalPages: responseMusicians.totalPages,
-                last: responseMusicians.last
-            })
-        }
-        if (musicians.length === 0) {
-            fetchInitialData()
-        }
-    }, []);
     useEffect(() => {
         const fetchSubsequentData = async () => {
             let response = await getMusiciansSubsequentRequest(pageNo, SORT_BY_LASTNAME, sortDir, auth);

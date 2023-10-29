@@ -10,9 +10,13 @@ import store from "./redux/store";
 import Login from "./containers/Auth/Login";
 import Musicians from "./containers/Musicians/Musicians";
 import Songs from "./containers/Songs/Songs";
+import Concerts from "./containers/Concerts/Concerts";
+import {LocalizationProvider} from "@mui/x-date-pickers";
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 
 function App() {
     return (
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Provider store={store}>
             <BrowserRouter>
                 <div className="container">
@@ -24,11 +28,13 @@ function App() {
                             <Route path='/contacts/:contactId' element={<ContactDetails/>}/>
                             <Route path="/musicians" element={<Musicians/>}/>
                             <Route path="/songs" element={<Songs/>}/>
+                            <Route path="/concerts" element={<Concerts/>}/>
                         </Route>
                     </Routes>
                 </div>
             </BrowserRouter>
         </Provider>
+        </LocalizationProvider>
     );
 }
 

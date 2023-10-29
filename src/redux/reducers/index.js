@@ -9,9 +9,13 @@ import {musicians} from "./musicians";
 import {musiciansPagination} from "./musiciansPagination";
 import {songs} from "./songs";
 import {songsPagination} from "./songsPagination";
+import {concerts} from "./concerts";
+import {concertsPagination} from "./concertsPagination";
 
 
 export default combineReducers({
+    concerts,
+    concertsPagination,
     contacts,
     contactsPagination,
     tasks,
@@ -21,5 +25,5 @@ export default combineReducers({
     musicians,
     musiciansPagination,
     songs,
-    songsPagination
+    songsPagination,
 })
