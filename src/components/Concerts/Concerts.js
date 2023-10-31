@@ -1,9 +1,8 @@
-import React, {useState} from "react";
-import {deleteMusicianById, getMusiciansInitialRequest, getMusiciansSubsequentRequest} from "../../api/musicians";
-import {SORT_BY_LASTNAME, SORT_DIR_ASC, SORT_DIR_DESC} from "../../appConstans/appConstans";
+import React, {useEffect, useState} from "react";
+import {SORT_BY_DATE, SORT_DIR_ASC, SORT_DIR_DESC} from "../../appConstans/appConstans";
 import {
-    Button,
-    Container, Dialog,
+    Button, ButtonGroup,
+    Container,
     FormControl,
     Grid,
     InputLabel,
@@ -13,75 +12,66 @@ import {
     TableContainer, TableHead, TableRow,
     Typography
 } from "@mui/material";
-import Instruments from "../../containers/Instruments/Instruments";
-import MusicianForm from "../../containers/Musicians/MusicianForm";
 import ConcertForm from "../../containers/Concerts/ConcertForm";
+import ConfirmationPopUp from "../PopUp/ConfirmationPopUp";
+import {deleteConcertById, getConcertSubsequentRequest} from "../../api/concerts";
 
-const Concerts = ({concerts, auth, pagination, addConcertsToState, removeConcertFromState, addMusiciansToState, addSongsToState, addPagination}) => {
-    // const [instrumentsOpen, setInstrumentsOpen] = useState(false);
+const Concerts = ({concerts, auth, pagination, addConcertsToState, removeConcertFromState, addPagination}) => {
     const [formOpen, setFormOpen] = useState(false);
-    // const [pageNo, setPageNo] = useState(0);
-    // const [sortDir, setSortDir] = useState("");
-    // const [updateFormOpen, setUpdateFormOpen] = useState(false);
-    // const [musicianToUpdate, setMusicianToUpdate] = useState();
-    //
-    // const toggleInstruments = () => {
-    //     setInstrumentsOpen(!instrumentsOpen);
-    // }
+    const [popupOpen, setPopupOpen] = useState(false);
+    const [concertToPass, setConcertToPass] = useState(undefined);
+    const [pageNo, setPageNo] = useState(0);
+    const [sortDir, setSortDir] = useState("");
+
     const toggleForm = () => {
         setFormOpen(!formOpen);
     }
-    // const handleDelete = async (musician) => {
-    //     const response = await deleteMusicianById(musician.id, auth);
-    //     removeMusician(musician)
-    // }
-    // const handlePagination = (e, p) => {
-    //     setPageNo(p - 1);
-    // }
-    // const handleSelect = (e) => {
-    //     if (e.target.value === "ASC") {
-    //         setSortDir(SORT_DIR_ASC)
-    //     } else {
-    //         setSortDir(SORT_DIR_DESC)
-    //     }
-    // }
-    // const toggleUpdate = (musician) => {
-    //     setUpdateFormOpen(!updateFormOpen)
-    //     setMusicianToUpdate(musician)
-    // }
-    //
-    // useEffect(() => {
-    //     const fetchInitialData = async () => {
-    //         const responseMusicians = await getMusiciansInitialRequest(auth);
-    //         await addMusiciansToState(responseMusicians.content);
-    //
-    //         await addPagination({
-    //             pageNo: responseMusicians.pageNo,
-    //             pageSize: responseMusicians.pageSize,
-    //             totalElements: responseMusicians.totalElements,
-    //             totalPages: responseMusicians.totalPages,
-    //             last: responseMusicians.last
-    //         })
-    //     }
-    //     if (musicians.length === 0) {
-    //         fetchInitialData()
-    //     }
-    // }, []);
+    const togglePopup = () => {
+        setPopupOpen(!popupOpen);
+    }
+    const handleAdd = () => {
+        setConcertToPass(undefined);
+        toggleForm();
+    }
+    const handleDelete = (concert) => {
+        setConcertToPass(concert);
+        togglePopup();
+    }
+    const handleUpdate = (concert) => {
+        setConcertToPass(concert);
+        toggleForm();
+    }
+    const removeConcert = async () => {
+        await deleteConcertById(concertToPass.id, auth);
+        removeConcertFromState(concertToPass);
+        togglePopup();
+    }
 
-    // useEffect(() => {
-    //     const fetchSubsequentData = async () => {
-    //         let response = await getMusiciansSubsequentRequest(pageNo, SORT_BY_LASTNAME, sortDir, auth);
-    //         await addMusiciansToState(response.content);
-    //         await addPagination({
-    //             pageNo: response.pageNo,
-    //             pageSize: response.pageSize,
-    //             totalElements: response.totalElements,
-    //             totalPages: response.totalPages,
-    //             last: response.last
-    //         })
-    //     }
-    //     fetchSubsequentData()
-    // }, [sortDir, pageNo]);
+    const handlePagination = (e, p) => {
+        setPageNo(p - 1);
+    }
+    const handleSelect = (e) => {
+        if (e.target.value === "ASC") {
+            setSortDir(SORT_DIR_ASC)
+        } else {
+            setSortDir(SORT_DIR_DESC)
+        }
+    }
+
+    useEffect(() => {
+        const fetchSubsequentData = async () => {
+            let response = await getConcertSubsequentRequest(pageNo, SORT_BY_DATE, sortDir, auth);
+            await addConcertsToState(response.content);
+            await addPagination({
+                pageNo: response.pageNo,
+                pageSize: response.pageSize,
+                totalElements: response.totalElements,
+                totalPages: response.totalPages,
+                last: response.last
+            })
+        }
+        fetchSubsequentData()
+    }, [sortDir, pageNo]);
 
     return (
         <Grid
@@ -105,16 +95,16 @@ const Concerts = ({concerts, auth, pagination, addConcertsToState, removeConcert
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             label="Sortuj"
-                            // onChange={handleSelect}
+                            onChange={handleSelect}
                         >
-                            <MenuItem value={"ASC"}>Rosnąco po nazwisku</MenuItem>
-                            <MenuItem value={"DESC"}>Malejąco po nazwisku</MenuItem>
+                            <MenuItem value={"ASC"}>od najstarszych</MenuItem>
+                            <MenuItem value={"DESC"}>od najnowszych</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
                 <Pagination
-                    // count={pagination.totalPages}
-                    //         onChange={handlePagination}
+                    count={pagination.totalPages}
+                            onChange={handlePagination}
                 />
             </Container>
             <TableContainer>
@@ -141,72 +131,55 @@ const Concerts = ({concerts, auth, pagination, addConcertsToState, removeConcert
                             <TableCell>
                                 Lokalizacja
                             </TableCell>
-                            <TableCell>
-                                Organizator
-                            </TableCell>
-                            <TableCell>
+                            <TableCell sx={{width: "15%"}}>
 
                             </TableCell>
                         </TableRow>
                     </TableHead>
-                    {/*<TableBody fullWidth>*/}
-                    {/*    {musicians.map((el, index) => {*/}
-                    {/*        if (index <= 5) {*/}
-                    {/*            return (*/}
-                    {/*                <TableRow key={index}>*/}
-                    {/*                    <TableCell>*/}
-                    {/*                        {el.lastName}*/}
-                    {/*                    </TableCell>*/}
-                    {/*                    <TableCell>*/}
-                    {/*                        {el.firstName}*/}
-                    {/*                    </TableCell>*/}
-                    {/*                    <TableCell>*/}
-                    {/*                        {el.email}*/}
-                    {/*                    </TableCell>*/}
-                    {/*                    <TableCell>*/}
-                    {/*                        {el.phone}*/}
-                    {/*                    </TableCell>*/}
-                    {/*                    <TableCell>*/}
-                    {/*                        {el.notes}*/}
-                    {/*                    </TableCell>*/}
-                    {/*                    <TableCell>*/}
-                    {/*                        {el.instruments[0].name}*/}
-                    {/*                    </TableCell>*/}
-                    {/*                    <TableCell>*/}
-                    {/*                        <Button*/}
-                    {/*                            variant={"outlined"}*/}
-                    {/*                            // onClick={() => toggleUpdate(el)}*/}
-                    {/*                        >*/}
-                    {/*                            Edytuj*/}
-                    {/*                        </Button>*/}
-                    {/*                    </TableCell>*/}
-                    {/*                    <TableCell>*/}
-                    {/*                        <Button*/}
-                    {/*                            variant={"outlined"}*/}
-                    {/*                            // onClick={() => handleDelete(el)}*/}
-                    {/*                        >*/}
-                    {/*                            Usuń*/}
-                    {/*                        </Button>*/}
-                    {/*                    </TableCell>*/}
-                    {/*                </TableRow>*/}
-                    {/*            );*/}
-                    {/*        }*/}
-                    {/*        return null;*/}
-                    {/*    })}*/}
-                    {/*</TableBody>*/}
+                    <TableBody fullWidth>
+                        {concerts.map((el, index) => {
+                            if (index <= 5) {
+                                return (
+                                    <TableRow key={index}>
+                                        <TableCell>
+                                            {el.title}
+                                        </TableCell>
+                                        <TableCell>
+                                            {el.date}
+                                        </TableCell>
+                                        <TableCell>
+                                            {el.address}
+                                        </TableCell>
+                                        <TableCell>
+                                            <ButtonGroup>
+                                                <Button
+                                                    variant={"outlined"}
+                                                    onClick={()=> handleUpdate(el)}
+                                                >
+                                                    Edytuj
+                                                </Button>
+                                                <Button
+                                                    variant={"outlined"}
+                                                    onClick={()=> handleDelete(el)}
+                                                >
+                                                    Usuń
+                                                </Button>
+                                            </ButtonGroup>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            }
+                            return null;
+                        })}
+                    </TableBody>
                 </Table>
             </TableContainer>
             <Button variant={"outlined"} color={"secondary"} style={{justifyContent: "flex-start"}}
-                    onClick={toggleForm}>Dodaj koncert</Button>
-            {/*<Button variant={"outlined"} color={"secondary"} style={{justifyContent: "flex-start"}}*/}
-            {/*        onClick={toggleInstruments}>Instrumenty</Button>*/}
-            {/*<Dialog open={instrumentsOpen}>*/}
-            {/*    <Instruments toggle={toggleInstruments}/>*/}
-            {/*</Dialog>*/}
-            <ConcertForm open={formOpen} toggle={toggleForm}/>
+                    onClick={handleAdd}>Dodaj koncert</Button>
+            <ConcertForm open={formOpen} toggle={toggleForm} concert={concertToPass}/>
+            <ConfirmationPopUp confirm={removeConcert} close={togglePopup} open={popupOpen}/>
         </Grid>
     )
-
 }
 
 export default Concerts

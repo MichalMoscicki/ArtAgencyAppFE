@@ -65,7 +65,6 @@ export const getContactsSubsequentRequest = async (pageNo, sortBy, sortDir, toke
     }
 };
 
-
 export const getContactById = async (id, token) => {
     try {
         const response = await fetch(`${API_URL}/contacts/${id}`, {
@@ -109,6 +108,27 @@ export const updateContactById = async (id , contact, token) => {
             body: JSON.stringify(contact),
             headers: {
                 "Content-Type": "application/json",
+                'Authorization': token
+            },
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            throw new Error("Błąd!");
+        }
+        return data;
+
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+export const exportContacts = async (token) => {
+    try {
+        const response = await fetch(`${API_URL}/contacts/export-json`, {
+            method: "GET",
+            headers: {
                 'Authorization': token
             },
         });

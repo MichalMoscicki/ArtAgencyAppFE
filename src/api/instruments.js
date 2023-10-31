@@ -65,7 +65,6 @@ export const getInstrumentsSubsequentRequest = async (token) => {
     }
 };
 
-
 export const getInstrumentById = async (id, token) => {
     try {
         const response = await fetch(`${API_URL}/instruments/${id}`, {

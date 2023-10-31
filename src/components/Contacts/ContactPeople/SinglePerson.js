@@ -15,7 +15,6 @@ const SinglePerson = ({contactId, contacts, index, personId, updateContact, auth
 
     let contact = contacts.find(contact => contact.id === contactId);
     const person = contact.contactPeople.find(person => person.id === personId);
-
     const [listHidden, setListHidden] = useState(true);
     const [errors, setErrors] = useState([])
 
@@ -54,7 +53,6 @@ const SinglePerson = ({contactId, contacts, index, personId, updateContact, auth
     const handleDetailsButton = () => {
         setListHidden(!listHidden)
     }
-
 
     const [firstName, setFirstName] = useState(person.firstName);
     const [firstNameFormVisible, setFirstNameFormVisible] = useState(false)
@@ -103,7 +101,6 @@ const SinglePerson = ({contactId, contacts, index, personId, updateContact, auth
         setLastName(e.target.value)
     }
 
-
     const [role, setRole] = useState(person.role);
     const [roleFormVisible, setRoleFormVisible] = useState(false)
     const roleInputRef = useRef(null);
@@ -128,7 +125,6 @@ const SinglePerson = ({contactId, contacts, index, personId, updateContact, auth
         }
         return person.role;
     }
-
 
     const [email, setEmail] = useState(person.email);
     const [emailFormVisible, setEmailFormVisible] = useState(false)
@@ -193,7 +189,6 @@ const SinglePerson = ({contactId, contacts, index, personId, updateContact, auth
         return person.phone;
     }
 
-
     useEffect(() => {
             if (firstNameFormVisible && firstNameInputRef.current) {
                 firstNameInputRef.current.focus();
@@ -212,7 +207,6 @@ const SinglePerson = ({contactId, contacts, index, personId, updateContact, auth
             }
         },
         [firstNameFormVisible, lastNameFormVisible, roleFormVisible, emailFormVisible, phoneFormVisible]);
-
 
     return (
 

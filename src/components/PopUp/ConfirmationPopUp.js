@@ -1,16 +1,21 @@
 import React from "react"
-import {Button, ButtonGroup, Grid, Typography} from "@mui/material";
+import {Button, ButtonGroup, Dialog, Grid, Typography} from "@mui/material";
 
-const ConfirmationPopUp = ({confirm, close}) => {
-
+const ConfirmationPopUp = ({confirm, close, open}) => {
     return (
-        <Grid padding={3} >
-            <Typography>Czy na pewno?</Typography>
-            <ButtonGroup>
-                <Button onClick={confirm}>Tak</Button>
-                <Button onClick={close}>Zamknij</Button>
-            </ButtonGroup>
-        </Grid>
+        <Dialog open={open}  PaperProps={{
+            style: {
+                padding: 1
+            }
+        }}>
+            <Grid padding={3}>
+                <Typography>Czy na pewno?</Typography>
+                <ButtonGroup>
+                    <Button onClick={confirm}>Tak</Button>
+                    <Button onClick={close}>Zamknij</Button>
+                </ButtonGroup>
+            </Grid>
+        </Dialog>
     )
 }
 

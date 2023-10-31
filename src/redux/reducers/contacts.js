@@ -1,6 +1,5 @@
 import {ADD_CONTACTS, ADD_SINGLE_CONTACT, REMOVE_CONTACT, UPDATE_CONTACT} from "../actions/contacts";
 
-
 export const contacts = (state = [], action) => {
     switch (action.type){
         case ADD_SINGLE_CONTACT:

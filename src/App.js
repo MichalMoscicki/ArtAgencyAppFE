@@ -13,6 +13,7 @@ import Songs from "./containers/Songs/Songs";
 import Concerts from "./containers/Concerts/Concerts";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import Register from "./components/Auth/Register";
 
 function App() {
     return (
@@ -22,13 +23,14 @@ function App() {
                 <div className="container">
                     <Routes>
                         <Route path="/login" element={<Login/>}/>
+                        <Route path="/register" element={<Register/>}/>
                         <Route path="/" element={<Layout/>}>
                             <Route path="/tasks" element={<Tasks/>}/>
                             <Route path="/contacts" element={<Contacts/>}/>
                             <Route path='/contacts/:contactId' element={<ContactDetails/>}/>
                             <Route path="/musicians" element={<Musicians/>}/>
                             <Route path="/songs" element={<Songs/>}/>
-                            <Route path="/concerts" element={<Concerts/>}/>
+                            <Route path="/" element={<Concerts/>}/>
                         </Route>
                     </Routes>
                 </div>

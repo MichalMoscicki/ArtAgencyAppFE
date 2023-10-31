@@ -2,7 +2,6 @@ import {connect} from "react-redux";
 import {SingleTask} from "../../components/Tasks/SingleTask";
 import {removeTask, updateTask} from "../../redux/actions/tasks";
 
-
 const mapStateToProps = (state) => {
     return {
         auth: state.auth

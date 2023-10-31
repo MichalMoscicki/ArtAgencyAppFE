@@ -12,7 +12,6 @@ import {songsPagination} from "./songsPagination";
 import {concerts} from "./concerts";
 import {concertsPagination} from "./concertsPagination";
 
-
 export default combineReducers({
     concerts,
     concertsPagination,

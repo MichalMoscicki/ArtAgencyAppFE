@@ -1,6 +1,5 @@
 import {ADD_TASKS, UPDATE_TASK, REMOVE_TASK, ADD_SINGLE_TASK} from "../actions/tasks";
 
-
 export const tasks = (state = [], action) => {
     switch (action.type){
         case ADD_SINGLE_TASK:

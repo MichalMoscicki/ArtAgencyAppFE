@@ -30,7 +30,6 @@ export const displayMonth = (month) => {
             return ;
     }
 }
-
 export const displayPriority = (priority) => {
     switch (Number(priority)){
         case 1:
@@ -43,7 +42,6 @@ export const displayPriority = (priority) => {
             return ;
     }
 };
-
 export const phoneOrEmptyCheck = (string) => {
     return string === "" || phoneRegex.test(string);
 };
@@ -56,11 +54,9 @@ export const phoneCheck = (string) => {
 export const emailCheck = (string) => {
    return emailRegex.test(string)
 };
-
 export const blankCheck = (string) => {
     return blankRegex.test(string);
 };
-
 export const isObject =(value) => {
     return (
         typeof value === 'object' &&

@@ -3,7 +3,6 @@ import Tasks from "../../components/Tasks/Tasks";
 import {addSingleTask, addTasksToState} from "../../redux/actions/tasks";
 import {addTasksPaginationToState} from "../../redux/actions/taskPagination"
 
-
 const mapStateToProps = (state) => {
     return {
         tasks : state.tasks,

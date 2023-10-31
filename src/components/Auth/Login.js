@@ -8,6 +8,7 @@ import {getContactsInitialRequest} from "../../api/contacts";
 import {getInstrumentsInitialRequest} from "../../api/instruments";
 import {getMusiciansInitialRequest} from "../../api/musicians";
 import {getTasksInitialRequest} from "../../api/tasks";
+import {getSongsInitialRequest} from "../../api/songs";
 
 export const Login = ({
                           addTokenToState,
@@ -36,8 +37,10 @@ export const Login = ({
     const handleEmailChange = (e) => {
         setEmail(e.target.value)
     }
+    const handleRegister = () => {
+        navigate("/register")
+    }
     const fetchInitialData = async (token) => {
-
         try {
             const responseConcerts = await getConcertsInitialRequest(token);
             await addConcertsToState(responseConcerts.content);
@@ -86,12 +89,12 @@ export const Login = ({
                 last: responseMusicians.last
             });
         } catch (e) {
-            console.log("Unable to fetch instruments");
+            console.log("Unable to fetch musicians");
             console.log(e);
         }
 
         try {
-            const responseSongs = await getMusiciansInitialRequest(token);
+            const responseSongs = await getSongsInitialRequest(token);
             await addSongsToState(responseSongs.content);
             await addSongsPagination({
                 pageNo: responseSongs.pageNo,
@@ -116,11 +119,10 @@ export const Login = ({
                 last: responseTasks.last
             });
         } catch (e) {
-            console.log("Unable to fetch instruments");
+            console.log("Unable to fetch tasks");
             console.log(e);
         }
     }
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         const credentials = {
@@ -132,7 +134,7 @@ export const Login = ({
             const token = "Bearer ".concat(response.token);
             addTokenToState(token);
             await fetchInitialData(token);
-            navigate("/")
+            navigate("/");
         } else {
             setErrorHidden(!errorHidden)
         }
@@ -156,8 +158,13 @@ export const Login = ({
                         <ListItem><TextField label={"email"} onChange={handleEmailChange}/></ListItem>
                         <ListItem><TextField label={"hasło"} type={"password"}
                                              onChange={handlePasswordChange}/></ListItem>
-                        <ListItem><Button variant={"contained"} endIcon={<LoginIcon/>} type={"submit"} fullWidth>Zaloguj
-                            się</Button></ListItem>
+                        <ListItem><Button variant={"contained"} endIcon={<LoginIcon/>} type={"submit"} fullWidth>
+                            Zaloguj się
+                        </Button></ListItem>
+                        <ListItem><Button variant={"outlined"} onClick={handleRegister} fullWidth>
+                            Zarejestruj się
+                        </Button></ListItem>
+
                     </List>
                 </form>
                 <Typography paddingLeft={"15px"} color={"error"} hidden={errorHidden}>

@@ -1,6 +1,5 @@
 import {ADD_INSTRUMENTS, ADD_SINGLE_INSTRUMENT, REMOVE_INSTRUMENT, UPDATE_INSTRUMENT} from "../actions/instruments";
 
-
 export const instruments = (state = [], action) => {
     switch (action.type){
         case ADD_SINGLE_INSTRUMENT:

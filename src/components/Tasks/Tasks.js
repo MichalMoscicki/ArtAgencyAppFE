@@ -1,54 +1,40 @@
 import React, {useEffect, useState} from "react";
-import {addTask, getTasksInitialRequest, getTasksSubsequentRequest} from "../../api/tasks";
+import {addTask, getTasksSubsequentRequest} from "../../api/tasks";
 import {isFieldEmptyNullOrUndefined} from "../../appConstans/appConstans";
 import {WrongDatePopup} from "./WrongDatePopup";
 import SingleTask from "../../containers/Tasks/SingleTask";
 import {SORT_BY_TITLE, SORT_BY_UPDATED, SORT_DIR_ASC, SORT_DIR_DESC} from "../../api/constans";
 import "./Tasks.css"
-import {addAttachment} from "../../api/taskAttachments";
-
-//todo Now only adding tasks from store is possible. Create component providing browsing all tasks from db.
 
 const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPagination, contacts, auth}) => {
+    const [formHidden, setFormHidden] = useState(true);
+    const [taskTitle, setTaskTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [priority, setPriority] = useState("");
+    const [active, setActive] = useState(false);
+    const [popupVisible, setPopupVisible] = useState(false);
+    const [activationDate, setActivationDate] = useState("");
+    const [buttonDisabled, setButtonDisabled] = useState(true);
+    const [sortBy, setSortBy] = useState("");
+    const [sortDir, setSortDir] = useState("");
+    const [pageNo, setPageNo] = useState(0);
 
-
-    console.log("Komponent tasks: ")
-    console.log(tasks)
-    console.log(pagination)
-
-    const [formHidden, setFormHidden] = useState(true)
     const toggleForm = () => {
         setFormHidden(!formHidden)
     }
-
-    const [taskTitle, setTaskTitle] = useState("")
-    const onChange = (e) => {
+    const handleTitleChange = (e) => {
         setTaskTitle(e.target.value)
     }
-
-    const [description, setDescription] = useState("")
     const handleDescriptionChange = (e) => {
         setDescription(e.target.value)
     }
-
-    const [priority, setPriority] = useState("");
-    const onSelectChange = (e) => {
+    const handlePriorityChange = (e) => {
         setPriority(e.target.value)
     }
-
-    const [active, setActive] = useState(false)
     const onCheck = () => {
         setActive(!active);
         setActivationDate("")
     }
-
-    const [contactId, setContactId] = useState(null);
-    const handleAttachment = (e) => {
-        setContactId(e.target.value)
-    }
-
-    const [popupVisible, setPopupVisible] = useState(false);
-    const [activationDate, setActivationDate] = useState("");
     const handleActivationDate = (e) => {
         const isDateInFuture = (date) => {
             const currentDate = new Date();
@@ -57,7 +43,6 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
             }
             return date > currentDate;
         }
-
         if (isDateInFuture(e.target.value)) {
             setActivationDate(e.target.value)
         } else {
@@ -65,8 +50,6 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
         }
     }
 
-
-    const [buttonDisabled, setButtonDisabled] = useState(true);
     useEffect(() => {
         const checkButton = () => {
             if (priority === "" || isFieldEmptyNullOrUndefined(taskTitle)) {
@@ -88,29 +71,15 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
             activationDate: activationDate
         };
         let response = await addTask(task, auth);
+        await addTaskToState(response);
 
-        //todo jeśli kontakt jest nullem, nie dodawaj załącznika
-        //todo autoryzacja równiez do tokenu
-
-        const contact = contacts.filter( (el) => el.id === Number(contactId))[0]
-        const attachment = {contacts: [contact]}
-        const attachmentResponse =  await addAttachment(response.id, attachment);
-
-        const taskWithAttachment = {...response, attachment: attachmentResponse}
-        await addTaskToState(taskWithAttachment);
-        console.log(taskWithAttachment)
-
-            setFormHidden(true);
-            setTaskTitle("");
-            setDescription("")
-            setPriority("");
-            setActive(false)
-            setActivationDate("")
+        setFormHidden(true);
+        setTaskTitle("");
+        setDescription("")
+        setPriority("");
+        setActive(false)
+        setActivationDate("")
     }
-
-    const [sortBy, setSortBy] = useState("");
-    const [sortDir, setSortDir] = useState("");
-    const [pageNo, setPageNo] = useState(0);
 
     const TITLE_ASC = "TITLE_ASC";
     const TITLE_DESC = "TITLE_DESC";
@@ -139,6 +108,7 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
         }
         checkButtons()
     }, [pagination])
+
     const generatePagesButtons = () => {
         let buttons = [];
         for (let i = 0; i < pagination.totalPages; i++) {
@@ -227,12 +197,11 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
             </div>
 
             <form onSubmit={onSubmit} hidden={formHidden}>
-
                 <ul className={"contacts-form-list"}>
-
                     <li>
                         <label htmlFor={"task-title"}>Tytuł zadania: </label>
-                        <input onChange={onChange} placeholder={"Wpisz tytuł"} value={taskTitle} id={"task-title"}/>
+                        <input onChange={handleTitleChange} placeholder={"Wpisz tytuł"} value={taskTitle}
+                               id={"task-title"}/>
                     </li>
 
                     <li>
@@ -243,7 +212,7 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
 
                     <li>
                         <label htmlFor={"priority"}>Nadaj priorytet: </label>
-                        <select onChange={onSelectChange} value={priority} id={"priority"}>
+                        <select onChange={handlePriorityChange} value={priority} id={"priority"}>
                             <option value="">Wybierz priorytet</option>
                             <option value="1">Niski</option>
                             <option value="2">Średni</option>
@@ -261,15 +230,6 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
                         <input type={"date"} id={"activation-date"} onChange={handleActivationDate}
                                value={activationDate}/>
                         {popupVisible && <WrongDatePopup setPopupVisible={setPopupVisible}/>}
-                    </li>
-
-                    <li>
-                        <select onChange={handleAttachment}>
-                            <option value={null}>załącz kontakt</option>
-                            {contacts.map((el, index) => {
-                                return (<option value={el.id} key={index}>{el.title}</option>)
-                            })}
-                        </select>
                     </li>
                 </ul>
                 <div className={"submit-contact-btn"}>

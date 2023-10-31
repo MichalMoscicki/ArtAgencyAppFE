@@ -8,21 +8,14 @@ import Events from "../../containers/Contacts/Events/Events";
 import "./ContactDetails.css"
 import {blankRegex, isFieldEmptyNullOrUndefined} from "../../appConstans/appConstans";
 
-// Todo sprawdzenie, czy state jest pusty. Jeśli tak, trzeba zfetchować.
-//  Możliwe, że w URL trzeba przechowywać dane o paginacji
-
 const ContactDetails = ({contacts, updateContact, removeContact, auth}) => {
     const contactId = Number(useParams().contactId);
     let contact = contacts.find(contact => contact.id === contactId);
-
     const navigate = useNavigate();
-
     const [titleFormVisible, setTitleFormVisible] = useState(false);
     const [title, setTitle] = useState(contact.title)
     const titleInputRef = useRef(null);
-
     const [cooperationFormVisible, setCooperationFormVisible] = useState(false);
-
     const [description, setDescription] = useState(contact.description);
     const [descriptionFormVisible, setDescriptionFormVisible] = useState(false);
     const descriptionInputRef = useRef(null);
@@ -101,7 +94,6 @@ const ContactDetails = ({contacts, updateContact, removeContact, auth}) => {
     const handleDescriptionChange = (e) => {
         setDescription(e.target.value)
     }
-
 
     return (
         <div className={"contact-details-container"}>

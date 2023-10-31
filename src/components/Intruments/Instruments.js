@@ -10,7 +10,7 @@ import {
     TableRow,
     TextField
 } from "@mui/material";
-import {addInstrument, getInstrumentsInitialRequest, deleteInstrumentById} from "../../api/instruments";
+import {addInstrument, deleteInstrumentById} from "../../api/instruments";
 import {blankCheck} from "../../appUtils/appUtils";
 
 const Instruments = ({

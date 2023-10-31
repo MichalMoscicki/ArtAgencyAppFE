@@ -6,7 +6,6 @@ totalElements: 0,
 totalPages : 0,
 last: false}
 
-
 export const contactsPagination = (state = initialState, action) => {
     switch (action.type){
         case ADD_CONTACTS_PAGINATION:

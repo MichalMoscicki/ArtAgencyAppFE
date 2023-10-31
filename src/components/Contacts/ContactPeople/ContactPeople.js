@@ -6,9 +6,8 @@ import SinglePerson from "../../../containers/Contacts/ContactPeople/SinglePerso
 
 const ContactPeople = ({contactId, contacts, updateContact, auth}) => {
 
-    let contact = contacts.find(contact => contact.id === contactId);
-    let contactPeople = contact.contactPeople;
-
+    const contact = contacts.find(contact => contact.id === contactId);
+    const contactPeople = contact.contactPeople;
     const [formHidden, setFormHidden] = useState(true);
     const [buttonDisabled, setButtonDisabled] = useState(true)
     const [firstName, setFirstName] = useState("");
@@ -48,7 +47,6 @@ const ContactPeople = ({contactId, contacts, updateContact, auth}) => {
     const createUpdatedContact = (contactPerson) => {
         return {...contact, contactPeople: [...contact.contactPeople, contactPerson], updated: getCurrentTimeAndDate()}
     }
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();

@@ -12,7 +12,6 @@ const Events = ({contacts, updateContact, contactId, auth}) => {
     const [buttonDisabled, setButtonDisabled] = useState(true);
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
-
     const [monthWhenOrganized, setMonthWhenOrganized] = useState("");
 
     const toggleForm = () => {

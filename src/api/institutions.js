@@ -38,7 +38,6 @@ export const updateInstitutionById = async (contactId , institution, token) => {
         return data;
 };
 
-
 export const deleteInstitutionById = async (contactId, institutionId, token) => {
     try {
         const response = await fetch(`${API_URL}/contacts/${contactId}/institutions/${institutionId}`, {

@@ -12,7 +12,7 @@ import {
     Typography
 } from "@mui/material";
 import {SORT_BY_TITLE, SORT_DIR_ASC, SORT_DIR_DESC} from "../../appConstans/appConstans"
-import {deleteSongById, getSongsInitialRequest, getSongsSubsequentRequest} from "../../api/songs";
+import {deleteSongById, getSongsSubsequentRequest} from "../../api/songs";
 import ConfirmationPopUp from "../PopUp/ConfirmationPopUp";
 import SongForm from "../../containers/Songs/SongForm";
 import Instruments from "../../containers/Instruments/Instruments";
@@ -195,9 +195,7 @@ const Songs = ({
                 <Instruments toggle={toggleInstruments}/>
             </Dialog>
             <SongForm onClose={toggleDetails} open={detailsOpen} song={songToPass}/>
-            <Dialog open={confirmOpen}>
-                <ConfirmationPopUp close={toggleDelete} confirm={removeSong}/>
-            </Dialog>
+            <ConfirmationPopUp close={toggleDelete} confirm={removeSong} open={confirmOpen}/>
         </Grid>
     )
 }

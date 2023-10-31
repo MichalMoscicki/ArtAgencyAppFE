@@ -10,7 +10,6 @@ export const SingleTask = ({task, updateTaskInState, removeTaskFromState, auth})
     const toggleDetails = () => {
         setDetailsHidden(!detailsHidden);
     }
-
     const handleDelete = () => {
         deleteTaskById(task.id, auth)
         removeTaskFromState(task);
@@ -22,7 +21,6 @@ export const SingleTask = ({task, updateTaskInState, removeTaskFromState, auth})
     }
 
     return (
-
         <li>
             <div className={"task"}  onClick={toggleDetails}>
                 <span className={"task-title"}>{task.title}</span>
@@ -40,13 +38,12 @@ export const SingleTask = ({task, updateTaskInState, removeTaskFromState, auth})
                         <p>{task.activationDate}</p>
                         <p>{task.active}</p>
                         <p>
-                            dispay attachment
-
+                            tutaj wyświetlę tytuł kontaktu i przycisk przekierowania
                         </p>
                         <div className={"task-details-footer"}>
                             <span>Priorytet: {displayPriority(task.priority)}</span>
                             <span>
-                                {task.finished ? <img src="src/images/checked_709510.png" alt="Done"/>
+                                {task.finished ? <p>Ukończone</p>
                                     : <button onClick={handleCompleted}>Ukończ</button>}
                                 <button onClick={toggleDetails  }>Zamknij</button>
                             </span>

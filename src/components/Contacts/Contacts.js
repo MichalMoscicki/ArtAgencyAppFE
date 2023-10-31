@@ -1,6 +1,6 @@
 import React from "react";
 import {useState, useEffect} from "react";
-import {addContact, getContactsInitialRequest, getContactsSubsequentRequest,} from "../../api/contacts";
+import {addContact, exportContacts, getContactsInitialRequest, getContactsSubsequentRequest,} from "../../api/contacts";
 import {SORT_DIR_ASC, SORT_DIR_DESC, SORT_BY_TITLE, SORT_BY_UPDATED} from "../../api/constans"
 import SingleContact from "../../containers/Contacts/SingleContact";
 import "./Contacts.css"
@@ -24,7 +24,7 @@ const Contacts = ({contacts, pagination, addContactsToState, addContactToState, 
 
     const handleSelect = (e) => {
 
-        switch(e.target.value){
+        switch (e.target.value) {
             case TITLE_DESC:
                 setSortBy(SORT_BY_TITLE);
                 setSortDir(SORT_DIR_DESC);
@@ -62,7 +62,7 @@ const Contacts = ({contacts, pagination, addContactsToState, addContactToState, 
         }
         checkButtons()
     }, [pagination])
-    useEffect( () => {
+    useEffect(() => {
         const fetchSubsequentData = async () => {
             let response = await getContactsSubsequentRequest(pageNo, sortBy, sortDir, auth);
             await addContactsToState(response.content);
@@ -77,7 +77,6 @@ const Contacts = ({contacts, pagination, addContactsToState, addContactToState, 
 
         fetchSubsequentData()
     }, [sortDir, sortBy, pageNo])
-
 
     const onSubmit = async (e) => {
         e.preventDefault();
@@ -131,18 +130,19 @@ const Contacts = ({contacts, pagination, addContactsToState, addContactToState, 
                 </span>
                 <span>
                     <ul>
-                <li>
-                    <button onClick={() => handlePageButton(pagination.pageNo - 1)}
-                            disabled={prevButtonDisabled}>poprzednia</button>
-                </li>
-                <li>
-                    {generatePagesButtons()}
-                </li>
-                <li>
-                    <button onClick={() => handlePageButton(pagination.pageNo + 1)}
-                            disabled={nextButtonDisabled}>kolejna</button>
-                </li>
-            </ul>
+                        <li>
+                            <button onClick={() => handlePageButton(pagination.pageNo - 1)}
+                                    disabled={prevButtonDisabled}>poprzednia</button>
+                        </li>
+                        <li>
+                            {generatePagesButtons()}
+                        </li>
+                        <li>
+                            <button onClick={() => handlePageButton(pagination.pageNo + 1)}
+                                    disabled={nextButtonDisabled}>kolejna</button>
+                        </li>
+                    </ul>
+
                 </span>
             </div>
 

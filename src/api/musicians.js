@@ -65,7 +65,6 @@ export const getMusiciansSubsequentRequest = async (pageNo, sortBy, sortDir, tok
     }
 };
 
-
 export const getMusicianById = async (id, token) => {
     try {
         const response = await fetch(`${API_URL}/musicians/${id}`, {

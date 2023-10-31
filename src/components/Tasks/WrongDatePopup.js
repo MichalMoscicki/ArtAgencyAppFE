@@ -2,7 +2,6 @@ import React from "react";
 import "./WrongDatePopup.css"
 
 export const WrongDatePopup = ({setPopupVisible}) => {
-
     const closePopup = () => {
         setPopupVisible(false)
     }

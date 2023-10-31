@@ -1,7 +1,6 @@
 import {connect} from "react-redux";
 import ConcertForm from "../../components/Concerts/ConcertForm";
-import {addSingleConcertToState} from "../../redux/actions/concerts";
-
+import {addSingleConcertToState, updateConcertInState} from "../../redux/actions/concerts";
 
 const mapStateToProps = (state) => {
     return {
@@ -14,10 +13,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        // addConcertsToState: (concert) => dispatch(addConcertsToState(concert)),
-        addSingleConcertToState: (concert) => dispatch(addSingleConcertToState(concert))
-        // addInstrumentsToState: (instruments) => dispatch(addInstrumentsToState(instruments)),
-        // addPagination: pagination => dispatch(addSongsPaginationToState(pagination))
+        addSingleConcertToState: (concert) => dispatch(addSingleConcertToState(concert)),
+        updateConcertInState: (concert) => dispatch(updateConcertInState(concert))
+
     }
 }
 

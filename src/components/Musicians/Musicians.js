@@ -23,7 +23,6 @@ const Musicians = ({
                        addPagination,
                        removeMusician
                    }) => {
-
     const [instrumentsOpen, setInstrumentsOpen] = useState(false);
     const [addFormOpen, setAddFormOpen] = useState(false);
     const [pageNo, setPageNo] = useState(0);
@@ -55,7 +54,6 @@ const Musicians = ({
         setUpdateFormOpen(!updateFormOpen)
         setMusicianToUpdate(musician)
     }
-
     useEffect(() => {
         const fetchSubsequentData = async () => {
             let response = await getMusiciansSubsequentRequest(pageNo, SORT_BY_LASTNAME, sortDir, auth);

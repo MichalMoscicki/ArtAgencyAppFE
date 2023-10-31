@@ -1,6 +1,5 @@
 import {ADD_MUSICIANS, UPDATE_MUSICIAN, REMOVE_MUSICIAN, ADD_SINGLE_MUSICIAN} from "../actions/musicians";
 
-
 export const musicians = (state = [], action) => {
     switch (action.type){
         case ADD_SINGLE_MUSICIAN:

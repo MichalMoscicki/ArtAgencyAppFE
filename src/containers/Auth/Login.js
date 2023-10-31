@@ -17,7 +17,7 @@ const mapDispatchToProps = (dispatch) => {
 
     return{
         addTokenToState: (token) => dispatch(addTokenToState(token)),
-        addConcertsToState: (songs) => dispatch(addConcertsToState(songs)),
+        addConcertsToState: (concerts) => dispatch(addConcertsToState(concerts)),
         addConcertsPaginationToState: (pagination) => dispatch(addConcertsPaginationToState(pagination)),
         addContactsToState: (contacts) => dispatch(addContactsToState(contacts)),
         addContactsPaginationToState: (pagination) => dispatch(addContactsPaginationToState(pagination)),
@@ -28,16 +28,7 @@ const mapDispatchToProps = (dispatch) => {
         addSongsPagination: pagination => dispatch(addSongsPaginationToState(pagination)),
         addTasksToState: (tasks) => dispatch(addTasksToState(tasks)),
         addTaskPagination: pagination => dispatch(addTasksPaginationToState(pagination))
-
-
-
-        //songs + pagination
-        //tasks + pagination
-
-
-
-
-
     }
 }
+
 export default connect(null, mapDispatchToProps)(Login)

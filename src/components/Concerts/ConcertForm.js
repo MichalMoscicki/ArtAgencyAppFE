@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React, {useEffect, useState} from "react"
 import {addMusician, updateMusician} from "../../api/musicians";
 import {blankCheck, emailCheck, phoneCheck} from "../../appUtils/appUtils";
 import {
@@ -14,26 +14,36 @@ import {
     TextField, Typography
 } from "@mui/material";
 import {DateTimePicker} from '@mui/x-date-pickers/DateTimePicker';
-import {addConcert} from "../../api/concerts";
+import {addConcert, updateConcert} from "../../api/concerts";
 
-const ConcertForm = ({toggle, open, concert, contacts, musicians, songs, auth, addSingleConcertToState}) => {
+const ConcertForm = ({
+                         toggle,
+                         open,
+                         concert,
+                         contacts,
+                         musicians,
+                         songs,
+                         auth,
+                         addSingleConcertToState,
+                         updateConcertInState
+                     }) => {
+
     const concertPresent = typeof concert !== "undefined";
-
-    const [title, setTitle] = useState(concertPresent ? concert.title : "");
-    const [date, setDate] = useState(concertPresent ? concert.date : "");
-    const [address, setAddress] = useState(concertPresent ? concert.address : "");
-    const [organizer, setOrganizer] = useState(concertPresent ? concert.organizer : null);
-    const [concertMusicians, setConcertMusicians] = useState(concertPresent ? concert.musicians : []);
-    const [concertSongs, setConcertSongs] = useState(concertPresent ? concert.songs : [])
+    const [title, setTitle] = useState("");
+    const [date, setDate] = useState(null);
+    const [address, setAddress] = useState("");
+    const [concertMusicians, setConcertMusicians] = useState([]);
+    const [concertSongs, setConcertSongs] = useState([]);
+    const [buttonDisabled, setButtonDisabled] = useState(true);
 
     const handleTitle = (e) => {
         setTitle(e.target.value)
     }
+    const handleDate = (e) => {
+        setDate(new Date(e.$y, e.$M, e.$D))
+    }
     const handleAddress = (e) => {
         setAddress(e.target.value)
-    }
-    const handleOrganizer = (e) => {
-        setOrganizer(e.target.value)
     }
     const handleMusicians = (e) => {
         setConcertMusicians([...concertMusicians, e.target.value])
@@ -51,47 +61,55 @@ const ConcertForm = ({toggle, open, concert, contacts, musicians, songs, auth, a
     }
     const handleSubmit = async () => {
         const concertOutput = {
-            id: (concertPresent? concert.id : null),
+            id: (concertPresent ? concert.id : null),
             title: title,
-            date: date.$d,
+            date: date,
             address: address,
-            organizer: organizer,
-            concertMusicians: concertMusicians,
-            concertSongs: concertSongs
+            musicians: concertMusicians,
+            songs: concertSongs
         }
         try {
-
-            if(concertPresent){
-                // const response = await updateMusician(musicianOutput, auth);
-                // await updateMusicianInState(response)
-            } else{
+            if (concertPresent) {
+                await updateConcertInState(await updateConcert(concertOutput, auth));
+            } else {
                 const response = await addConcert(concertOutput, auth);
                 console.log(response)
-                // const response = await addMusician(musicianOutput, auth);
-                // await addMusicianToState(response)
+                await addSingleConcertToState(response);
             }
         } catch (Error) {
             console.log("Nie można dodać koncertu: " + Error.value)
         }
         toggle();
+        const restartState = () => {
+            setTitle("");
+            setDate(null);
+            setAddress("");
+            setConcertMusicians([]);
+            setConcertSongs([]);
+        }
+        restartState();
     }
-    //
-    // useEffect(() => {
-    //     const checkButtons = () => {
-    //         if (!blankCheck(firstName) &&
-    //             !blankCheck(lastName) &&
-    //             emailCheck(email) &&
-    //             phoneCheck(phone) &&
-    //             (instrumentList.length !== 0)
-    //         ) {
-    //             setButtonDisabled(false)
-    //         } else {
-    //             setButtonDisabled(true)
-    //         }
-    //     }
-    //     checkButtons()
-    //
-    // }, [firstName, lastName, email, phone, instrumentList])
+
+    useEffect(() => {
+        const checkButtons = () => {
+            if (!blankCheck(title) &&
+                (date !== null)
+            ) {
+                setButtonDisabled(false)
+            } else {
+                setButtonDisabled(true)
+            }
+        }
+        checkButtons()
+
+    }, [title, date])
+    useEffect(() => {
+        setTitle(concertPresent ? concert.title : "");
+        setDate(concertPresent ? concert.date : null);
+        setAddress(concertPresent ? concert.address : "");
+        setConcertMusicians(concertPresent ? concert.musicians : []);
+        setConcertSongs(concertPresent ? concert.songs : []);
+    }, [concert])
 
     return (
         <Dialog open={open} PaperProps={{
@@ -104,27 +122,19 @@ const ConcertForm = ({toggle, open, concert, contacts, musicians, songs, auth, a
             <Grid sx={{display: "flex"}}>
                 <Grid sx={{display: "grid", width: "50%", paddingRight: "1%"}}>
                     <TextField label={"Nazwa"} onChange={handleTitle} value={title}/>
-                    <DateTimePicker
-                        label='Data koncertu'
-                        value={date}
-                        onChange={newValue => {
-                            setDate(newValue)
-                        }}
-                        color={"secondary"}
-                        renderInput={params => <TextField {...params} />}
-                    />
+                    {concertPresent ?
+                        <Typography>Data:
+                            {date}
+                        </Typography>
+                        :
+                        <DateTimePicker
+                            label='Data koncertu'
+                            onChange={handleDate}
+                            color={"secondary"}
+                            renderInput={params => <TextField {...params} />}
+                        />
+                    }
                     <TextField label={"Adres"} onChange={handleAddress} value={address}/>
-                    <InputLabel id="select-organizer">Organizator</InputLabel>
-                    <Select
-                        labelId="select-organizer"
-                        label="Organizator"
-                        fullWidth
-                        onChange={handleOrganizer}
-                    >
-                        {contacts.map((el, index) => (
-                            <MenuItem value={el} key={index}>{el.title}</MenuItem>
-                        ))}
-                    </Select>
                     <InputLabel id="select-musicians">Dodaj muzyka</InputLabel>
                     <Select
                         labelId="select-musicians"
@@ -169,9 +179,9 @@ const ConcertForm = ({toggle, open, concert, contacts, musicians, songs, auth, a
                         ))}
                     </List>
                 </Grid>
-
             </Grid>
-            <Button onClick={handleSubmit} variant={"contained"} color={"secondary"}>Dodaj</Button>
+            <Button onClick={handleSubmit} variant={"contained"} color={"secondary"}
+                    disabled={buttonDisabled}>{concertPresent ? "Zapisz zmiany" : "Dodaj"}</Button>
             <Button onClick={toggle} variant={"contained"}>Zamknij</Button>
         </Dialog>
     )

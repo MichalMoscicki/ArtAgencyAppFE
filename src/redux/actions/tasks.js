@@ -3,7 +3,6 @@ const ADD_TASKS = "ADD_TASKS";
 const UPDATE_TASK = "UPDATE_TASK";
 const REMOVE_TASK = "REMOVE_TASK";
 
-
 const addTasksToState = (tasksList) => {
     return {
         type: ADD_TASKS,
@@ -30,7 +29,6 @@ const removeTask = (task) => {
         payload: task
     }
 }
-
 
 export {ADD_TASKS, ADD_SINGLE_TASK, REMOVE_TASK, UPDATE_TASK,
     addSingleTask, addTasksToState, removeTask, updateTask}

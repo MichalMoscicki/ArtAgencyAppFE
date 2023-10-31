@@ -24,7 +24,6 @@ export const addPart = async (songId, file, instrument, token) => {
     }
 };
 
-
 export const deletePartById = async (songId, partId, token) => {
     try {
         const response = await fetch(`${API_URL}/songs/${songId}/parts/${partId}`, {

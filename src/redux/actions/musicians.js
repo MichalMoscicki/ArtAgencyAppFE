@@ -3,7 +3,6 @@ const ADD_MUSICIANS = "ADD_MUSICIANS";
 const UPDATE_MUSICIAN = "UPDATE_MUSICIAN";
 const REMOVE_MUSICIAN = "REMOVE_MUSICIAN";
 
-
 const addMusiciansToState = (musiciansList) => {
     return {
         type: ADD_MUSICIANS,
@@ -30,7 +29,6 @@ const removeMusician = (task) => {
         payload: task
     }
 }
-
 
 export {ADD_MUSICIANS, ADD_SINGLE_MUSICIAN, REMOVE_MUSICIAN, UPDATE_MUSICIAN,
     addSingleMusician, addMusiciansToState, removeMusician, updateMusician}
