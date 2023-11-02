@@ -6,7 +6,7 @@ import SingleTask from "../../containers/Tasks/SingleTask";
 import {SORT_BY_TITLE, SORT_BY_UPDATED, SORT_DIR_ASC, SORT_DIR_DESC} from "../../api/constans";
 import "./Tasks.css"
 
-const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPagination, contacts, auth}) => {
+const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPagination, auth}) => {
     const [formHidden, setFormHidden] = useState(true);
     const [taskTitle, setTaskTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -15,8 +15,7 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
     const [popupVisible, setPopupVisible] = useState(false);
     const [activationDate, setActivationDate] = useState("");
     const [buttonDisabled, setButtonDisabled] = useState(true);
-    const [sortBy, setSortBy] = useState("");
-    const [sortDir, setSortDir] = useState("");
+    const [status, setStatus] = useState("&sortBy=priority&sortDir=DESC&status=active");
     const [pageNo, setPageNo] = useState(0);
 
     const toggleForm = () => {
@@ -81,11 +80,6 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
         setActivationDate("")
     }
 
-    const TITLE_ASC = "TITLE_ASC";
-    const TITLE_DESC = "TITLE_DESC";
-    const UPDATED_ASC = "UPDATED_ASC";
-    const UPDATED_DESC = "UPDATED_DESC";
-
     const [prevButtonDisabled, setPrevButtonDisabled] = useState(true);
     const [nextButtonDisabled, setNextButtonDisabled] = useState(false);
 
@@ -117,32 +111,32 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
         return buttons;
     }
 
+    const FINISHED = "FINISHED";
+    const ACTIVE = "ACTIVE";
+    const INCOMING = "INCOMING";
+    const ALL = "ALL";
+
     const handleSelect = (e) => {
 
         switch (e.target.value) {
-            case TITLE_DESC:
-                setSortBy(SORT_BY_TITLE);
-                setSortDir(SORT_DIR_DESC);
+            case ACTIVE:
+                setStatus("&sortBy=priority&sortDir=DESC&status=active");
                 break
-            case TITLE_ASC:
-                setSortBy(SORT_BY_TITLE);
-                setSortDir(SORT_DIR_ASC);
+            case FINISHED:
+                setStatus("&sortBy=updated&sortDir=DESC&status=finished");
                 break
-            case UPDATED_DESC:
-                setSortBy(SORT_BY_UPDATED);
-                setSortDir(SORT_DIR_DESC);
+            case INCOMING:
+                setStatus("&sortBy=activationDate&sortDir=ASC&status=future");
                 break
-            case UPDATED_ASC:
-                setSortBy(SORT_BY_UPDATED);
-                setSortDir(SORT_DIR_ASC);
-                break
+            case ALL:
+                setStatus("");
             default:
                 return
         }
     }
     useEffect(() => {
         const fetchSubsequentData = async () => {
-            let response = await getTasksSubsequentRequest(pageNo, sortBy, sortDir, auth);
+            let response = await getTasksSubsequentRequest(pageNo, status, auth);
             await addTasksToState(response.content);
             await addPagination({
                 pageNo: response.pageNo,
@@ -154,7 +148,7 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
         }
 
         fetchSubsequentData()
-    }, [sortDir, sortBy, pageNo])
+    }, [status, pageNo])
 
     return (
         <div className={"tasks-container"}>
@@ -162,10 +156,10 @@ const Tasks = ({tasks, pagination, addTasksToState, addTaskToState, addPaginatio
                 <h1>Zadania</h1>
                 <span>
                     <select onChange={handleSelect}>
-                        <option value={UPDATED_DESC}>Data aktualizacji: od najnowszych</option>
-                        <option value={UPDATED_ASC}>Data aktualizacji: od najstarszych</option>
-                        <option value={TITLE_ASC}>Nazwa: rosnąco</option>
-                        <option value={TITLE_DESC}>Nazwa: malejąco</option>
+                        <option value={ACTIVE}>Bieżące</option>
+                        <option value={INCOMING}>Nadchodzące</option>
+                        <option value={FINISHED}>Ukończone</option>
+                        <option value={ALL}>Wszystkie</option>
                     </select>
                 </span>
             </div>

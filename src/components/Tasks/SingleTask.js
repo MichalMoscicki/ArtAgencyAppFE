@@ -35,11 +35,8 @@ export const SingleTask = ({task, updateTaskInState, removeTaskFromState, auth})
                         <span>Aktualizacja: {task.updated}</span>
                         <p>{task.description}</p>
 
-                        <p>{task.activationDate}</p>
+                        <p>Data aktywacji: {task.activationDate}</p>
                         <p>{task.active}</p>
-                        <p>
-                            tutaj wyświetlę tytuł kontaktu i przycisk przekierowania
-                        </p>
                         <div className={"task-details-footer"}>
                             <span>Priorytet: {displayPriority(task.priority)}</span>
                             <span>

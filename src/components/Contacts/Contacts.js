@@ -21,7 +21,6 @@ const Contacts = ({contacts, pagination, addContactsToState, addContactToState, 
     const TITLE_DESC = "TITLE_DESC"
     const UPDATED_ASC = "UPDATED_ASC"
     const UPDATED_DESC = "UPDATED_DESC"
-
     const handleSelect = (e) => {
 
         switch (e.target.value) {
@@ -105,6 +104,20 @@ const Contacts = ({contacts, pagination, addContactsToState, addContactToState, 
         }
         return buttons;
     }
+    const handleExport = async () => {
+
+        const exportData = (data, fileName, type) => {
+            const blob = new Blob([data], {type});
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        };
+        const response = await exportContacts(auth);
+        exportData(JSON.stringify(response), "contacts.json", 'application/json');
+    }
 
     return (
         <div className="contacts-container">
@@ -129,6 +142,9 @@ const Contacts = ({contacts, pagination, addContactsToState, addContactToState, 
                      <h3 onClick={toggleForm} className={"add-contact"}>Dodaj kontakt</h3>
                 </span>
                 <span>
+                     <h6 onClick={handleExport} className={"add-contact"}>Exportuj kontakty - admin only</h6>
+                </span>
+                <span>
                     <ul>
                         <li>
                             <button onClick={() => handlePageButton(pagination.pageNo - 1)}
@@ -144,6 +160,7 @@ const Contacts = ({contacts, pagination, addContactsToState, addContactToState, 
                     </ul>
 
                 </span>
+
             </div>
 
             <form onSubmit={onSubmit} hidden={formHidden}>

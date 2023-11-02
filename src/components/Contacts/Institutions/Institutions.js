@@ -8,7 +8,7 @@ import {blankCheck, emailOrEmptyCheck, phoneOrEmptyCheck} from "../../../appUtil
 
 const Institutions = ({contactId, updateContact, contacts, auth}) => {
     let contact = contacts.find(contact => contact.id === contactId);
-    let institutions = contact.institutions;
+    let institutions = contact.institutions === null ? [] : contact.institutions;
 
     const [formHidden, setFormHidden] = useState(true);
     const [name, setName] = useState("");

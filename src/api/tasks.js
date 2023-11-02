@@ -43,9 +43,9 @@ export const getTasksInitialRequest = async (token) => {
     }
 };
 
-export const getTasksSubsequentRequest = async (pageNo, sortBy, sortDir, token) => {
+export const getTasksSubsequentRequest = async (pageNo, status, token) => {
     try {
-        const response = await fetch(`${API_URL}/tasks?pageNo=${pageNo}${sortBy}${sortDir}`, {
+        const response = await fetch(`${API_URL}/tasks?pageNo=${pageNo}${status}`, {
             method: "GET",
             headers: {
                 'Authorization': token,

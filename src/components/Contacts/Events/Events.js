@@ -6,7 +6,7 @@ import SingleEvent from "../../../containers/Contacts/Events/SingleEvent";
 const Events = ({contacts, updateContact, contactId, auth}) => {
 
     let contact = contacts.find(contact => contact.id === contactId);
-    let events = contact.events;
+    let events = contact.events === null ? [] : contact.events;
 
     const [formHidden, setFormHidden] = useState(true);
     const [buttonDisabled, setButtonDisabled] = useState(true);

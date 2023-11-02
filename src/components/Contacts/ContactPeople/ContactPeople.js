@@ -7,7 +7,7 @@ import SinglePerson from "../../../containers/Contacts/ContactPeople/SinglePerso
 const ContactPeople = ({contactId, contacts, updateContact, auth}) => {
 
     const contact = contacts.find(contact => contact.id === contactId);
-    const contactPeople = contact.contactPeople;
+    const contactPeople = contact.contactPeople === null ? [] : contact.contactPeople;
     const [formHidden, setFormHidden] = useState(true);
     const [buttonDisabled, setButtonDisabled] = useState(true)
     const [firstName, setFirstName] = useState("");

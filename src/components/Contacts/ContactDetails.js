@@ -55,26 +55,8 @@ const ContactDetails = ({contacts, updateContact, removeContact, auth}) => {
         await updateContact(response);
         setCooperationFormVisible(!cooperationFormVisible);
     }
-    const handleDelete = () => {
-        confirmAlert({
-            title: 'Usuwanie kontaktu',
-            message: 'Usuwając kontakt, usuniesz wszystkie powiązane dane',
-            buttons: [
-                {
-                    label: 'Yes',
-                    onClick: async () => {
-                        await deleteContactById(contact.id, auth);
-                        await navigate(`/contacts`)
-                        await removeContact(contact)
-                    }
-                },
-                {
-                    label: 'No',
-                    onClick: () => {
-                    }
-                }
-            ]
-        });
+    const handleReturn = () => {
+        navigate(`/contacts`)
     }
 
     const displayDescription = () => {
@@ -132,7 +114,7 @@ const ContactDetails = ({contacts, updateContact, removeContact, auth}) => {
                     </span>
 
                     <span className={"contact-details-delete-button-span"}>
-                         <button onClick={handleDelete}>Usuń</button>
+                         <button onClick={handleReturn}>Powrót</button>
                          <h6>Ostatnia aktualizacja: {contact.updated}</h6>
                     </span>
 
