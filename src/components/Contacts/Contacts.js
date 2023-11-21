@@ -1,6 +1,6 @@
 import React from "react";
 import {useState, useEffect} from "react";
-import {addContact, exportContacts, getContactsInitialRequest, getContactsSubsequentRequest,} from "../../api/contacts";
+import {addContact, exportContacts, getContactsSubsequentRequest,} from "../../api/contacts";
 import {SORT_DIR_ASC, SORT_DIR_DESC, SORT_BY_TITLE, SORT_BY_UPDATED} from "../../api/constans"
 import SingleContact from "../../containers/Contacts/SingleContact";
 import "./Contacts.css"

@@ -72,7 +72,9 @@ const SongForm = ({onClose, open, song, updateSongInState, addSongToState, auth,
         setFile(e.target.files[0])
     }
     const handleSubmit = async () => {
+
         const response = await addPart(song.id, file, instrument, auth);
+        //fetch subsequent data or change BE -> POST should return partDTO
         setParts([...parts, response])
         updateSongInState({...song, parts:[...parts, response]});
         togglePartForm();

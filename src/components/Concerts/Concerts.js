@@ -15,7 +15,6 @@ import {
 import ConcertForm from "../../containers/Concerts/ConcertForm";
 import ConfirmationPopUp from "../PopUp/ConfirmationPopUp";
 import {deleteConcertById, getConcertSubsequentRequest} from "../../api/concerts";
-
 const Concerts = ({concerts, auth, pagination, addConcertsToState, removeConcertFromState, addPagination}) => {
     const [formOpen, setFormOpen] = useState(false);
     const [popupOpen, setPopupOpen] = useState(false);

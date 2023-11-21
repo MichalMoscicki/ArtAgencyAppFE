@@ -1,9 +1,7 @@
 import React, {useEffect, useState} from "react"
-import {addMusician, updateMusician} from "../../api/musicians";
-import {blankCheck, emailCheck, phoneCheck} from "../../appUtils/appUtils";
+import {blankCheck} from "../../appUtils/appUtils";
 import {
     Button,
-    ButtonGroup,
     Dialog,
     Grid,
     InputLabel,
@@ -20,7 +18,6 @@ const ConcertForm = ({
                          toggle,
                          open,
                          concert,
-                         contacts,
                          musicians,
                          songs,
                          auth,
@@ -70,10 +67,10 @@ const ConcertForm = ({
         }
         try {
             if (concertPresent) {
-                await updateConcertInState(await updateConcert(concertOutput, auth));
+                const concert = await updateConcert(concertOutput, auth);
+                await updateConcertInState(concert);
             } else {
                 const response = await addConcert(concertOutput, auth);
-                console.log(response)
                 await addSingleConcertToState(response);
             }
         } catch (Error) {
