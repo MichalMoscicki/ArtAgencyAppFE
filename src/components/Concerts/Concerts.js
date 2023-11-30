@@ -14,37 +14,59 @@ import {
 } from "@mui/material";
 import ConcertForm from "../../containers/Concerts/ConcertForm";
 import ConfirmationPopUp from "../PopUp/ConfirmationPopUp";
-import {deleteConcertById, getConcertSubsequentRequest} from "../../api/concerts";
+import {confirmConcertRequest, deleteConcertById, getConcertSubsequentRequest} from "../../api/concerts";
+import {dateFormatter} from "../../appUtils/appUtils";
 const Concerts = ({concerts, auth, pagination, addConcertsToState, removeConcertFromState, addPagination}) => {
     const [formOpen, setFormOpen] = useState(false);
-    const [popupOpen, setPopupOpen] = useState(false);
+    const [removePopupOpen, setRemovePopupOpen] = useState(false);
+    const [confirmPopupOpen, setConfirmPopupOpen] = useState(false);
     const [concertToPass, setConcertToPass] = useState(undefined);
     const [pageNo, setPageNo] = useState(0);
     const [sortDir, setSortDir] = useState("");
 
+    //add and update functions
     const toggleForm = () => {
         setFormOpen(!formOpen);
-    }
-    const togglePopup = () => {
-        setPopupOpen(!popupOpen);
     }
     const handleAdd = () => {
         setConcertToPass(undefined);
         toggleForm();
     }
-    const handleDelete = (concert) => {
-        setConcertToPass(concert);
-        togglePopup();
-    }
     const handleUpdate = (concert) => {
         setConcertToPass(concert);
         toggleForm();
     }
+
+    //delete functions
+    const toggleRemovePopup = () => {
+        setRemovePopupOpen(!removePopupOpen);
+    }
+    const handleDelete = (concert) => {
+        setConcertToPass(concert);
+        toggleRemovePopup();
+    }
     const removeConcert = async () => {
         await deleteConcertById(concertToPass.id, auth);
         removeConcertFromState(concertToPass);
-        togglePopup();
+        toggleRemovePopup();
     }
+
+    //confirmation functions
+    const toggleConfirmPopup = () => {
+        setConfirmPopupOpen(!confirmPopupOpen);
+    }
+    const handleConfirm = async (concert) => {
+        setConcertToPass(concert);
+        toggleConfirmPopup();
+
+    }
+    const confirmConcert = async () => {
+        await confirmConcertRequest(concertToPass, auth)
+        //todo update in state confirmed concert
+        toggleConfirmPopup();
+    }
+
+
 
     const handlePagination = (e, p) => {
         setPageNo(p - 1);
@@ -144,13 +166,19 @@ const Concerts = ({concerts, auth, pagination, addConcertsToState, removeConcert
                                             {el.title}
                                         </TableCell>
                                         <TableCell>
-                                            {el.date}
+                                            {dateFormatter(el.start)}
                                         </TableCell>
                                         <TableCell>
                                             {el.address}
                                         </TableCell>
                                         <TableCell>
                                             <ButtonGroup>
+                                                <Button
+                                                    variant={"outlined"}
+                                                    onClick={()=> handleConfirm(el)}
+                                                >
+                                                    Potwierdź
+                                                </Button>
                                                 <Button
                                                     variant={"outlined"}
                                                     onClick={()=> handleUpdate(el)}
@@ -176,7 +204,8 @@ const Concerts = ({concerts, auth, pagination, addConcertsToState, removeConcert
             <Button variant={"outlined"} color={"secondary"} style={{justifyContent: "flex-start"}}
                     onClick={handleAdd}>Dodaj koncert</Button>
             <ConcertForm open={formOpen} toggle={toggleForm} concert={concertToPass}/>
-            <ConfirmationPopUp confirm={removeConcert} close={togglePopup} open={popupOpen}/>
+            <ConfirmationPopUp confirm={removeConcert} close={toggleRemovePopup} open={removePopupOpen}/>
+            <ConfirmationPopUp confirm={confirmConcert} close={toggleConfirmPopup} open={confirmPopupOpen}/>
         </Grid>
     )
 }

@@ -36,7 +36,6 @@ export const getConcertsInitialRequest = async (token) => {
         if (data.error) {
             throw new Error("Błąd!");
         }
-
         return(data);
     } catch (err) {
         console.log(err);
@@ -106,6 +105,29 @@ export const updateConcert = async (concert, token) => {
     try {
         const response = await fetch(`${API_URL}/concerts/${concert.id}`, {
             method: "PATCH",
+            body: JSON.stringify(concert),
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': token,
+            },
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            throw new Error("Błąd!");
+        }
+        return data;
+
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+export const confirmConcertRequest = async (concert, token) => {
+    try {
+        const response = await fetch(`${API_URL}/concerts/${concert.id}/confirm`, {
+            method: "POST",
             body: JSON.stringify(concert),
             headers: {
                 "Content-Type": "application/json",

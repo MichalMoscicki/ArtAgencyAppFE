@@ -1,7 +1,7 @@
 import {emailRegex, phoneRegex, blankRegex} from "../appConstans/appConstans";
 
 export const displayMonth = (month) => {
-    switch (Number(month)){
+    switch (Number(month)) {
         case 1:
             return "Styczeń"
         case 2:
@@ -27,11 +27,11 @@ export const displayMonth = (month) => {
         case 12:
             return "Grudzień"
         default:
-            return ;
+            return;
     }
 }
 export const displayPriority = (priority) => {
-    switch (Number(priority)){
+    switch (Number(priority)) {
         case 1:
             return "Niski"
         case 2:
@@ -39,7 +39,7 @@ export const displayPriority = (priority) => {
         case 3:
             return "Wysoki"
         default:
-            return ;
+            return;
     }
 };
 export const phoneOrEmptyCheck = (string) => {
@@ -52,15 +52,21 @@ export const phoneCheck = (string) => {
     return phoneRegex.test(string);
 };
 export const emailCheck = (string) => {
-   return emailRegex.test(string)
+    return emailRegex.test(string)
 };
 export const blankCheck = (string) => {
     return blankRegex.test(string);
 };
-export const isObject =(value) => {
+export const isObject = (value) => {
     return (
         typeof value === 'object' &&
         value !== null &&
         !Array.isArray(value)
     );
+}
+
+export const dateFormatter = (stringDate) => {
+    let date = new Date(stringDate);
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    return date.toLocaleDateString('pl-PL', options);
 }
